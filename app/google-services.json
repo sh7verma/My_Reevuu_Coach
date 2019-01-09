@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "491905689238",
+    "firebase_url": "https://myreevuu.firebaseio.com",
+    "project_id": "myreevuu",
+    "storage_bucket": "myreevuu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491905689238:android:79a784e9b804c127",
+        "android_client_info": {
+          "package_name": "com.myreevuuAthlete"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491905689238-to9gv0m3uhuohs076vku2dulvmqvi3g8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2i95P2xrlgRMAnjcTbx6I93n8IdYckzM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491905689238:android:3a6003a740139d81",
+        "android_client_info": {
+          "package_name": "com.myreevuuCoach"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491905689238-to9gv0m3uhuohs076vku2dulvmqvi3g8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2i95P2xrlgRMAnjcTbx6I93n8IdYckzM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

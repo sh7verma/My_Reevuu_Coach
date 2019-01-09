@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/llMain"
+    android:layout_margin="@dimen/_5sdp"
+    android:background="@drawable/grey_round_corners"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/_15sdp"
+    android:paddingEnd="@dimen/_10sdp"
+    android:paddingStart="@dimen/_10sdp"
+    android:paddingTop="@dimen/_15sdp">
+
+    <ImageView
+        android:id="@+id/imgUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:src="@mipmap/ic_profile" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.myreevuuCoach.customViews.BoldTextView
+                android:id="@+id/txtUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="JOHN"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_14ssp" />
+
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:id="@+id/txtTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12:15 am"
+                android:textColor="@color/colorGrey"
+                android:textSize="@dimen/_10ssp" />
+        </LinearLayout>
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/has_requested_for_video_review"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_12ssp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:orientation="horizontal">
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:id="@+id/txtDecline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:background="@drawable/white_default"
+                android:gravity="center"
+                android:paddingBottom="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_25sdp"
+                android:paddingStart="@dimen/_25sdp"
+                android:paddingTop="@dimen/_8sdp"
+                android:text="@string/decline"
+                android:textAllCaps="true"
+                android:textColor="@color/colorGrey"
+                android:textSize="@dimen/_8ssp" />
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:id="@+id/txtAccept"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/primary_ripple_round_corner"
+                android:gravity="center"
+                android:paddingBottom="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_25sdp"
+                android:paddingStart="@dimen/_25sdp"
+                android:paddingTop="@dimen/_8sdp"
+                android:text="@string/accept"
+                android:textAllCaps="true"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/_8ssp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

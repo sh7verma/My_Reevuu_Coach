@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_main"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_inner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_round_corners"
+        android:orientation="vertical">
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:id="@+id/txt_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_ripple"
+            android:padding="@dimen/_5sdp"
+            android:text="Clear Conversation"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14ssp" />
+
+        <View
+            android:id="@+id/v_line1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorGrey" />
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:id="@+id/txt_block"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_ripple"
+            android:padding="@dimen/_5sdp"
+            android:text="Block"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14ssp" />
+
+        <View
+            android:id="@+id/v_line2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorGrey" />
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:id="@+id/txt_report"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_ripple"
+            android:padding="@dimen/_5sdp"
+            android:text="Report"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14ssp" />
+
+    </LinearLayout>
+</LinearLayout>

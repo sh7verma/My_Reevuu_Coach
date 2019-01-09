@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:orientation="vertical">
+
+    <im.ene.toro.widget.Container
+        android:id="@+id/rvRequestsAccepted"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/pbReviews"
+        style="@style/AVLoadingIndicatorView.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="visible"
+        app:indicatorColor="@color/colorWhite"
+        app:indicatorName="BallClipRotatePulseIndicator" />
+
+
+    <com.myreevuuCoach.customViews.BoldTextView
+        android:id="@+id/txtNoReviews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/no_accepted_requests_available"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_15ssp"
+        android:visibility="gone" />
+</RelativeLayout>

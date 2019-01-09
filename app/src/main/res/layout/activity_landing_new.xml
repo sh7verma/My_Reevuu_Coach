@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorGreyLight"
+    android:orientation="vertical">
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_weight="1">-->
+
+    <FrameLayout
+        android:id="@+id/frame_container"
+        android:layout_width="match_parent"
+        android:layout_above="@id/llBottomNavigation"
+        android:layout_height="match_parent" />
+
+    <!--</LinearLayout>-->
+
+    <!--<com.myreevuuCoach.customViews.CustomViewPager-->
+    <!--android:id="@+id/vp_landing"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_above="@id/llBottomNavigation" />-->
+
+    <LinearLayout
+        android:id="@+id/llBottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_46sdp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorWhite"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/llHome"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/white_ripple"
+            android:gravity="center_horizontal|bottom"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imgHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_home_selected" />
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:id="@+id/txtHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_3sdp"
+                android:text="@string/home"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_10ssp"
+                app:textAllCaps="true" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llChat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/white_ripple"
+            android:gravity="center_horizontal|bottom"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imgChat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_chat" />
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:id="@+id/txtChat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_3sdp"
+                android:text="@string/chat"
+                android:textColor="@color/colorGrey"
+                android:textSize="@dimen/_10ssp"
+                app:textAllCaps="true" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/white_ripple"
+            android:gravity="center_horizontal|bottom"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:id="@+id/llReview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/white_ripple"
+            android:gravity="center_horizontal|bottom"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imgReevuu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_review" />
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:id="@+id/txtReevuu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_3sdp"
+                android:text="@string/review"
+                android:textColor="@color/colorGrey"
+                android:textSize="@dimen/_10ssp"
+                app:textAllCaps="true" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llProfile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/white_ripple"
+            android:gravity="center_horizontal|bottom"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imgProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_profile" />
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:id="@+id/txtProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_3sdp"
+                android:text="@string/profile"
+                android:textColor="@color/colorGrey"
+                android:textSize="@dimen/_10ssp"
+                app:textAllCaps="true" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!--<ImageView-->
+    <!--android:id="@+id/imgUploadVideo"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginBottom="@dimen/_8sdp"-->
+    <!--android:src="@mipmap/ic_upload_video" />-->
+
+    <!--<RelativeLayout-->
+    <!--android:id="@+id/rlTips"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="@color/grey_transparency"-->
+    <!--android:orientation="vertical"-->
+    <!--android:visibility="visible">-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_above="@+id/imgTipHint"-->
+    <!--android:layout_marginLeft="@dimen/_12sdp"-->
+    <!--android:layout_marginRight="@dimen/_12sdp"-->
+    <!--android:gravity="center_horizontal"-->
+    <!--android:orientation="vertical">-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@drawable/white_default"-->
+    <!--android:gravity="center_horizontal"-->
+    <!--android:orientation="vertical"-->
+    <!--android:padding="@dimen/_12sdp">-->
+
+    <!--<com.myreevuuCoach.customViews.BoldTextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="center"-->
+    <!--android:paddingBottom="@dimen/_8sdp"-->
+    <!--android:text="@string/upload_and_submit_video_a_video_for_review"-->
+    <!--android:textAllCaps="true"-->
+    <!--android:textColor="@color/colorBlack"-->
+    <!--android:textSize="@dimen/_12ssp" />-->
+
+    <!--<com.myreevuuCoach.customViews.RegularTextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="center"-->
+    <!--android:paddingBottom="@dimen/_10sdp"-->
+    <!--android:text="@string/athletes_will_specifically_request_you_to_review_their_video_based_off_of_what_you_post"-->
+    <!--android:textColor="@color/colorGrey"-->
+    <!--android:textSize="@dimen/_12ssp" />-->
+
+    <!--<com.myreevuuCoach.customViews.BoldTextView-->
+    <!--android:id="@+id/txtGOTIT"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="@dimen/_42sdp"-->
+    <!--android:layout_marginLeft="@dimen/_12sdp"-->
+    <!--android:layout_marginRight="@dimen/_12sdp"-->
+    <!--android:layout_marginTop="@dimen/_12sdp"-->
+    <!--android:background="@drawable/primary_ripple_round_corner"-->
+    <!--android:gravity="center"-->
+    <!--android:text="@string/got_it"-->
+    <!--android:textAllCaps="true"-->
+    <!--android:textColor="@color/colorWhite"-->
+    <!--android:textSize="@dimen/_14ssp"-->
+    <!--app:textAllCaps="true" />-->
+
+    <!--</LinearLayout>-->
+
+    <!--<ImageView-->
+    <!--android:layout_width="@dimen/_10sdp"-->
+    <!--android:layout_height="@dimen/_10sdp"-->
+    <!--android:rotation="180"-->
+    <!--android:src="@drawable/trangle" />-->
+
+    <!--</LinearLayout>-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/imgTipHint"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginBottom="@dimen/_8sdp"-->
+    <!--android:src="@mipmap/ic_upload_video" />-->
+
+    <!--</RelativeLayout>-->
+
+    <!--<include layout="@layout/anim_overlay" />-->
+
+</RelativeLayout>

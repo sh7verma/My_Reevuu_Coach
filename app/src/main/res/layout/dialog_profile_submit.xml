@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/white_default"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/_32sdp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/app_name"
+        android:src="@mipmap/ic_coach_request_submit" />
+
+    <com.myreevuuCoach.customViews.RegularTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="@dimen/_16sdp"
+        android:text="@string/your_request_for_coach_has_been_submitted_successfully_this_will_take_some_time_to_verification"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/_12ssp" />
+
+    <com.myreevuuCoach.customViews.BoldTextView
+        android:id="@+id/txtOK"
+        android:layout_width="@dimen/_64sdp"
+        android:layout_height="@dimen/_42sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:text="@string/ok"
+        android:gravity="center"
+        android:background="@drawable/primary_ripple_round_corner"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/_14ssp" />
+
+</LinearLayout>

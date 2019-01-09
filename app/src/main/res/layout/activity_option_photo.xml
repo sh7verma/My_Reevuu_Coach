@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llOuterOptionPhoto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/llOptionPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_5sdp"
+        android:background="@drawable/white_default"
+        android:gravity="center_horizontal|bottom"
+        android:orientation="vertical">
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:id="@+id/txtTakePhoto"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_42sdp"
+            android:layout_weight="1"
+            android:background="@drawable/white_ripple"
+            android:gravity="center"
+            android:textSize="@dimen/_14ssp"
+            android:text="@string/take_a_photo"
+            android:textColor="@color/colorPrimary" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGreyLight" />
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:id="@+id/txtOptionGallery"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_42sdp"
+            android:background="@drawable/white_ripple"
+            android:gravity="center"
+            android:textSize="@dimen/_14ssp"
+            android:text="@string/select_from_gallery"
+            android:textColor="@color/colorPrimary" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGreyLight" />
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:id="@+id/txtOptionVp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_42sdp"
+            android:background="@drawable/white_ripple"
+            android:gravity="center"
+            android:textSize="@dimen/_14ssp"
+            android:text="@string/view_photo"
+            android:textColor="@color/colorPrimary" />
+
+        <View
+            android:id="@+id/viewFull"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGreyLight" />
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:id="@+id/txtCancel"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_42sdp"
+            android:background="@drawable/white_ripple"
+            android:gravity="center"
+            android:textSize="@dimen/_14ssp"
+            android:padding="@dimen/_8sdp"
+            android:text="@string/cancel"
+            android:textColor="@color/colorGrey" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <ImageButton
+        android:id="@+id/imgClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:background="@android:drawable/ic_menu_close_clear_cancel"
+        android:scaleType="center"
+        android:visibility="visible" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/settings_view"
+            android:layout_width="40dp"
+            android:layout_height="38dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/circle_frame_background_dark"
+            android:scaleType="center"
+            android:visibility="invisible" />
+
+
+        <com.sandrios.sandriosCamera.internal.ui.view.CameraSwitchView
+            android:id="@+id/front_back_camera_switcher"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/record_panel"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/record_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@android:color/transparent">
+
+        <com.sandrios.sandriosCamera.internal.ui.view.RecordButton
+            android:id="@+id/record_button"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="50dp" />
+
+        <ImageView
+            android:id="@+id/img_galery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_gallery" />
+
+        <com.sandrios.sandriosCamera.internal.ui.view.MediaActionSwitchView
+            android:id="@+id/photo_video_camera_switcher"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/record_button"
+            android:checked="false"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="30dp"
+            android:background="?android:selectableItemBackground"
+            android:text="@string/done"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="18dp"
+            android:visibility="invisible" />
+
+        <com.sandrios.sandriosCamera.internal.ui.view.FlashSwitchView
+            android:id="@+id/flash_switch_view"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/record_duration_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="20dp"
+            android:layout_toLeftOf="@id/record_button"
+            android:layout_toStartOf="@+id/record_button"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/record_size_mb_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/record_duration_text"
+            android:layout_toLeftOf="@id/record_button"
+            android:padding="5dp"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:visibility="invisible" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

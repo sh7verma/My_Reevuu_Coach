@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/white_default"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/_20sdp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:src="@mipmap/ic_email_success" />
+
+
+    <com.myreevuuCoach.customViews.RegularTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:gravity="center"
+        android:text="@string/great_get_to_work_on_athletes_review_you_have_24hrs_to_send_it_back"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_14ssp" />
+
+
+    <com.myreevuuCoach.customViews.BoldTextView
+        android:id="@+id/txtOk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/primary_ripple_round_corner"
+        android:gravity="center"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/ok_got_it"
+        android:textAllCaps="true"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/_12ssp" />
+
+</LinearLayout>

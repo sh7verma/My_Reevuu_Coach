@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../MaterialDesign/MaterialDesign.iml" filepath="$PROJECT_DIR$/../MaterialDesign/MaterialDesign.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../PlayOsports.iml" filepath="$PROJECT_DIR$/../PlayOsports.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../aFileChooser/aFileChooser.iml" filepath="$PROJECT_DIR$/../aFileChooser/aFileChooser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../app/app.iml" filepath="$PROJECT_DIR$/../app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../appiraterAndroid/appiraterAndroid.iml" filepath="$PROJECT_DIR$/../appiraterAndroid/appiraterAndroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../circularImageView/circularImageView.iml" filepath="$PROJECT_DIR$/../circularImageView/circularImageView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cropLib.iml" filepath="$PROJECT_DIR$/cropLib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../facebook/facebook.iml" filepath="$PROJECT_DIR$/../facebook/facebook.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../loadMoreListView/loadMoreListView.iml" filepath="$PROJECT_DIR$/../loadMoreListView/loadMoreListView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../main_bottomsheet/main_bottomsheet.iml" filepath="$PROJECT_DIR$/../main_bottomsheet/main_bottomsheet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../main_edit/main_edit.iml" filepath="$PROJECT_DIR$/../main_edit/main_edit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../main_picker/main_picker.iml" filepath="$PROJECT_DIR$/../main_picker/main_picker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../pageIndicatorLibrary/pageIndicatorLibrary.iml" filepath="$PROJECT_DIR$/../pageIndicatorLibrary/pageIndicatorLibrary.iml" />
+    </modules>
+  </component>
+</project>

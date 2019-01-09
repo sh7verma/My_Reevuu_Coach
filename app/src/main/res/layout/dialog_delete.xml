@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.myreevuuCoach.customViews.BoldTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        android:gravity="center"
+        android:text="@string/delete_video"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/_15ssp" />
+
+    <com.myreevuuCoach.customViews.RegularTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/_10sdp"
+        android:gravity="center"
+        android:text="@string/are_you_sure_you_want_to_permanently_delete_thi_video"
+        android:textSize="@dimen/_15ssp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.myreevuuCoach.customViews.BoldTextView
+            android:id="@+id/txtCancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:background="@drawable/light_grey_round_corners"
+            android:gravity="center"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/cancel"
+            android:foreground="?selectableItemBackground"
+            android:textColor="@color/colorGrey"
+            android:textSize="@dimen/_12ssp" />
+
+        <com.myreevuuCoach.customViews.BoldTextView
+            android:id="@+id/txtDelete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:background="@drawable/red_round_corners"
+            android:gravity="center"
+            android:foreground="?selectableItemBackground"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/delete"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_12ssp" />
+
+    </LinearLayout>
+
+</LinearLayout>

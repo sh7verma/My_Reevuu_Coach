@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llExpertise"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingBottom="@dimen/_5sdp"
+    android:paddingRight="@dimen/_5sdp">
+
+    <com.myreevuuCoach.customViews.LightTextView
+        android:id="@+id/txtExpertise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/unselected_expertise"
+        android:gravity="center"
+        android:paddingBottom="@dimen/_5sdp"
+        android:paddingLeft="@dimen/_16sdp"
+        android:paddingRight="@dimen/_16sdp"
+        android:paddingTop="@dimen/_5sdp"
+        android:text="@string/add_more"
+        android:textColor="@color/colorGrey"
+        android:textSize="@dimen/_14ssp" />
+
+</LinearLayout>

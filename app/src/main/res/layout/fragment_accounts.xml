@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/svAccounts"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/_12sdp"
+    android:paddingRight="@dimen/_12sdp"
+    android:paddingTop="@dimen/_12sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_3sdp"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:contentDescription="@string/app_name"
+                android:src="@mipmap/ic_info" />
+
+            <com.myreevuuCoach.customViews.LightTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lorem_ipsum"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/_12ssp" />
+
+        </LinearLayout>
+
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/first_name"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_10ssp" />
+
+        <EditText
+            android:id="@+id/edFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:hint="@string/enter"
+            android:inputType="textCapSentences"
+            android:maxLength="30"
+            android:paddingBottom="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorGrey"
+            android:textSize="@dimen/_12ssp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGrey" />
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/last_name"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_10ssp" />
+
+        <EditText
+            android:id="@+id/edLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:hint="@string/enter"
+            android:inputType="textCapSentences"
+            android:maxLength="30"
+            android:paddingBottom="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorGrey"
+            android:textSize="@dimen/_12ssp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGrey" />
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/routing_number"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_10ssp" />
+
+        <EditText
+            android:id="@+id/edRountingNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:hint="@string/enter"
+            android:inputType="number"
+            android:maxLength="30"
+            android:paddingBottom="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorGrey"
+            android:textSize="@dimen/_12ssp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGrey" />
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/account_number"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_10ssp" />
+
+        <EditText
+            android:id="@+id/edAccountNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:hint="@string/enter"
+            android:inputType="number"
+            android:maxLength="30"
+            android:paddingBottom="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorGrey"
+            android:textSize="@dimen/_12ssp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGrey" />
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/address"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_10ssp" />
+
+        <EditText
+            android:id="@+id/edAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:hint="@string/enter"
+            android:inputType="textCapSentences"
+            android:maxLength="30"
+            android:paddingBottom="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorGrey"
+            android:textSize="@dimen/_12ssp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGrey" />
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/city"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_10ssp" />
+
+        <EditText
+            android:id="@+id/edCity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:hint="@string/enter"
+            android:inputType="textCapSentences"
+            android:maxLength="30"
+            android:paddingBottom="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorGrey"
+            android:textSize="@dimen/_12ssp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGrey" />
+
+        <!--<com.myreevuuCoach.customViews.RegularTextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:paddingTop="@dimen/_12sdp"-->
+            <!--android:text="@strstatestate"-->
+            <!--android:textAllCaps="true"-->
+            <!--android:textColor="@color/colorPrimary"-->
+            <!--android:textSize="@dimen/_10ssp" />-->
+
+        <!--<EditText-->
+            <!--android:id="@+id/edState"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@android:color/transparent"-->
+            <!--android:hint="@string/enter"-->
+            <!--android:inputType="textCapSentences"-->
+            <!--android:maxLength="30"-->
+            <!--android:paddingBottom="@dimen/_8sdp"-->
+            <!--android:paddingTop="@dimen/_8sdp"-->
+            <!--android:textColor="@color/colorWhite"-->
+            <!--android:textColorHint="@color/colorGrey"-->
+            <!--android:textSize="@dimen/_12ssp" />-->
+
+
+        <LinearLayout
+            android:id="@+id/llState"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_60sdp"
+            android:background="@drawable/black_ripple"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/state"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_10ssp" />
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:id="@+id/txtState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@mipmap/ic_drop_down_arrow"
+                android:drawableRight="@mipmap/ic_drop_down_arrow"
+                android:hint="@string/select"
+                android:paddingTop="@dimen/_5sdp"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorGrey"
+                android:textSize="@dimen/_12ssp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGrey" />
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/postal_code"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_10ssp" />
+
+        <EditText
+            android:id="@+id/edPostalCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:hint="@string/enter"
+            android:inputType="number"
+            android:maxLength="30"
+            android:paddingBottom="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorGrey"
+            android:textSize="@dimen/_12ssp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGrey" />
+
+        <LinearLayout
+            android:id="@+id/llDOB"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_60sdp"
+            android:background="@drawable/black_ripple"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dob"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_10ssp" />
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:id="@+id/txtDOB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@mipmap/ic_drop_down_arrow"
+                android:hint="@string/select"
+                android:paddingTop="@dimen/_5sdp"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorGrey"
+                android:textSize="@dimen/_12ssp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGrey" />
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/SSN"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_10ssp" />
+
+        <EditText
+            android:id="@+id/edSSN"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:hint="@string/ssn_hint"
+            android:inputType="phone"
+            android:maxLength="4"
+            android:paddingBottom="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorGrey"
+            android:textSize="@dimen/_12ssp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGrey" />
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/document"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_10ssp" />
+
+        <RelativeLayout
+            android:id="@+id/rlDocument"
+            android:layout_width="@dimen/_60sdp"
+            android:layout_height="@dimen/_60sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:background="@drawable/default_document">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/app_name"
+                android:src="@mipmap/ic_upload_doc" />
+
+            <ImageView
+                android:id="@+id/imgDocument"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_60sdp" />
+
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+
+</ScrollView>

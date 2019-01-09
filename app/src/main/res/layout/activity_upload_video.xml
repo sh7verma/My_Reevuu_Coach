@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:plainpie="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <RelativeLayout
+        android:id="@+id/rlPie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center">
+
+        <az.plainpie.PieView
+            android:id="@+id/pieView"
+            android:layout_width="@dimen/_180sdp"
+            android:layout_height="@dimen/_180sdp"
+            android:layout_centerHorizontal="true"
+            plainpie:inner_pie_padding="30"
+            plainpie:inner_text_visibility="true"
+            plainpie:percentage="0"
+            plainpie:percentage_size="40" />
+
+        <ImageView
+            android:id="@+id/imgUploaded"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/ic_video_uploaded" />
+
+    </RelativeLayout>
+
+    <com.myreevuuCoach.customViews.RegularTextView
+        android:id="@+id/txt_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rlPie"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:gravity="center"
+        android:text="@string/compressing_video"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_12ssp" />
+
+    <com.myreevuuCoach.customViews.BoldTextView
+        android:id="@+id/txtDone"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_42sdp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/_15sdp"
+        android:background="@drawable/primary_ripple_round_corner"
+        android:gravity="center"
+        android:text="@string/done"
+        android:textAllCaps="true"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/_14ssp"
+        android:visibility="gone" />
+
+</RelativeLayout>

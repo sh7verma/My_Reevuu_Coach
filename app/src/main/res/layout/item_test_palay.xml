@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_150sdp"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_150sdp"
+        app:cardBackgroundColor="#000000">
+
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+            android:id="@+id/player"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_150sdp"
+            android:minHeight="@dimen/_150sdp"
+            app:resize_mode="fixed_height"
+            app:surface_type="surface_view"
+            app:use_controller="false" />
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>

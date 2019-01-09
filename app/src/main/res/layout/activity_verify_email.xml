@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/llOuterVerifyEmail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom">
+
+    <LinearLayout
+        android:id="@+id/llVerifyEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_default"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/_12sdp"
+        android:paddingRight="@dimen/_12sdp"
+        android:paddingTop="@dimen/_16sdp">
+
+        <com.myreevuuCoach.customViews.BoldTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/verify_email"
+            android:textAllCaps="true"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_14ssp" />
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:id="@+id/txtEmailMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/_16sdp"
+            android:paddingLeft="@dimen/_12sdp"
+            android:paddingRight="@dimen/_12sdp"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/enter_your_registered_email_id_we_will_send_you_a_link_to_reset_your_password"
+            android:textColor="@color/colorGrey" />
+
+        <com.myreevuuCoach.customViews.BoldTextView
+            android:id="@+id/txtRESENDEMAIL"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_42sdp"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:background="@drawable/primary_ripple_round_corner"
+            android:gravity="center"
+            android:text="@string/resend_email"
+            android:textAllCaps="true"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/_14ssp"
+            app:textAllCaps="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_12sdp"
+            android:background="@color/colorWhite" />
+    </LinearLayout>
+</LinearLayout>

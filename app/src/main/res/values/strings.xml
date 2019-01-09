@@ -1,0 +1,472 @@
+<resources>
+    <string name="app_name">Reevuu Coach</string>
+
+    // errors
+    <string name="internet">Internet connection not available!</string>
+    <string name="enter_email">Please enter email</string>
+    <string name="enter_valid_email">Please enter a valid email</string>
+    <string name="enter_password">Please enter valid password</string>
+    <string name="error_password">Password must have minimum 8 characters</string>
+    <string name="error_name">Please enter Name with minimum 2 characters.</string>
+    <string name="error_terms">Please agree to terms and conditions.</string>
+    <string name="error_sport_played">Please select Sports played</string>
+    <string name="error_sport_experience">Please select experience</string>
+    <string name="error_sport_college">Please specify whether you played in college or not</string>
+    <string name="error_sport_highest">Please select played sport highest level</string>
+    <string name="error_level_coached">Please select coached highest level</string>
+    <string name="error_coaching_experience">Please select coaching experience</string>
+    <string name="error_expertise">Please select your area of expertise</string>
+    <string name="error_enter_about">Please write about you</string>
+    <string name="error_coaching_certificate">Please add at least one coaching certificate</string>
+
+
+    <string name="error_profile_pic">Please add profile pic</string>
+    <string name="error_user_name">Please add user name</string>
+    <string name="error_country_code">Please select country code</string>
+    <string name="error_phone_number">Please enter phone number</string>
+    <string name="error_coach_gender">Please select gender</string>
+    <string name="error_contractor_form">Please add contractor form</string>
+
+    <string name="error_routing">Please enter Routing Number.</string>
+    <string name="error_first_name">Please enter First Name.</string>
+    <string name="error_last_name">Please enter Last Name.</string>
+    <string name="error_account_no">Please enter Account Number.</string>
+    <string name="error_address">Please enter Address.</string>
+    <string name="error_city">Please enter City.</string>
+    <string name="error_state">Please enter State.</string>
+    <string name="error_postal_code">Please enter Postal Code.</string>
+    <string name="error_dob">Please enter DOB.</string>
+    <string name="error_ssn">Please enter SSN.</string>
+    <string name="error_internet">Internet connection not available!</string>
+    <string name="error_document">Please upload a document for verification.</string>
+
+    <string name="location_permission">Enable Location permission</string>
+    <string name="enable">ENABLE</string>
+
+    <string name="error">Something went wrong!</string>
+    <string name="success">200</string>
+    <string name="invalid_access_token">420</string>
+
+    <string name="next">Next</string>
+    <string name="skip">Skip</string>
+    <string name="get_started">Get Started</string>
+    <string name="welcome_to_my_reevuu">Welcome to my Reevuu</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</string>
+    <string name="name">Name</string>
+    <string name="enter">Enter</string>
+    <string name="signup">Sign Up</string>
+    <string name="by_signing_up_with_the_app_you_agree_to_our_terms_amp_privacy_policy"><![CDATA[By signing up with the app, you agree to our Terms & privacy policy.]]></string>
+    <string name="already_registered">Already Registered?</string>
+    <string name="signin">Sign in</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="enter_your_registered_email_id_we_will_send_you_a_link_to_reset_your_password">Enter your registered email id. We will send you a link to reset your password.</string>
+    <string name="reset">Reset</string>
+    <string name="verify_email">Verify Email</string>
+    <string name="resend_email">Resend Email</string>
+    <string name="register_as_a_coach">Register As a Coach</string>
+    <string name="to_register_yourself_as_coach_please_fill_the_below_details_and_get_approval_from_admin">To register yourself as coach please fill the below details and get approval from admin.</string>
+    <string name="sport_info">Sport Info</string>
+    <string name="coach_info">Coach Info</string>
+    <string name="sports_played">Sports Played</string>
+    <string name="select">Select</string>
+    <string name="playing_experience_in_years">Playing Experience (In years)</string>
+    <string name="did_you_play_sports_in_college">Did you play sports in college?</string>
+    <string name="highest_level_you_completed_in">Highest level you completed In</string>
+    <string name="submit">Submit</string>
+    <string name="highest_level_you_coached_in">Highest level you coached in</string>
+    <string name="years_coaching_experience">Years of Coaching Experience</string>
+    <string name="about_you">About You</string>
+    <string name="select_coaching_certificate">Select Any Coaching Certifications / Courses.</string>
+    <string name="write_here">Write here...</string>
+    <string name="done">Done</string>
+    <string name="choose_certificate">Choose Certificate</string>
+    <string name="add_more">add more</string>
+    <string name="other_certificate">Other Certificate</string>
+    <string name="area_of_expertise">Area of Expertise</string>
+    <string name="your_request_for_coach_has_been_submitted_successfully_this_will_take_some_time_to_verification">Your request for coach has been submitted successfully. This will take some time for verification.</string>
+    <string name="ok">OK</string>
+    <string name="create_profile">Create Profile</string>
+    <string name="personal_info">Personal Info</string>
+    <string name="user_name">User Name</string>
+    <string name="enter_name">Enter name</string>
+    <string name="phone_no">Phone Number</string>
+    <string name="gender">Gender</string>
+    <string name="provide_email_contacts_for_athletes_optional">Provide email contacts for Athletes (Optional)</string>
+    <string name="take_a_photo">Take A Photo</string>
+    <string name="select_from_gallery">Select From Gallery</string>
+    <string name="view_photo">View Photo</string>
+    <string name="cancel">CANCEL</string>
+    <string name="select_gender">Select Gender</string>
+    <string name="transition_image">transition_image</string>
+    <string name="routing_number">Routing Number</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="account_number">Account Number</string>
+    <string name="address">Address</string>
+    <string name="city">City</string>
+    <string name="state">State</string>
+    <string name="postal_code">Postal Code</string>
+    <string name="SSN">SSN</string>
+    <string name="dob">DOB</string>
+    <string name="document">Document</string>
+    <string name="select_document">Select Document</string>
+    <string name="no_files_found">No Files Found</string>
+    <string name="permission_filepicker_rationale">Storage permission is needed to access files.</string>
+    <string name="upload_1099_independent_contractor_form">Upload 1099 Independent Contractor Form</string>
+    <string name="tap_to_add">Tap to add</string>
+    <string name="error_max_email">Can\'t enter more than five Email ids</string>
+    <string name="available">Available</string>
+    <string name="not_available">Not Available</string>
+    <string name="popup_window_text">We ask to provide this to help you start building our business. These atheletes can now specifically request you to review their video.</string>
+    <string name="view_document">View Document</string>
+    <string name="edit_document">Edit Document</string>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+    <string name="review">Review</string>
+    <string name="chat">Chat</string>
+    <string name="upload_and_submit_video_a_video_for_review">Upload and submit video a video for Review</string>
+    <string name="use_this_button_to_upload_videos_of_training_sessions_and_other_content_atheletes_may_find_interesting_atheletes_will_specifically_request_you_to_review_their_video_for_what_you_post">Use this button to upload videos of training sessions and other content atheletes may find interesting. Atheletes will specifically request you to review their video for what you post!.</string>
+    <string name="got_it">Got It</string>
+    <string name="work_progress">Work in Progress.</string>
+    <string name="report_video">Report Video</string>
+    <string name="sure_logout">Are you sure you want to Logout?</string>
+    <string name="logout">Logout</string>
+    <string name="ssn_hint">Enter Last 4 Digits</string>
+    <string name="athletes_will_specifically_request_you_to_review_their_video_based_off_of_what_you_post">Use this button to upload videos of training sessions and other content atheletes may find interesting. Athletes will specifically request you to review their video based off of what you post!</string>
+    <string name="about_you_bio">About You / Bio</string>
+    <string name="how_big_is_your_team_invite_athletes_and_help_them_reach_their_full_potential_by_the_way_this_is_a_competition_so_the_more_you_invite_the_better_your_chance_to_win_xyz_and_bragging_rights">How big is your team, invite athletes and help them reach their full potential. By the way this is a competition, so the more you invite the better your chance to win XYZ and bragging rights</string>
+    <string name="tell_us_all_about_you_here_don_t_hold_back_this_is_where_you_sell_yourself_to_make_sure_athletes_choose_you_to_reevuu_their_videos_brag_brag_brag_please_give_mention_any_athletic_or_coaching_achievements_certifications_or_awards">Tell us all about you here. Don\'t hold back, this is where you sell yourself to make sure athletes choose you to ReeVuu their videos.Brag, Brag, Brag! Please give mention any athletic or coaching achievements, certifications or awards.</string>
+    <string name="CONFIRM">CONFIRM</string>
+    <string name="CANCEL">CANCEL</string>
+    <string name="payments">PAYMENTS</string>
+    <string name="videos">VIDEOS</string>
+    <string name="info">INFO</string>
+    <string name="add_video_detail">ADD VIDEO DETAIL</string>
+    <string name="category">CATEGORY</string>
+    <string name="title">TITLE</string>
+    <string name="description">DESCRIPTION</string>
+    <string name="upload_video">UPLOAD VIDEO</string>
+    <string name="wrong">SOMETHING WENT WRONG</string>
+    <string name="please_wait_your_video_is_still_uploading">Please wait, Your video is still uploading.</string>
+    <string name="video_is_uploaded_successfully">Video is uploaded successfully</string>
+    <string name="compressing_video">Please wait. Compressing video.</string>
+    <string name="retry">RETRY</string>
+    <string name="about">ABOUT</string>
+    <string name="terms_condition">Terms &amp; Conditions</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="played_in_college">Played in College</string>
+    <string name="coach_experience">COACH EXPERIENCE</string>
+    <string name="approval_pending">(APPROVAL PENDING)</string>
+    <string name="certificates">Certificates</string>
+    <string name="level">Level</string>
+    <string name="experience">Experience</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="delete_video">DELETE VIDEO</string>
+    <string name="are_you_sure_you_want_to_permanently_delete_thi_video">Are you sure you want to permanently \ndelete thi video?</string>
+    <string name="delete">DELETE</string>
+    <string name="edit_profile">EDIT PROFILE</string>
+    <string name="non_editable">Non Editable</string>
+    <string name="phone">PHONE</string>
+    <string name="save_changes">SAVE CHANGES</string>
+    <string name="total_earned_amount">TOTAL EARNED AMOUNT</string>
+    <string name="linked_account">LINKED ACCOUNT</string>
+    <string name="camera_permission_mess">You need camera permission.please enable it.</string>
+    <string name="video_title_cannot_be_empty">Video title cannot be empty</string>
+    <string name="video_description_cannot_be_empty">Video Description cannot be empty</string>
+    <string name="select_at_least_one_experties">Select at least one Expertise</string>
+    <string name="we_could_not_connect_to_the_server">It seems like we could not connect to server. Please try again.</string>
+    <string name="pick_reason">Please pick an option to proceed further.</string>
+    <string name="video_is_greater_than_">Video is greater than 15 min</string>
+    <string name="video_is_less">Video is less than 5 Second</string>
+    <string name="faled_to_capture_video">failed to capture video try again.</string>
+    <string name="history_detail">HISTORY DETAILS</string>
+    <string name="settings">SETTINGS</string>
+    <string name="change_password">Change Password</string>
+    <string name="change_email">Change Email</string>
+    <string name="notification_preferences">Notification Preferences</string>
+    <string name="terms_amp_conditions"><![CDATA[Terms & Conditions]]></string>
+    <string name="faqs">FAQs</string>
+    <string name="about_us">About Us</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="email_us">Email Us</string>
+    <string name="please_enter_your_old_password_and_than_enter_a_new_password_you_want_to_set">Please enter your old password and than enter a new password you want to set.</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_email">New email</string>
+    <string name="old_email">Old Email</string>
+    <string name="notification">Notifications</string>
+    <string name="push_notifications">Push Notifications</string>
+    <string name="mute_notification_on_email">Mute Notification on email</string>
+    <string name="reevuu">reevuu</string>
+    <string name="requests">REQUESTS</string>
+    <string name="accepted">ACCEPTED</string>
+    <string name="reviewed">REVIEWED</string>
+    <string name="has_requested_for_video_review">has requested for video review</string>
+    <string name="decline">DECLINE</string>
+    <string name="accept">ACCEPT</string>
+    <string name="no_requests_available">No Requests Available!</string>
+    <string name="great_get_to_work_on_athletes_review_you_have_24hrs_to_send_it_back">Great, Get to work on ATHLETES \nreview, you have 24hrs \nto send it back.</string>
+    <string name="ok_got_it">OK\'GOT IT</string>
+    <string name="start_reviewing">Start Reviewing</string>
+    <string name="no_reviewed_requests_available">No Reviewed Requests Available!</string>
+    <string name="no_accepted_requests_available">No Accepted Requests Available!</string>
+    <string name="time_finished">Your time to review the video has finished</string>
+    <string name="no_result_found">No Result Found!</string>
+    <string name="search_here">Search here..</string>
+    <string name="your_password_have_been_successfully_changed">Your password have been \nsuccessfully Changed.</string>
+    <string name="confirm_new_password_did_not_match">Confirm password did not match with New password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="update_email">UPDATE EMAIL</string>
+    <string name="existing_email">Existing Email</string>
+    <string name="verification_pending">Verification Pending</string>
+    <string name="send_message">Send Message</string>
+    <string name="interests">Interests</string>
+    <string name="participate_in">Participate in</string>
+    <string name="athlete">athlete</string>
+    <string name="new_requests">NEW REQUESTS</string>
+    <string name="review_video">REVIEW VIDEO</string>
+    <string name="video_deleted">This video have been deleted by the athlete</string>
+    <string name="enter_new_email">Enter New Email</string>
+    <string name="no_video_available">No Video Available!</string>
+    <string name="sign_in_now_to_check_out_the_latest_updates_since_your_last_visit">Sign in now to checkout the latest updates since your last visit.</string>
+    <string name="sign_up_today_to_provide_meaningful_feedback_to_your_athletes_so_they_can_make_rapid_improvements">Sign Up today to provide meaningful feedback to your athletes, so they can make rapid improvements.</string>
+    <string name="Last_seen_today_at">Last seen today at</string>
+    <string name="Last_seen_yesterday_at">Last seen yesterday at</string>
+    <string name="Last_seen">Last seen</string>
+
+    <string name="unmatch_message">unmatch with you</string>
+    <string name="text_copied">Text copied</string>
+
+    <string name="sure_to_unblock">Are you sure you want to unblock?</string>
+    <string name="sure_to_block">Are you sure you want to block conversation with this user?</string>
+    <string name="sure_to_unmatch">Are you sure you want to unmatch?</string>
+    <string name="sure_to_clear_chat">Are you sure you want to clear chat history?</string>
+    <string name="clear">Clear</string>
+    <string name="block">Block</string>
+    <string name="unblock">UnBlock</string>
+    <string name="search">Search</string>
+    <string name="read_more">Read more</string>
+    <string name="unblock_message">Are you sure you want to unblock this user?</string>
+    <string name="unblock_">Unblock</string>
+    <string name="character_limit_message">Message content exceeded the prescribed limit. Only first</string>
+    <string name="character_sent">characters will be sent.</string>
+    <string name="delete_conversation">Are you sure you want to delete this conversation?</string>
+    <string name="declined_message">The request does\'nt exist any longer.</string>
+
+    <string-array name="CountryCodes">
+        <item>93,AF</item>
+        <item>355,AL</item>
+        <item>213,DZ</item>
+        <item>376,AD</item>
+        <item>244,AO</item>
+        <item>672,AQ</item>
+        <item>54,AR</item>
+        <item>374,AM</item>
+        <item>297,AW</item>
+        <item>61,AU</item>
+        <item>43,AT</item>
+        <item>994,AZ</item>
+        <item>973,BH</item>
+        <item>880,BD</item>
+        <item>375,BY</item>
+        <item>32,BE</item>
+        <item>501,BZ</item>
+        <item>229,BJ</item>
+        <item>975,BT</item>
+        <item>591,BO</item>
+        <item>387,BA</item>
+        <item>267,BW</item>
+        <item>55,BR</item>
+        <item>673,BN</item>
+        <item>359,BG</item>
+        <item>226,BF</item>
+        <item>95,MM</item>
+        <item>257,BI</item>
+        <item>855,KH</item>
+        <item>237,CM</item>
+        <item>1,CA</item>
+        <item>238,CV</item>
+        <item>236,CF</item>
+        <item>235,TD</item>
+        <item>56,CL</item>
+        <item>86,CN</item>
+        <item>61,CX</item>
+        <item>61,CC</item>
+        <item>57,CO</item>
+        <item>269,KM</item>
+        <item>242,CG</item>
+        <item>243,CD</item>
+        <item>682,CK</item>
+        <item>506,CR</item>
+        <item>385,HR</item>
+        <item>53,CU</item>
+        <item>357,CY</item>
+        <item>420,CZ</item>
+        <item>45,DK</item>
+        <item>253,DJ</item>
+        <item>670,TL</item>
+        <item>593,EC</item>
+        <item>20,EG</item>
+        <item>503,SV</item>
+        <item>240,GQ</item>
+        <item>291,ER</item>
+        <item>372,EE</item>
+        <item>251,ET</item>
+        <item>500,FK</item>
+        <item>298,FO</item>
+        <item>679,FJ</item>
+        <item>358,FI</item>
+        <item>33,FR</item>
+        <item>689,PF</item>
+        <item>241,GA</item>
+        <item>220,GM</item>
+        <item>995,GE</item>
+        <item>49,DE</item>
+        <item>233,GH</item>
+        <item>350,GI</item>
+        <item>30,GR</item>
+        <item>299,GL</item>
+        <item>502,GT</item>
+        <item>224,GN</item>
+        <item>245,GW</item>
+        <item>592,GY</item>
+        <item>509,HT</item>
+        <item>504,HN</item>
+        <item>852,HK</item>
+        <item>36,HU</item>
+        <item>91,IN</item>
+        <item>62,ID</item>
+        <item>98,IR</item>
+        <item>964,IQ</item>
+        <item>353,IE</item>
+        <item>44,IM</item>
+        <item>972,IL</item>
+        <item>39,IT</item>
+        <item>225,CI</item>
+        <item>81,JP</item>
+        <item>962,JO</item>
+        <item>7,KZ</item>
+        <item>254,KE</item>
+        <item>686,KI</item>
+        <item>965,KW</item>
+        <item>996,KG</item>
+        <item>856,LA</item>
+        <item>371,LV</item>
+        <item>961,LB</item>
+        <item>266,LS</item>
+        <item>231,LR</item>
+        <item>218,LY</item>
+        <item>423,LI</item>
+        <item>370,LT</item>
+        <item>352,LU</item>
+        <item>853,MO</item>
+        <item>389,MK</item>
+        <item>261,MG</item>
+        <item>265,MW</item>
+        <item>60,MY</item>
+        <item>960,MV</item>
+        <item>223,ML</item>
+        <item>356,MT</item>
+        <item>692,MH</item>
+        <item>222,MR</item>
+        <item>230,MU</item>
+        <item>262,YT</item>
+        <item>52,MX</item>
+        <item>691,FM</item>
+        <item>373,MD</item>
+        <item>377,MC</item>
+        <item>976,MN</item>
+        <item>382,ME</item>
+        <item>212,MA</item>
+        <item>258,MZ</item>
+        <item>264,NA</item>
+        <item>674,NR</item>
+        <item>977,NP</item>
+        <item>31,NL</item>
+        <item>599,AN</item>
+        <item>687,NC</item>
+        <item>64,NZ</item>
+        <item>505,NI</item>
+        <item>227,NE</item>
+        <item>234,NG</item>
+        <item>683,NU</item>
+        <item>850,KP</item>
+        <item>47,NO</item>
+        <item>968,OM</item>
+        <item>92,PK</item>
+        <item>680,PW</item>
+        <item>507,PA</item>
+        <item>675,PG</item>
+        <item>595,PY</item>
+        <item>51,PE</item>
+        <item>63,PH</item>
+        <item>870,PN</item>
+        <item>48,PL</item>
+        <item>351,PT</item>
+        <item>1,PR</item>
+        <item>974,QA</item>
+        <item>40,RO</item>
+        <item>7,RU</item>
+        <item>250,RW</item>
+        <item>590,BL</item>
+        <item>685,WS</item>
+        <item>378,SM</item>
+        <item>239,ST</item>
+        <item>966,SA</item>
+        <item>221,SN</item>
+        <item>381,RS</item>
+        <item>248,SC</item>
+        <item>232,SL</item>
+        <item>65,SG</item>
+        <item>421,SK</item>
+        <item>386,SI</item>
+        <item>677,SB</item>
+        <item>252,SO</item>
+        <item>27,ZA</item>
+        <item>82,KR</item>
+        <item>34,ES</item>
+        <item>94,LK</item>
+        <item>290,SH</item>
+        <item>508,PM</item>
+        <item>249,SD</item>
+        <item>597,SR</item>
+        <item>268,SZ</item>
+        <item>46,SE</item>
+        <item>41,CH</item>
+        <item>963,SY</item>
+        <item>886,TW</item>
+        <item>992,TJ</item>
+        <item>255,TZ</item>
+        <item>66,TH</item>
+        <item>228,TG</item>
+        <item>690,TK</item>
+        <item>676,TO</item>
+        <item>216,TN</item>
+        <item>90,TR</item>
+        <item>993,TM</item>
+        <item>688,TV</item>
+        <item>971,AE</item>
+        <item>256,UG</item>
+        <item>44,GB</item>
+        <item>380,UA</item>
+        <item>598,UY</item>
+        <item>1,US</item>
+        <item>998,UZ</item>
+        <item>678,VU</item>
+        <item>39,VA</item>
+        <item>58,VE</item>
+        <item>84,VN</item>
+        <item>681,WF</item>
+        <item>967,YE</item>
+        <item>260,ZM</item>
+        <item>263,ZW</item>
+    </string-array>
+
+
+</resources>

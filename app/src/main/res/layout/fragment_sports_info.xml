@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorBlack"
+    android:paddingLeft="@dimen/_12sdp"
+    android:paddingRight="@dimen/_12sdp"
+    android:paddingTop="@dimen/_12sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/llSportPlayed"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_60sdp"
+            android:background="@drawable/black_ripple"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sports_played"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_10ssp" />
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:id="@+id/txtSportPlayed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@mipmap/ic_drop_down_arrow"
+                android:drawableRight="@mipmap/ic_drop_down_arrow"
+                android:hint="@string/select"
+                android:paddingTop="@dimen/_5sdp"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorGrey"
+                android:textSize="@dimen/_12ssp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGrey" />
+
+        <LinearLayout
+            android:id="@+id/llSportExperience"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_60sdp"
+            android:background="@drawable/black_ripple"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/playing_experience_in_years"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_10ssp" />
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:id="@+id/txtSportExperience"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@mipmap/ic_drop_down_arrow"
+                android:drawableRight="@mipmap/ic_drop_down_arrow"
+                android:hint="@string/select"
+                android:paddingTop="@dimen/_5sdp"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorGrey"
+                android:textSize="@dimen/_12ssp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGrey" />
+
+        <LinearLayout
+            android:id="@+id/llSportPlayedCollege"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_60sdp"
+            android:background="@drawable/black_ripple"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/did_you_play_sports_in_college"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_10ssp" />
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:id="@+id/txtSportPlayedCollege"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@mipmap/ic_drop_down_arrow"
+                android:drawableRight="@mipmap/ic_drop_down_arrow"
+                android:hint="@string/select"
+                android:paddingTop="@dimen/_5sdp"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorGrey"
+                android:textSize="@dimen/_12ssp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGrey" />
+
+        <LinearLayout
+            android:id="@+id/llSportHighestLevel"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_60sdp"
+            android:background="@drawable/black_ripple"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/highest_level_you_completed_in"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_10ssp" />
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:id="@+id/txtSportHighestLevel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@mipmap/ic_drop_down_arrow"
+                android:drawableRight="@mipmap/ic_drop_down_arrow"
+                android:hint="@string/select"
+                android:paddingTop="@dimen/_5sdp"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorGrey"
+                android:textSize="@dimen/_12ssp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:background="@color/colorGrey" />
+    </LinearLayout>
+</ScrollView>

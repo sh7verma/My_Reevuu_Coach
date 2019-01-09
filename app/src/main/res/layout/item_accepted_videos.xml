@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cvFeed"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_300sdp"
+    android:layout_marginTop="@dimen/_12sdp"
+    app:cardCornerRadius="@dimen/_5sdp"
+    app:cardUseCompatPadding="true">
+
+    <com.allattentionhere.autoplayvideos.AAH_VideoImage
+        android:id="@+id/vvFeedListing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+            android:id="@+id/player"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_260sdp"
+            android:minHeight="@dimen/_260sdp"
+            app:resize_mode="fixed_height"
+            app:surface_type="surface_view"
+            app:use_controller="false" />
+
+        <ProgressBar
+            android:id="@+id/pgLoading"
+            android:layout_width="@dimen/_55sdp"
+            android:layout_height="@dimen/_55sdp"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="@dimen/_56sdp"
+            android:padding="@dimen/_8sdp"
+            android:src="@mipmap/ic_mute"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/img_thumb"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_260sdp"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true">
+
+            <com.myreevuuCoach.customViews.BoldTextView
+                android:id="@+id/txtRemainingTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:background="@drawable/white_default"
+                android:elevation="@dimen/_5ssp"
+                android:paddingBottom="@dimen/_2sdp"
+                android:paddingEnd="@dimen/_5sdp"
+                android:paddingStart="@dimen/_5sdp"
+                android:paddingTop="@dimen/_2sdp"
+                android:text="--"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10ssp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_48sdp"
+        android:layout_gravity="bottom"
+        android:background="@color/colorGrey"
+        android:gravity="center_vertical"
+        android:paddingEnd="@dimen/_8sdp"
+        android:paddingStart="@dimen/_8sdp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <com.myreevuuCoach.customViews.BoldTextView
+                android:id="@+id/txtSportTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="The Open Stand"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/_14ssp" />
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:id="@+id/txtSportOwner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="The Open Stand"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/_12ssp" />
+
+        </LinearLayout>
+
+        <com.myreevuuCoach.customViews.RegularTextView
+            android:id="@+id/txtSportName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/primary_default_extreme_round"
+            android:paddingBottom="@dimen/_5sdp"
+            android:paddingEnd="@dimen/_10sdp"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:text="Tennis"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/_12ssp" />
+
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/imgSound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="@dimen/_56sdp"
+        android:padding="@dimen/_8sdp"
+        android:src="@mipmap/ic_mute" />
+
+</android.support.v7.widget.CardView>
