@@ -152,7 +152,7 @@ public class ActivityVideoGallery extends AppCompatActivity implements AdapterCl
         setResult(RESULT_OK, in);
         finish();
     }
-
+//
     //GETVIDEO LISTING
     public void getAllMedia() {
         ColumnIndexCache cache = new ColumnIndexCache();
