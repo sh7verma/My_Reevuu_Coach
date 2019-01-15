@@ -185,8 +185,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
 
     override fun onNewIntent(intent: Intent?) {
         if (intent!!.hasExtra(InterConst.NAME)) {
-            mOtherUserName = intent!!.getStringExtra(InterConst.NAME)
-            mOtherUserPic = intent!!.getStringExtra(InterConst.PROFILE_PIC)
+            mOtherUserName = intent.getStringExtra(InterConst.NAME)
+            mOtherUserPic = intent.getStringExtra(InterConst.PROFILE_PIC)
 
             setProfileViewData()
         }
@@ -254,7 +254,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
 
     private fun setProfileViewData() {
 
-        if (mOtherUserId.equals(InterConst.APP_ADMIN_ID)||mOtherUserName.equals(InterConst.APP_ADMIN_NAME)) {
+        if (mOtherUserId.equals(InterConst.APP_ADMIN_ID) || mOtherUserName.equals(InterConst.APP_ADMIN_NAME)) {
             txtName.text = InterConst.APP_ADMIN_NAME
             Picasso.get()
                     .load(R.drawable.ic_contact)
@@ -264,7 +264,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                     .centerCrop(Gravity.TOP)
                     .error(R.drawable.ic_contact).into(imgProfile)
         } else {
-            txtName.text =mOtherUserName
+            txtName.text = mOtherUserName
 
             if (!TextUtils.isEmpty(mOtherUserPic)) {
                 Picasso.get()
@@ -902,6 +902,30 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
 
     }
 
+    private fun hitClearConverastionApi(delete_time: String) {
+        val call = RetrofitClient.getInstance().clear_converation(
+                mUtils.getString(InterConst.ACCESS_TOKEN, ""),
+                mCurrentUser!!.chat_dialog_ids.toString(),
+                delete_time,
+                InterConst.CLEAR_CHAT)
+        call.enqueue(object : Callback<BaseSuccessModel> {
+            override fun onResponse(call: Call<BaseSuccessModel>, response: Response<BaseSuccessModel>) {
+                if (response.body().response != null) {
+
+                } else {
+                    toast(response.body().error.message)
+                    if (response.body().error.code == InterConst.INVALID_ACCESS) {
+                        moveToSplash()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<BaseSuccessModel>, t: Throwable) {
+            }
+        })
+
+    }
+
     private fun moveBack() {
         finish()
     }
@@ -911,7 +935,9 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         db!!.clearConversation(mPrivateChat!!.chat_dialog_id)
         mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("last_message_data").child(mUtils!!.getInt(FirebaseChatConstants.user_id, -1).toString()).setValue(FirebaseChatConstants.DEFAULT_MESSAGE_REGEX)
         mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("unread_count").child(mUtils!!.getInt(FirebaseChatConstants.user_id, -1).toString()).setValue(0)
+
         mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("delete_dialog_time").child(mUtils!!.getInt(FirebaseChatConstants.user_id, -1).toString()).setValue(ServerValue.TIMESTAMP).addOnSuccessListener {
+
             hideProgress()
             mMessageIds.clear()
             mMessagesMap!!.clear()
@@ -920,7 +946,25 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             mMessagesMap = db!!.getAllMessages(mPrivateChat!!.chat_dialog_id, mCurrentUser!!.user_id, limit, time, mOtherUserId)
             makeHeaders()
             mConversationAdapter!!.notifyDataSetChanged()
+
         }
+
+        mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("delete_dialog_time").addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (dataSnapshot != null) {
+                            var delete_dialog_time: HashMap<String, Long>? = null
+                            val gtDelete = object : GenericTypeIndicator<HashMap<String, Long>>() {
+                            }
+                            delete_dialog_time = dataSnapshot.getValue(gtDelete)
+                            hitClearConverastionApi(delete_dialog_time!!.get(mUtils!!.getInt(FirebaseChatConstants.user_id, -1).toString()).toString())
+                        }
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Log.e("delete_dialog_time", databaseError.toString())
+                    }
+                })
     }
 
     override fun onDestroy() {
@@ -950,6 +994,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                     llOptionActionbar.visibility = View.GONE
                     mConversationAdapter!!.remove_selection()
                 }
+
                 if (status != 2) {
                     val mMessage = MessagesModel()
                     val messagePush = mFirebaseConfigMessages.push()

@@ -48,7 +48,11 @@ public class VideoCompress {
 
         @Override
         protected Boolean doInBackground(String... paths) {
-            return VideoController.getInstance().convertVideo(paths[0], paths[1], mQuality, new VideoController.CompressProgressListener() {
+            return VideoController.getInstance().convertVideo(
+                    paths[0],
+                    paths[1],
+                    mQuality,
+                    new VideoController.CompressProgressListener() {
                 @Override
                 public void onProgress(float percent) {
                     publishProgress(percent);

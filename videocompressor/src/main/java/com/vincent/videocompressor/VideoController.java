@@ -221,7 +221,8 @@ public class VideoController {
      * @return
      */
     @TargetApi(16)
-    public boolean convertVideo(final String sourcePath, String destinationPath, int quality, CompressProgressListener listener) {
+    public boolean convertVideo(final String sourcePath, String destinationPath, int quality,
+                                CompressProgressListener listener) {
         this.path = sourcePath;
 
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();

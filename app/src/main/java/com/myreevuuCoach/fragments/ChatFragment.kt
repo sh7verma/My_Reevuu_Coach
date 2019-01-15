@@ -10,8 +10,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ServerValue
+import com.google.firebase.database.*
 import com.myreevuuCoach.R
 import com.myreevuuCoach.activities.ConversationActivity
 import com.myreevuuCoach.activities.LandingActivity
@@ -21,9 +20,14 @@ import com.myreevuuCoach.firebase.FirebaseChatConstants
 import com.myreevuuCoach.firebase.FirebaseListeners
 import com.myreevuuCoach.firebase.ProfileModel
 import com.myreevuuCoach.interfaces.InterConst
+import com.myreevuuCoach.models.BaseSuccessModel
+import com.myreevuuCoach.network.RetrofitClient
 import com.myreevuuCoach.utils.AlertDialogs
 import com.myreevuuCoach.utils.Constants
 import kotlinx.android.synthetic.main.fragment_chat.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 
 /**
@@ -155,11 +159,35 @@ class ChatFragment : BaseFragment(), FirebaseListeners.ChatDialogsListenerInterf
             }
         }
     }
+    private fun hitClearConverastionApi(time: String) {
+        val call = RetrofitClient.getInstance().clear_converation(
+                utils.getString(InterConst.ACCESS_TOKEN, ""),
+                mCurrentUser!!.chat_dialog_ids.toString(),
+                time,
+                InterConst.DELETE_DIALOG)
+        call.enqueue(object : Callback<BaseSuccessModel> {
+            override fun onResponse(call: Call<BaseSuccessModel>, response: Response<BaseSuccessModel>) {
+                if (response.body().response != null) {
 
+                } else {
+                    toast(response.body().error.message)
+                    if (response.body().error.code == InterConst.INVALID_ACCESS) {
+                        moveToSplash()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<BaseSuccessModel>, t: Throwable) {
+            }
+        })
+
+    }
     internal fun showAlert(chat: ChatsModel) {
         AlertDialogs.confirmYesNoDialog(activity!!, getString(R.string.delete_conversation),
                 object : AlertDialogs.DialogClick {
                     override fun yes(dialog: DialogInterface) {
+
+
 
                         FirebaseDatabase.getInstance().reference
                                 .child(FirebaseChatConstants.CHATS)
@@ -181,6 +209,25 @@ class ChatFragment : BaseFragment(), FirebaseListeners.ChatDialogsListenerInterf
                                 .child(chat.participant_ids).child("delete_dialog_time")
                                 .child(utils!!.getInt(FirebaseChatConstants.user_id, -1).toString())
                                 .setValue(ServerValue.TIMESTAMP)
+
+                        FirebaseDatabase.getInstance().reference.child(FirebaseChatConstants.CHATS)
+                                .child(chat.participant_ids).child("delete_dialog_time").addListenerForSingleValueEvent(
+                                object : ValueEventListener {
+                                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                        if (dataSnapshot != null) {
+                                            var delete_dialog_time: HashMap<String, Long>? = null
+                                            val gtDelete = object : GenericTypeIndicator<HashMap<String, Long>>() {
+                                            }
+                                            delete_dialog_time = dataSnapshot.getValue(gtDelete)
+                                            hitClearConverastionApi(delete_dialog_time!!.get(utils!!.getInt(FirebaseChatConstants.user_id, -1).toString()).toString())
+                                        }
+                                    }
+
+                                    override fun onCancelled(databaseError: DatabaseError) {
+                                        Log.e("delete_dialog_time", databaseError.toString())
+                                    }
+                                })
+
                     }
 
                     override fun no(dialog: DialogInterface) {

@@ -2,6 +2,7 @@ package com.myreevuuCoach.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaMetadataRetriever;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
@@ -122,7 +123,7 @@ public class UploadVideoActivity extends BaseActivity implements ProgressRequest
     }
 
 
-    void uploadVideoApi(String filePath) {
+    void uploadVideoApi(String filePath, int originalWidth, int originalHeight) {
 
         pieView.setPercentage(0);
         txtProgress.setText(getString(R.string.please_wait_your_video_is_still_uploading));
@@ -140,6 +141,8 @@ public class UploadVideoActivity extends BaseActivity implements ProgressRequest
                 createPartFromString(getIntent().getStringExtra("description")),
                 createPartFromString(InterConst.PRIVACY_PUBLIC),
                 createPartFromString(String.valueOf(mSigUpModel.getResponse().getSport_info().getSport().getId())),
+                createPartFromString(String.valueOf(originalWidth)) ,
+                createPartFromString(String.valueOf(originalHeight)),
                 createPartFromString(""),
                 createPartFromString(getIntent().getStringExtra("expertise")));
 
@@ -151,9 +154,6 @@ public class UploadVideoActivity extends BaseActivity implements ProgressRequest
                     pieView.setPercentage(100);
                     imgUploaded.setVisibility(View.VISIBLE);
                     pieView.setInnerTextVisibility(View.GONE);
-
-
-
                     txtProgress.setText(getString(R.string.video_is_uploaded_successfully));
                     txtDone.setVisibility(View.VISIBLE);
                 } else {
@@ -213,7 +213,6 @@ public class UploadVideoActivity extends BaseActivity implements ProgressRequest
             @Override
             public void onStart() {
                 pieView.setPercentage(0);
-
                 startTime = System.currentTimeMillis();
                 Util.writeFile(mContext, "Start at: " + Calendar.getInstance().getTimeInMillis() + "\n");
             }
@@ -226,9 +225,23 @@ public class UploadVideoActivity extends BaseActivity implements ProgressRequest
                 Util.writeFile(mContext, "Total: " + ((endTime - startTime) / 1000) + "s" + "\n");
                 Util.writeFile(mContext);
 
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                retriever.setDataSource(destPath);
+
+                String width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
+                String height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+                String rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+                long duration = Long.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION))
+                        * 1000;
+
+                int rotationValue = Integer.valueOf(rotation);
+                int originalWidth = Integer.valueOf(width);
+                int originalHeight = Integer.valueOf(height);
+
                 if (connectedToInternet(txtDone)) {
-                    uploadVideoApi(destPath);
+                    uploadVideoApi(destPath,originalWidth,originalHeight);
                 }
+
             }
 
             @Override

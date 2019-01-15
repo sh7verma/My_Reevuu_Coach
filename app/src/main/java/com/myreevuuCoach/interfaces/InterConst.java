@@ -88,6 +88,8 @@ public interface InterConst {
     String APP_ADMIN_NAME = "CONTACT US";
     String APP_ADMIN_DEFAULT_MESSAGE = "Ask us anything or share your feedback. We'll get back to you shortly!";
     String APP_ADMIN_ID = "a0";
+    String CLEAR_CHAT = "1";
+    String DELETE_DIALOG = "2";
     String NotificationID = "NotificationID";
 
     /*WebView*/

@@ -6,6 +6,9 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
+import retrofit2.http.DELETE
+
+
 
 
 interface ApiInterface {
@@ -95,10 +98,6 @@ interface ApiInterface {
                    @Field("reason") reason: String,
                    @Field("access_token") access_token: String): Call<BaseSuccessModel>
 
-    @DELETE("/api/v1/videos")
-    fun deleteVideo(@Query("id") video_id: Int,
-                    @Query("access_token") access_token: String): Call<BaseSuccessModel>
-
     @Multipart
     @POST("/api/v1/videos")
     fun uploadVideo(@Part("access_token") access_token: RequestBody,
@@ -109,6 +108,8 @@ interface ApiInterface {
                     @Part("privacy") privacy: RequestBody,
                     @Part("sport_id") sport_id: RequestBody,
                     @Part("coach_id") coach_id: RequestBody,
+                    @Part("video_width") video_width: RequestBody,
+                    @Part("video_height") video_height: RequestBody,
                     @Part("expertises") expertises: RequestBody): Call<VideoModel>
 
     @Multipart
@@ -173,6 +174,16 @@ interface ApiInterface {
     fun chat_delete_messages(@Field("access_token") access_token: String,
                              @Field("message_id") other_user_id: String): Call<BaseSuccessModel>
 
+    @DELETE("videos")
+    fun deleteVideo(@Query("id") id: Int,
+                    @Query("access_token") access_token: String): Call<BaseSuccessModel>
+
+    @DELETE("/api/v1/chats")
+    fun clear_converation(@Query("access_token") access_token: String,
+                          @Query("chat_dialog_id") chat_dialog_id: String,
+                          @Query("firebase_time") firebase_time: String,
+                          @Query("delete_type") delete_type: String): Call<BaseSuccessModel>
+
 
     @GET("/api/v1/notifications")
     fun getNotification(@Query("access_token") access_token: String): Call<NotificationCenterModel>
@@ -189,7 +200,7 @@ interface ApiInterface {
 
     @GET("/api/v1/request_by_id")
     fun getRequestDetailByID(@Query("access_token") access_token: String,
-                       @Query("id") videoId: String): Call<RequestsModel>
+                             @Query("id") videoId: String): Call<RequestsModel>
 
 
 }
