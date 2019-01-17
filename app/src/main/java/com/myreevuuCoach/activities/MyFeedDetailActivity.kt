@@ -198,8 +198,6 @@ class MyFeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewC
             override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>) {
                 dismissLoader()
                 if (response.isSuccessful) {
-
-
                     val intent = Intent(InterConst.BROADCAST_MY_FEED_VIDEO_DELETE)
 
                     if (getIntent().hasExtra(InterConst.HOME_VIDEO_POSITION)) {
@@ -223,11 +221,10 @@ class MyFeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewC
                     finish()
 
                 } else {
-                    val errorModel = ErrorUtils.parseError(response)
-                    if (errorModel.error.code == Constants.ERROR_CODE) {
+                    if (response.body().error.code == InterConst.INVALID_ACCESS) {
                         moveToSplash()
                     } else {
-                        showAlert(llMediaController, errorModel.error.message)
+                        showAlert(response.body().error.message)
                     }
                 }
             }

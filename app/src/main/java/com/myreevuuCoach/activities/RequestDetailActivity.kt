@@ -433,7 +433,7 @@ class RequestDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoView
                     mResponse = response.body().response
                     populateData()
                 } else {
-                    if (response.body().error.code == Constants.ERROR_CODE) {
+                    if (response.body().error.code == InterConst.INVALID_ACCESS) {
                         moveToSplash()
                     } else {
                         showAlert(response.body().error.message)

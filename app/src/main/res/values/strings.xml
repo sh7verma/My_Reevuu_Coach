@@ -258,6 +258,7 @@
     <string name="character_sent">characters will be sent.</string>
     <string name="delete_conversation">Are you sure you want to delete this conversation?</string>
     <string name="declined_message">The request does\'nt exist any longer.</string>
+    <string name="profile_not_reviewed">Your profile is not reviewed yet. Please contact admin.</string>
 
     <string-array name="CountryCodes">
         <item>93,AF</item>

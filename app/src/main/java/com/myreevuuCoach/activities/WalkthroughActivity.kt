@@ -1,6 +1,7 @@
 package com.myreevuuCoach.activities
 
 import android.content.Intent
+import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.view.View
@@ -57,6 +58,18 @@ class WalkthroughActivity : BaseKotlinActivity() {
     }
 
 
+    private val mHandler = Handler()
+    var runnable: Runnable = object : Runnable {
+        override fun run() {
+            if (vpWalkthrough.currentItem == vpWalkthrough.adapter!!.count - 1) {
+                vpWalkthrough.currentItem = 0
+            } else {
+                vpWalkthrough.currentItem = vpWalkthrough.currentItem + 1
+            }
+            mHandler.postDelayed(this, 6000)
+        }
+    }
+
     override fun onClick(view: View?) {
         when (view) {
             txtNext -> {
@@ -89,6 +102,7 @@ class WalkthroughActivity : BaseKotlinActivity() {
         vpWalkthrough.adapter = WalkthroughAdapter(mImagesArrayList, this)
         vpWalkthrough.setPageTransformer(true, ZoomOutPageTransformer())
         cpIndicatorWalk.setViewPager(vpWalkthrough)
+        mHandler.postDelayed(runnable, 6000)
 
         cpIndicatorWalk.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {

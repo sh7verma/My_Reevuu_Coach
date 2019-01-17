@@ -6,6 +6,7 @@ import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -52,6 +53,7 @@ import com.myreevuuCoach.models.SkipModel;
 import com.myreevuuCoach.network.RetrofitClient;
 import com.myreevuuCoach.services.JobSchedulerService;
 import com.myreevuuCoach.services.ListenerService;
+import com.myreevuuCoach.utils.AlertDialogs;
 import com.myreevuuCoach.utils.Constants;
 import com.myreevuuCoach.utils.MarshMallowPermission;
 import com.myreevuuCoach.utils.ScreenOffReceiver;
@@ -360,12 +362,22 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
                 break;
 
             case R.id.imgUploadVideo:
-                if (!mPermission.checkPermissionForCamera() || !mPermission.checkPermissionForExternalStorage()) {
-                    mPermission.requestPhoneStatePermission(mPermission.permissionList, InterConst.CAMERA_PERMISSION,
-                            MarshMallowPermission.CAMERA_PERMISSION_REQUEST_CODE,
-                            R.string.camera_permission_mess);
+                if (mUtils.getInt(InterConst.PROFILE_APPROVED, 0) == 0) {
+                    AlertDialogs.tryAgainDialog(mContext, getString(R.string.ok), getString(R.string.profile_not_reviewed),
+                            new AlertDialogs.DialogTryAgainClick() {
+                                @Override
+                                public void tryAgain(DialogInterface dialog) {
+                                    dialog.dismiss();
+                                }
+                            });
                 } else {
-                    cameraOpen();
+                    if (!mPermission.checkPermissionForCamera() || !mPermission.checkPermissionForExternalStorage()) {
+                        mPermission.requestPhoneStatePermission(mPermission.permissionList, InterConst.CAMERA_PERMISSION,
+                                MarshMallowPermission.CAMERA_PERMISSION_REQUEST_CODE,
+                                R.string.camera_permission_mess);
+                    } else {
+                        cameraOpen();
+                    }
                 }
                 break;
         }

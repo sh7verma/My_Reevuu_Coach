@@ -141,9 +141,9 @@ public class UploadVideoActivity extends BaseActivity implements ProgressRequest
                 createPartFromString(getIntent().getStringExtra("description")),
                 createPartFromString(InterConst.PRIVACY_PUBLIC),
                 createPartFromString(String.valueOf(mSigUpModel.getResponse().getSport_info().getSport().getId())),
+                createPartFromString(""),
                 createPartFromString(String.valueOf(originalWidth)),
                 createPartFromString(String.valueOf(originalHeight)),
-                createPartFromString(""),
                 createPartFromString(getIntent().getStringExtra("expertise")));
 
         call.enqueue(new Callback<VideoModel>() {

@@ -174,7 +174,7 @@ interface ApiInterface {
     fun chat_delete_messages(@Field("access_token") access_token: String,
                              @Field("message_id") other_user_id: String): Call<BaseSuccessModel>
 
-    @DELETE("videos")
+    @DELETE("/api/v1/videos")
     fun deleteVideo(@Query("id") id: Int,
                     @Query("access_token") access_token: String): Call<BaseSuccessModel>
 
