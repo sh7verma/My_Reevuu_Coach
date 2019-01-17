@@ -36,7 +36,7 @@
 
     </FrameLayout>
 
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginLeft="@dimen/_10sdp"
@@ -44,20 +44,28 @@
         android:layout_weight="8.2"
         android:paddingBottom="3dp"
         android:paddingTop="3dp">
-
-        <ProgressBar
-            android:id="@+id/videoLoader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvGallery"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    </FrameLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvGallery"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/videoLoader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+        </LinearLayout>
+
+
+
+    </ScrollView>
 
     <FrameLayout
         android:id="@+id/btnAction"

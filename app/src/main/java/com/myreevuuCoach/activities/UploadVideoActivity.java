@@ -141,7 +141,7 @@ public class UploadVideoActivity extends BaseActivity implements ProgressRequest
                 createPartFromString(getIntent().getStringExtra("description")),
                 createPartFromString(InterConst.PRIVACY_PUBLIC),
                 createPartFromString(String.valueOf(mSigUpModel.getResponse().getSport_info().getSport().getId())),
-                createPartFromString(String.valueOf(originalWidth)) ,
+                createPartFromString(String.valueOf(originalWidth)),
                 createPartFromString(String.valueOf(originalHeight)),
                 createPartFromString(""),
                 createPartFromString(getIntent().getStringExtra("expertise")));
@@ -239,7 +239,7 @@ public class UploadVideoActivity extends BaseActivity implements ProgressRequest
                 int originalHeight = Integer.valueOf(height);
 
                 if (connectedToInternet(txtDone)) {
-                    uploadVideoApi(destPath,originalWidth,originalHeight);
+                    uploadVideoApi(destPath, originalWidth, originalHeight);
                 }
 
             }

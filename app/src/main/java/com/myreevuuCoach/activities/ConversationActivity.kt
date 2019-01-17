@@ -1287,16 +1287,16 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                         mChatUpdate.put("last_message_type", lastMessageType)
 
                         val opentID = mOpponentUser!!.user_id
-                        val totalMessageCount = mPrivateChat!!.message_rating_count.get(mCurrentUser!!.user_id)!! +
-                                mPrivateChat!!.message_rating_count.get(mOpponentUser!!.user_id)!!
-
-                        if (totalMessageCount < 30) {
-                            var ownMessageCount = mPrivateChat!!.message_rating_count.get(mCurrentUser!!.user_id)!!
-                            ownMessageCount++
-
-                            mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("message_rating_count")
-                                    .child(mCurrentUser!!.user_id).setValue(ownMessageCount)
-                        }
+//                        val totalMessageCount = mPrivateChat!!.message_rating_count.get(mCurrentUser!!.user_id)!! +
+//                                mPrivateChat!!.message_rating_count.get(mOpponentUser!!.user_id)!!
+//
+//                        if (totalMessageCount < 30) {
+//                            var ownMessageCount = mPrivateChat!!.message_rating_count.get(mCurrentUser!!.user_id)!!
+//                            ownMessageCount++
+//
+//                            mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("message_rating_count")
+//                                    .child(mCurrentUser!!.user_id).setValue(ownMessageCount)
+//                        }
 
                         val unread = mPrivateChat!!.unread_count
                         if (unread != null && unread.containsKey(mOtherUserId)) {

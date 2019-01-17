@@ -42,10 +42,11 @@ public class ListenerService extends Service {
 //            startForeground(63, notification);
 //        }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startMyOwnForeground();
-        else
-            startForeground(1, new Notification());
+        }
+//        else
+//            startForeground(1, new Notification());
     }
 
 

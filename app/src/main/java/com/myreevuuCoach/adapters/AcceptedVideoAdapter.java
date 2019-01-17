@@ -122,13 +122,13 @@ public class AcceptedVideoAdapter extends RecyclerView.Adapter<AcceptedVideoAdap
         if (!mData.get(holder.getAdapterPosition()).getVideo().getThumbnail().equalsIgnoreCase("")) {
             Picasso.get()
                     .load(mData.get(holder.getAdapterPosition()).getVideo().getThumbnail())
-                    .placeholder(R.mipmap.ic_play_video)
-                    .error(R.mipmap.ic_play_video).into(holder.thumb);
+                    .placeholder(R.mipmap.ic_ph)
+                    .error(R.mipmap.ic_ph).into(holder.thumb);
         } else {
             Picasso.get()
-                    .load(R.mipmap.ic_play_video)
-                    .placeholder(R.mipmap.ic_play_video)
-                    .error(R.mipmap.ic_play_video).into(holder.thumb);
+                    .load(R.mipmap.ic_ph)
+                    .placeholder(R.mipmap.ic_ph)
+                    .error(R.mipmap.ic_ph).into(holder.thumb);
         }
 
         if (!holder.isPlaying()) {

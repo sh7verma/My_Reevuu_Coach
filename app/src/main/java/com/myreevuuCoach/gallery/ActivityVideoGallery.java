@@ -33,6 +33,7 @@ public class ActivityVideoGallery extends AppCompatActivity implements AdapterCl
     Context mContext;
     ArrayList<VideoGalleryModel> galleryVideoList = new ArrayList<>();
     int currentSelectedPosition = -1;
+    Cursor cursor;
     private VideoGalleryAdapter videoGalleryAdaptor;
     private Handler handler;
 
@@ -42,6 +43,17 @@ public class ActivityVideoGallery extends AppCompatActivity implements AdapterCl
         setContentView(R.layout.activity_video_gallery);
         VideoGalleryModel.setSelectedVideoInstance(null);
         rvGallery = (RecyclerView) findViewById(R.id.rvGallery);
+        rvGallery.setLayoutManager(new GridLayoutManager(ActivityVideoGallery.this, 3) {
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
         btnAction = findViewById(R.id.btnAction);
         btnAction.setVisibility(View.GONE);
         img_back = findViewById(R.id.img_back);
@@ -86,79 +98,39 @@ public class ActivityVideoGallery extends AppCompatActivity implements AdapterCl
                 closeActivity();
             }
         });
+        videoGalleryAdaptor = new VideoGalleryAdapter(mContext, galleryVideoList, this);
+        rvGallery.setAdapter(videoGalleryAdaptor);
         new Thread() {
             public void run() {
-                // Do operation here.
-                // ...
-                // ...
-                // and then mark handler to notify to main thread
-                // to  remove  progressbar
-                //
-                // handler.sendEmptyMessage(0);
-                //
-                // Or if you want to access UI elements here then
-                //
-                // runOnUiThread(new Runnable() {
-                //
-                //     public void run() {
-                //         Now here you can interact
-                //         with ui elemements.
-                //
-                //     }
-                // });
                 rvGallery.setLayoutManager(new GridLayoutManager(ActivityVideoGallery.this, 3));
                 getAllMedia();
-                handler.sendEmptyMessage(0);
-                runOnUiThread(new Runnable() {
-
-                    public void run() {
-                        rvGallery.setAdapter(videoGalleryAdaptor);
-                        videoLoader.setVisibility(View.GONE);
-                        rvGallery.setVisibility(View.VISIBLE);
-                        if (galleryVideoList.size() > 0) {
-
-                        } else {
-                            Toast.makeText(mContext, "No Video Found.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-
-
             }
         }.start();
 
-        handler = new Handler() {
-            public void handleMessage(android.os.Message msg) {
-
-            }
-
-            ;
-        };
-
-       /* new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                rvGallery.setLayoutManager(new GridLayoutManager(ActivityVideoGallery.this, 3));
-                getAllMedia();
-            }
-
-        }, 1000);*/
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (cursor != null) {
+            cursor.close();
+        }
+    }
 
     private void closeActivity() {
         Intent in = new Intent();
         setResult(RESULT_OK, in);
         finish();
     }
-//
+
+    //
     //GETVIDEO LISTING
     public void getAllMedia() {
         ColumnIndexCache cache = new ColumnIndexCache();
         HashSet<VideoGalleryModel> videoItemHashSet = new HashSet<>();
         // String[] projection = {MediaStore.Video.VideoColumns.DATA, MediaStore.Video.Media.DISPLAY_NAME};
-        Cursor cursor = getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Video.Media.TITLE);
+        cursor = getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Video.Media.TITLE);
         try {
             cursor.moveToFirst();
             do {
@@ -167,6 +139,8 @@ public class ActivityVideoGallery extends AppCompatActivity implements AdapterCl
                     Bitmap thumb = VideoUtils.getVideoThumb(path);
                     String videoTime = VideoUtils.convertMilliSecToTime(Long.parseLong(VideoUtils.getVideoTime(this, path)));
                     videoItemHashSet.add(new VideoGalleryModel(path, thumb, videoTime, false));
+                    galleryVideoList.add(new VideoGalleryModel(path, thumb, videoTime, false));
+                    notifyItem(false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -176,9 +150,8 @@ public class ActivityVideoGallery extends AppCompatActivity implements AdapterCl
         } catch (Exception e) {
             e.printStackTrace();
         }
-        galleryVideoList = new ArrayList<>(videoItemHashSet);
-        videoGalleryAdaptor = new VideoGalleryAdapter(mContext, galleryVideoList, this);
 
+        notifyItem(true);
     }
 
 
@@ -205,12 +178,33 @@ public class ActivityVideoGallery extends AppCompatActivity implements AdapterCl
 
     @Override
     public void onItemClick(int position) {
-        currentSelectedPosition = position;
-        for (int i = 0; i < galleryVideoList.size(); i++) {
-            galleryVideoList.get(i).setSelected(false);
+        if (currentSelectedPosition != -1) {
+            galleryVideoList.get(currentSelectedPosition).setSelected(false);
+            videoGalleryAdaptor.notifyItemChanged(currentSelectedPosition);
         }
+
+        currentSelectedPosition = position;
         btnAction.setVisibility(View.VISIBLE);
         galleryVideoList.get(position).setSelected(true);
-        videoGalleryAdaptor.notifyDataSetChanged();
+
+        videoGalleryAdaptor.notifyItemChanged(currentSelectedPosition);
+
+
+    }
+
+    private void notifyItem(final boolean loaderDissmiss) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                if (loaderDissmiss) {
+                    videoLoader.setVisibility(View.GONE);
+                }
+                rvGallery.setVisibility(View.VISIBLE);
+                if (galleryVideoList.size() > 0) {
+                    videoGalleryAdaptor.notifyItemInserted(galleryVideoList.size());
+                } else {
+                    Toast.makeText(mContext, "No Video Found.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

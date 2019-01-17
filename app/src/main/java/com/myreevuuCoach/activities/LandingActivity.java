@@ -361,7 +361,9 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
 
             case R.id.imgUploadVideo:
                 if (!mPermission.checkPermissionForCamera() || !mPermission.checkPermissionForExternalStorage()) {
-                    mPermission.requestPhoneStatePermission(mPermission.permissionList, InterConst.CAMERA_PERMISSION, MarshMallowPermission.CAMERA_PERMISSION_REQUEST_CODE, R.string.camera_permission_mess);
+                    mPermission.requestPhoneStatePermission(mPermission.permissionList, InterConst.CAMERA_PERMISSION,
+                            MarshMallowPermission.CAMERA_PERMISSION_REQUEST_CODE,
+                            R.string.camera_permission_mess);
                 } else {
                     cameraOpen();
                 }
@@ -378,7 +380,8 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
 
                 if (grantResults.length == 3) {
                     if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                            && grantResults.length > 0 && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults.length > 0 && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                            && grantResults.length > 0 && grantResults[1] == PackageManager.PERMISSION_GRANTED &&
+                            grantResults.length > 0 && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
                         // permissions granted.
                         cameraOpen();
                     }
