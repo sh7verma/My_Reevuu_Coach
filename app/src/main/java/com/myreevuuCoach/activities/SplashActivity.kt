@@ -64,7 +64,7 @@ class SplashActivity : BaseKotlinActivity() {
     }
 
     private fun navigateToNext(activity: AppCompatActivity) {
-        if (mUtils.getInt(InterConst.PROFILE_APPROVED, 0) == 0 && mUtils.getInt("profileStatus", 0) == 2) {
+        if (mUtils.getInt(InterConst.PROFILE_APPROVED, 0) == 0 &&  mUtils.getInt("profileStatus", 0) == 2) {
             hitCoachProfileApi()
         } else {
             val nextIntent = Intent(this@SplashActivity, activity::class.java)
