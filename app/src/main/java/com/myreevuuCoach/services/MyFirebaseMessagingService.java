@@ -154,14 +154,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 ringNotification(intent, message, 0, messageBody.get("sender_name"));
             }
         } else if (messageBody.get("push_type").equalsIgnoreCase("12")) {
-
-            Intent notificationIntent = new Intent(InterConst.BROADCAST_VIDEO_PROCESSED);
-            sendBroadcast(notificationIntent);
-
+            if (utils.getInt(InterConst.BACKGROUND, InterConst.APP_OFFLINE) == InterConst.APP_ONLINE) {
+                Intent notificationIntent = new Intent(InterConst.BROADCAST_VIDEO_PROCESSED);
+                sendBroadcast(notificationIntent);
+            }
             intent = new Intent(this, RequestDetailActivity.class);
             intent.putExtra("reviewRequestId", messageBody.get("review_request_id").toString());
             intent.putExtra(InterConst.NotificationID, messageBody.get("id") + "");
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            ringNotification(intent, message, 4, messageBody.get("title"));
+
+        } else if (messageBody.get("push_type").equalsIgnoreCase("15")) {
+            if (utils.getInt(InterConst.BACKGROUND, InterConst.APP_OFFLINE) == InterConst.APP_ONLINE) {
+                Intent notificationIntent = new Intent(InterConst.BROADCAST_PROFILE_APPROVED);
+                sendBroadcast(notificationIntent);
+            }
+            intent = new Intent(this, LandingActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             ringNotification(intent, message, 4, messageBody.get("title"));
 
         } else {

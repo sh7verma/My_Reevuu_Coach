@@ -279,6 +279,7 @@
     <string name="a_verification_link_has_been_sent_to_your_registered_email">A verification link has been sent to your registered email</string>
     <string name="email_not_verified">Your email is not verified</string>
     <string name="we_will_email_you_as_soon_as_you_have_been_vetted_by_the_reevuu_team_and_verified_as_a_coach_thanks">We will email you as soon as you have been vetted by the ReeVuu team and verified as a coach. Thanks!</string>
+    <string name="upload_a_picture_of_your_license">Upload a picture of your license</string>
 
     <string-array name="CountryCodes">
         <item>93,AF</item>

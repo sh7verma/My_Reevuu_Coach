@@ -103,9 +103,10 @@ public interface InterConst {
     String FIREBASE_TOPIC_1 = "android_coach";
     String FIREBASE_TOPIC_2 = "android_both";
     String FIREBASE_TOPIC_3 = "android_admin_articles";
-    int POST_TYPE_IMAGE=1;
-    int POST_TYPE_VIDEO=2;
+    int POST_TYPE_IMAGE = 1;
+    int POST_TYPE_VIDEO = 2;
     int REQ_BROADCAST = 1009;
+    String BROADCAST_PROFILE_APPROVED = "BROADCAST_PROFILE_APPROVED";
 
     /*WebView*/
     enum Webview {

@@ -359,7 +359,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/_12sdp"
-            android:text="@string/document"
+            android:text="@string/upload_a_picture_of_your_license"
             android:textAllCaps="true"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/_10ssp" />
