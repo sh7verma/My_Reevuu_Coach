@@ -209,6 +209,7 @@
                 android:background="@color/colorGreyDark" />
 
             <FrameLayout
+                android:id="@+id/flContactUs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -244,7 +245,6 @@
 
             </FrameLayout>
 
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1ssp"
@@ -259,6 +259,23 @@
                 android:foreground="?selectableItemBackground"
                 android:padding="@dimen/_10sdp"
                 android:text="@string/email_us"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12sdp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1ssp"
+                android:layout_margin="@dimen/_10sdp"
+                android:background="@color/colorGreyDark" />
+
+            <com.myreevuuCoach.customViews.RegularTextView
+                android:id="@+id/txtInviteReferal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@mipmap/ic_right_arrow"
+                android:foreground="?selectableItemBackground"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/invite_friends"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_12sdp" />
 

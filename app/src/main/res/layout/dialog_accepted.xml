@@ -16,11 +16,12 @@
 
 
     <com.myreevuuCoach.customViews.RegularTextView
+        android:id="@+id/txtTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_10sdp"
         android:gravity="center"
-        android:text="@string/great_get_to_work_on_athletes_review_you_have_24hrs_to_send_it_back"
+        android:text="@string/accepted_request"
         android:textColor="@color/black"
         android:textSize="@dimen/_14ssp" />
 

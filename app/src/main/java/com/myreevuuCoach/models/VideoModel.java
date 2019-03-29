@@ -3,7 +3,6 @@ package com.myreevuuCoach.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,7 +36,7 @@ public class VideoModel extends ErrorModelJava {
     }
 
     public static class ResponseBean implements Parcelable {
-        public static final Parcelable.Creator<ResponseBean> CREATOR = new Parcelable.Creator<ResponseBean>() {
+        public static final Creator<ResponseBean> CREATOR = new Creator<ResponseBean>() {
             @Override
             public ResponseBean createFromParcel(Parcel source) {
                 return new ResponseBean(source);
@@ -79,6 +78,10 @@ public class VideoModel extends ErrorModelJava {
         private String description;
         private int views;
         private String created_at;
+        private int post_type; //Video = 2,Image = 1
+        private int likes_count;
+        private int liked;
+        private int comments_count;
         private List<OptionsModel> improvement;
 
         public ResponseBean() {
@@ -99,8 +102,43 @@ public class VideoModel extends ErrorModelJava {
             this.description = in.readString();
             this.views = in.readInt();
             this.created_at = in.readString();
-            this.improvement = new ArrayList<OptionsModel>();
-            in.readList(this.improvement, OptionsModel.class.getClassLoader());
+            this.post_type = in.readInt();
+            this.likes_count = in.readInt();
+            this.liked = in.readInt();
+            this.comments_count = in.readInt();
+            this.improvement = in.createTypedArrayList(OptionsModel.CREATOR);
+        }
+
+        public int getPost_type() {
+            return post_type;
+        }
+
+        public void setPost_type(int post_type) {
+            this.post_type = post_type;
+        }
+
+        public int getLikes_count() {
+            return likes_count;
+        }
+
+        public void setLikes_count(int likes_count) {
+            this.likes_count = likes_count;
+        }
+
+        public int getLiked() {
+            return liked;
+        }
+
+        public void setLiked(int liked) {
+            this.liked = liked;
+        }
+
+        public int getComments_count() {
+            return comments_count;
+        }
+
+        public void setComments_count(int comments_count) {
+            this.comments_count = comments_count;
         }
 
         public int getUser_id() {
@@ -215,7 +253,7 @@ public class VideoModel extends ErrorModelJava {
             this.created_at = created_at;
         }
 
-        public List<?> getImprovement() {
+        public List<OptionsModel> getImprovement() {
             return improvement;
         }
 
@@ -244,7 +282,11 @@ public class VideoModel extends ErrorModelJava {
             dest.writeString(this.description);
             dest.writeInt(this.views);
             dest.writeString(this.created_at);
-            dest.writeList(this.improvement);
+            dest.writeInt(this.post_type);
+            dest.writeInt(this.likes_count);
+            dest.writeInt(this.liked);
+            dest.writeInt(this.comments_count);
+            dest.writeTypedList(this.improvement);
         }
     }
 }

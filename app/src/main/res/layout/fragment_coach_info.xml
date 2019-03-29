@@ -180,6 +180,7 @@
             android:paddingTop="@dimen/_12sdp"
             android:text="@string/other_certificate"
             android:textAllCaps="true"
+            android:visibility="gone"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/_10ssp" />
 
@@ -187,6 +188,7 @@
             android:id="@+id/edOtherCertificates"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:background="@android:color/transparent"
             android:hint="@string/write_here"
             android:inputType="textCapSentences"
@@ -200,6 +202,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/_1sdp"
+            android:visibility="gone"
             android:background="@color/colorGrey" />
 
         <Space

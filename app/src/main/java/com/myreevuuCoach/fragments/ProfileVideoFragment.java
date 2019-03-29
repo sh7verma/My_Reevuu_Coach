@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
@@ -14,8 +15,8 @@ import com.myreevuuCoach.R;
 import com.myreevuuCoach.activities.FeedDetailActivity;
 import com.myreevuuCoach.activities.MyFeedDetailActivity;
 import com.myreevuuCoach.adapters.VideoAdapter;
-import com.myreevuuCoach.interfaces.AdapterClickInterface;
 import com.myreevuuCoach.interfaces.InterConst;
+import com.myreevuuCoach.interfaces.VideoAdapterItemClick;
 import com.myreevuuCoach.models.FeedModel;
 import com.myreevuuCoach.network.RetrofitClient;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -33,7 +34,7 @@ import retrofit2.Response;
  * Created by dev on 20/11/18.
  */
 
-public class ProfileVideoFragment extends BaseFragment implements AdapterClickInterface {
+public class ProfileVideoFragment extends BaseFragment implements VideoAdapterItemClick {
 
     @SuppressLint("StaticFieldLeak")
     static ProfileVideoFragment fragment;
@@ -47,6 +48,8 @@ public class ProfileVideoFragment extends BaseFragment implements AdapterClickIn
     AVLoadingIndicatorView pbFeed;
     @BindView(R.id.txtNoVideos)
     TextView txtNoVideos;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
 
     ArrayList<FeedModel.Response> mData = new ArrayList<>();
     VideoAdapter mAdapter;
@@ -107,6 +110,14 @@ public class ProfileVideoFragment extends BaseFragment implements AdapterClickIn
         rvFeeds.setAdapter(mAdapter);
         pbFeed.setVisibility(View.VISIBLE);
         setData();
+
+        swipeRefresh.setColorSchemeColors(mContext.getResources().getColor(R.color.colorPrimary));
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                setData();
+            }
+        });
     }
 
     public void setData() {
@@ -156,6 +167,7 @@ public class ProfileVideoFragment extends BaseFragment implements AdapterClickIn
     }
 
     void setProgressVisibility() {
+        swipeRefresh.setRefreshing(false);
         if (mData.size() > 0) {
             txtNoVideos.setVisibility(View.GONE);
         } else {
@@ -212,5 +224,20 @@ public class ProfileVideoFragment extends BaseFragment implements AdapterClickIn
             startActivity(intent);
             getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }
+    }
+
+    @Override
+    public void onItemLikeClick(int position) {
+
+    }
+
+    @Override
+    public void onItemCommentClick(int position) {
+
+    }
+
+    @Override
+    public void onItemShareClick(int position) {
+
     }
 }

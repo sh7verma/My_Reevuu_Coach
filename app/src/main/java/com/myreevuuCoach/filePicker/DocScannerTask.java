@@ -7,7 +7,8 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
-import com.android.internal.util.Predicate;
+
+import com.google.android.gms.common.util.Predicate;
 
 import java.io.File;
 import java.util.ArrayList;

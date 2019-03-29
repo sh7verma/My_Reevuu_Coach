@@ -200,11 +200,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_marginEnd="@dimen/_5sdp"
                         android:orientation="vertical"
                         android:paddingEnd="@dimen/_20sdp">
 
                         <com.myreevuuCoach.customViews.RegularTextView
-
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/level"
@@ -230,12 +230,12 @@
                         <com.myreevuuCoach.customViews.RegularTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/participate_in"
+                            android:text="@string/are_you_compete"
                             android:textColor="@color/colorGrey"
                             android:textSize="@dimen/_10sdp" />
 
                         <com.myreevuuCoach.customViews.RegularTextView
-                            android:id="@+id/txtParticipate"
+                            android:id="@+id/txtAreUcompete"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_2sdp"

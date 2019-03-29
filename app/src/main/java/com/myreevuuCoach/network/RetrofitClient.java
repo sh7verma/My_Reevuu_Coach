@@ -10,13 +10,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
 
     private static final String BASE_URL = "http://52.52.111.12:3000";/// Applify Development
+//    private static final String BASE_URL = "http://192.168.1.111:3000";/// Applify Development
 
-    public static final String URL_TERMS_CONDITIONS = "http://52.52.111.12:3000/terms-and-conditions";
-    public static final String URL_PRIVACY_POLICY = "http://52.52.111.12:3000/privacy-policy";
-    public static final String URL_ABOUT_US = "http://52.52.111.12:3000/privacy-policy";
-    public static final String URL_FAQs = "http://52.52.111.12:3000/privacy-policy";
-    public static final String URL_REVIEW_VIDEO = "http://52.52.111.12:3000/coach/mobile_reviews_video/";
-    public static final String URL_PREVIEW_VIDEO = "http://52.52.111.12:3000/coach/mobile_preview_video/";
+    public static final String URL_TERMS_CONDITIONS = BASE_URL + "/terms-and-conditions";
+    public static final String URL_PRIVACY_POLICY = BASE_URL + "/privacy-policy";
+    public static final String URL_ABOUT_US = BASE_URL + "/privacy-policy";
+    public static final String URL_FAQs = BASE_URL + "/privacy-policy";
+    public static final String URL_REVIEW_VIDEO = BASE_URL + "/coach/mobile_reviews_video/";
+    public static final String URL_PREVIEW_VIDEO = BASE_URL + "/coach/mobile_preview_video/";
 
 
     public static Retrofit retrofit = null;

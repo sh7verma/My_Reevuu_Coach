@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.myreevuuCoach.R;
+import com.myreevuuCoach.interfaces.InterConst;
 import com.myreevuuCoach.models.OptionsModel;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
     public CertificateAdapter(Context context, ArrayList<OptionsModel> arrayList) {
         mContext = context;
         mData = arrayList;
+
     }
 
     @NonNull
@@ -39,7 +41,11 @@ public class CertificateAdapter extends RecyclerView.Adapter<CertificateAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.txtCertificateName.setText(mData.get(position).getName());
+        if (mData.get(position).getName().contains(InterConst.REGEX_CERTIFICATED)) {
+            holder.txtCertificateName.setText(mData.get(position).getName().replace(InterConst.REGEX_CERTIFICATED, "-"));
+        } else {
+            holder.txtCertificateName.setText(mData.get(position).getName());
+        }
     }
 
     @Override

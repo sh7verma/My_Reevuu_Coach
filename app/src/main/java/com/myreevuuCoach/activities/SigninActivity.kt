@@ -6,12 +6,9 @@ import android.util.Patterns
 import android.view.View
 import android.widget.Toast
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.iid.FirebaseInstanceId
 import com.myreevuuCoach.R
-import com.myreevuuCoach.firebase.FirebaseChatConstants
 import com.myreevuuCoach.firebase.MessageHistoryModel
-import com.myreevuuCoach.firebase.ProfileModel
 import com.myreevuuCoach.interfaces.InterConst
 import com.myreevuuCoach.models.SignUpModel
 import com.myreevuuCoach.network.RetrofitClient
@@ -21,7 +18,6 @@ import me.leolin.shortcutbadger.ShortcutBadger
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.HashMap
 
 
 class SigninActivity : BaseKotlinActivity() {
@@ -145,7 +141,7 @@ class SigninActivity : BaseKotlinActivity() {
             override fun onResponse(call: Call<MessageHistoryModel>, response: Response<MessageHistoryModel>) {
                 if (response.body().response != null) {
                     dismissLoader()
-                    mDb!!.addMessagesHistory(response.body().response, mUtils.getInt(InterConst.ID,-1).toString())
+                    mDb!!.addMessagesHistory(response.body().response, mUtils.getInt(InterConst.ID, -1).toString())
                     moveToLanding()
                 } else {
                     dismissLoader()
@@ -162,13 +158,51 @@ class SigninActivity : BaseKotlinActivity() {
             }
         })
     }
+
     private fun moveToLanding() {
-        val verifyIntent = Intent(mContext, LandingActivity::class.java)
-        startActivity(verifyIntent)
-        finish()
-        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+        registerOnInterCom()
+        subscribeOnFirebase()
+        if (mUtils.getInt(InterConst.PROFILE_APPROVED, 0) == 0) {
+            hitCoachProfileApi()
+        } else {
+            val verifyIntent = Intent(mContext, LandingActivity::class.java)
+            startActivity(verifyIntent)
+            finish()
+            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+        }
     }
 
+    fun hitCoachProfileApi() {
+        if (connectedToInternet()) {
+            showLoader()
+            val call = RetrofitClient.getInstance().coach_profile(
+                    mUtils.getString(InterConst.ACCESS_TOKEN, ""),
+                    mUtils.getInt(InterConst.ID, -1).toString())
+            call.enqueue(object : Callback<SignUpModel> {
+                override fun onResponse(call: Call<SignUpModel>, response: Response<SignUpModel>) {
+                    dismissLoader()
+                    if (response.body().response != null) {
+                        mUtils.setInt(InterConst.PROFILE_APPROVED, response.body().response.is_approved)
+                        if (mUtils.getInt(InterConst.PROFILE_APPROVED, 0) == 0) {
+                            val intent = Intent(mContext, ProfileNotApprovedActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                    } else {
+                        showAlert(response.body().error.message)
+                        if (response.body().error.code == InterConst.INVALID_ACCESS) {
+                            moveToSplash()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<SignUpModel>, t: Throwable) {
+                    dismissLoader()
+                    showAlert(t.message!!)
+                }
+            })
+        }
+    }
 
 
     private fun moveToRegisterCoach() {

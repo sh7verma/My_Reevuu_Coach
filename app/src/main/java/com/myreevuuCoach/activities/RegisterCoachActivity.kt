@@ -8,15 +8,18 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.Window
+import android.widget.Toast
 import com.myreevuuCoach.R
 import com.myreevuuCoach.adapters.FragmentAdapter
 import com.myreevuuCoach.fragments.CoachInfoFragment
 import com.myreevuuCoach.fragments.ProfileInfoFragment
 import com.myreevuuCoach.fragments.SportsInfoFragment
 import com.myreevuuCoach.interfaces.InterConst
+import com.myreevuuCoach.models.DefaultArrayModel
 import com.myreevuuCoach.models.ProfileModel
 import com.myreevuuCoach.models.SignUpModel
 import com.myreevuuCoach.network.RetrofitClient
+import com.myreevuuCoach.utils.CustomLoadingDialog
 import kotlinx.android.synthetic.main.activity_register_coach.*
 import kotlinx.android.synthetic.main.dialog_profile_submit.*
 import kotlinx.android.synthetic.main.fragment_coach_info.*
@@ -33,6 +36,7 @@ class RegisterCoachActivity : BaseKotlinActivity() {
     private var moveToCoach = false
     private lateinit var dialogProfileSubmit: Dialog
     lateinit var mResponse: SignUpModel
+    lateinit var mDefaultResponse: DefaultArrayModel
 
     var sportId: Int = 0
     var sportExperience: Int = 0
@@ -40,6 +44,7 @@ class RegisterCoachActivity : BaseKotlinActivity() {
     var sportLevelId: Int = 0
 
     var coachLevelId: Int = 0
+    var collageName: String = ""
     var coachExperience: Int = 0
     var mSelectedExpertiseArray = ArrayList<Int>()
     lateinit var coachAbout: String
@@ -168,7 +173,7 @@ class RegisterCoachActivity : BaseKotlinActivity() {
         val call = RetrofitClient.getInstance().setupCoach(mUtils.getString("accessToken", ""),
                 sportId, sportExperience, collegeSport,
                 sportLevelId, coachLevelId, coachExperience,
-                expertiseServer, coachAbout, certificatesServer)
+                expertiseServer, coachAbout, collageName, certificatesServer)
         call.enqueue(object : Callback<SignUpModel> {
             override fun onFailure(call: Call<SignUpModel>?, t: Throwable?) {
                 dismissLoader()
@@ -180,9 +185,9 @@ class RegisterCoachActivity : BaseKotlinActivity() {
                 if (response.body().error != null) {
                     showAlert(txtNEXT, response.body().error.message)
                 } else {
-
                     addDataToLocal(response.body().response)
                     setUserData(response.body())
+                    hitProfileDataApi(response.body().response.sport_info.sport.id)
 
                     if (!intent.hasExtra(InterConst.EDIT_INFO)) {
                         displayDialogProfileSubmit()
@@ -195,6 +200,32 @@ class RegisterCoachActivity : BaseKotlinActivity() {
             }
         })
     }
+
+    fun hitProfileDataApi(id: Int) {
+        CustomLoadingDialog.getLoader().showLoader(mContext)
+
+        val call = RetrofitClient.getInstance().profile_data(
+                mUtils.getString(InterConst.ACCESS_TOKEN, ""),
+                id.toString())
+        call.enqueue(object : Callback<DefaultArrayModel> {
+            override fun onResponse(call: Call<DefaultArrayModel>, response: Response<DefaultArrayModel>) {
+                CustomLoadingDialog.getLoader().dismissLoader()
+                if (response.body().response != null) {
+                    mUtils.setString(InterConst.SPORTS_RESPONSE, mGson.toJson(response.body()))
+                    mDefaultResponse =
+                            mGson.fromJson(mGson.toJson(response.body()),
+                                    DefaultArrayModel::class.java)
+                } else {
+                    Toast.makeText(mContext, response.body().error!!.message!!, Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onFailure(call: Call<DefaultArrayModel>, t: Throwable) {
+                CustomLoadingDialog.getLoader().dismissLoader()
+            }
+        })
+    }
+
 
     private fun selectCoach() {
         txtCoachInfo.setBackgroundResource(R.drawable.primary_ripple_extreme_round)

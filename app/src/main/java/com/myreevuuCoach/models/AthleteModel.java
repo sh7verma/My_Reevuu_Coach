@@ -1,5 +1,10 @@
 package com.myreevuuCoach.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
+
 /**
  * Created by dev on 7/12/18.
  */
@@ -40,6 +45,7 @@ public class AthleteModel extends ErrorModelJava {
          * user_type : 2
          * sport_info : {"id":329,"sport_id":1,"experience":15,"level":3,"sport_level_name":"International","state_id":null,"zip_code":"1515","name":"Tennis","description":"Select Tennis if you want ReeVuu on Tennis videos"}
          * coach_info : {}
+         * levels :{["id":0,"name":1]}
          * rating : 4
          * dob : 27-11-2013
          * height : 7.5
@@ -55,6 +61,7 @@ public class AthleteModel extends ErrorModelJava {
         private int gender;
         private int user_type;
         private SportInfoBean sport_info;
+        private ArrayList<LevelsInfoBean> levels;
         private CoachInfoBean coach_info;
         private int rating;
         private String dob;
@@ -62,6 +69,14 @@ public class AthleteModel extends ErrorModelJava {
         private String weight;
         private String dexterity;
         private int is_favourite;
+
+        public ArrayList<LevelsInfoBean> getLevels() {
+            return levels;
+        }
+
+        public void setLevels(ArrayList<LevelsInfoBean> levels) {
+            this.levels = levels;
+        }
 
         public int getId() {
             return id;
@@ -182,10 +197,19 @@ public class AthleteModel extends ErrorModelJava {
             private int experience;
             private int level;
             private String sport_level_name;
+            private String compete_name;
             private Object state_id;
             private String zip_code;
             private String name;
             private String description;
+
+            public String getCompete_name() {
+                return compete_name;
+            }
+
+            public void setCompete_name(String compete_name) {
+                this.compete_name = compete_name;
+            }
 
             public int getId() {
                 return id;
@@ -263,5 +287,60 @@ public class AthleteModel extends ErrorModelJava {
 
         public static class CoachInfoBean {
         }
+
+        public static class LevelsInfoBean implements Parcelable {
+            private int id;
+            private String name;
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public int getId() {
+
+                return id;
+            }
+
+            public void setId(int id) {
+                this.id = id;
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeInt(this.id);
+                dest.writeString(this.name);
+            }
+
+            public LevelsInfoBean() {
+            }
+
+            protected LevelsInfoBean(Parcel in) {
+                this.id = in.readInt();
+                this.name = in.readString();
+            }
+
+            public static final Parcelable.Creator<LevelsInfoBean> CREATOR = new Parcelable.Creator<LevelsInfoBean>() {
+                @Override
+                public LevelsInfoBean createFromParcel(Parcel source) {
+                    return new LevelsInfoBean(source);
+                }
+
+                @Override
+                public LevelsInfoBean[] newArray(int size) {
+                    return new LevelsInfoBean[size];
+                }
+            };
+        }
+
+
     }
 }

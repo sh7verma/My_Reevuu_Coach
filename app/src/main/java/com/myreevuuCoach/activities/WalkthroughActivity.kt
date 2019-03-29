@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
 import com.myreevuuCoach.R
+import com.myreevuuCoach.R.id.*
 import com.myreevuuCoach.adapters.WalkthroughAdapter
 import com.myreevuuCoach.utils.Constants
 import kotlinx.android.synthetic.main.activity_walkthrough.*
@@ -93,11 +94,11 @@ class WalkthroughActivity : BaseKotlinActivity() {
     }
 
     private fun loadWalkthroughImages() {
-        mImagesArrayList.add(R.mipmap.walk1)
-        mImagesArrayList.add(R.mipmap.walk2)
-        mImagesArrayList.add(R.mipmap.walk3)
-        mImagesArrayList.add(R.mipmap.walk4)
-        mImagesArrayList.add(R.mipmap.walk5)
+        mImagesArrayList.add(R.mipmap.ic_walk1)
+        mImagesArrayList.add(R.mipmap.ic_walk2)
+        mImagesArrayList.add(R.mipmap.ic_walk3)
+        mImagesArrayList.add(R.mipmap.ic_walk4)
+        mImagesArrayList.add(R.mipmap.ic_walk5)
 
         vpWalkthrough.adapter = WalkthroughAdapter(mImagesArrayList, this)
         vpWalkthrough.setPageTransformer(true, ZoomOutPageTransformer())

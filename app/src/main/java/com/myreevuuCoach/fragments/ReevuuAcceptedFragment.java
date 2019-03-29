@@ -5,7 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.CountDownTimer;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.TextView;
@@ -14,7 +14,6 @@ import com.myreevuuCoach.R;
 import com.myreevuuCoach.activities.RequestDetailActivity;
 import com.myreevuuCoach.adapters.AcceptedVideoAdapter;
 import com.myreevuuCoach.interfaces.AdapterClickInterface;
-import com.myreevuuCoach.interfaces.CountDownTimerInterface;
 import com.myreevuuCoach.interfaces.InterConst;
 import com.myreevuuCoach.models.RequestListModel;
 import com.myreevuuCoach.models.RequestsModel;
@@ -46,8 +45,24 @@ public class ReevuuAcceptedFragment extends BaseFragment implements AdapterClick
     TextView txtNoReviews;
     @BindView(R.id.pbReviews)
     AVLoadingIndicatorView pbReviews;
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
+
     AcceptedVideoAdapter mAdapter;
     ArrayList<RequestsModel.ResponseBean> mData = new ArrayList<>();
+
+    BroadcastReceiver videoStopReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            rvRequestsAccepted.swapAdapter(mAdapter, false);
+        }
+    };
+    BroadcastReceiver videoProcessedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            onCallResume();
+        }
+    };
 
     public static ReevuuAcceptedFragment newInstance(Context context) {
         fragment = new ReevuuAcceptedFragment();
@@ -59,14 +74,6 @@ public class ReevuuAcceptedFragment extends BaseFragment implements AdapterClick
         return fragment;
     }
 
-
-    BroadcastReceiver videoStopReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            rvRequestsAccepted.swapAdapter(mAdapter, false);
-        }
-    };
-
     @Override
     protected int getContentView() {
         return R.layout.fragment_reevuu_accepted;
@@ -75,12 +82,21 @@ public class ReevuuAcceptedFragment extends BaseFragment implements AdapterClick
     @Override
     protected void onCreateStuff() {
         getActivity().registerReceiver(videoStopReceiver, new IntentFilter(InterConst.BROADCAST_VIDEO_STOP_RECIVER));
+        getActivity().registerReceiver(videoProcessedReceiver, new IntentFilter(InterConst.BROADCAST_VIDEO_PROCESSED));
 
         rvRequestsAccepted.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         mAdapter = new AcceptedVideoAdapter(mContext, mData);
         rvRequestsAccepted.setAdapter(mAdapter);
         hitApi();
         populateData(mData);
+
+        swipeRefresh.setColorSchemeColors(mContext.getResources().getColor(R.color.colorPrimary));
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                hitApi();
+            }
+        });
     }
 
     @Override
@@ -109,6 +125,7 @@ public class ReevuuAcceptedFragment extends BaseFragment implements AdapterClick
     public void onDestroy() {
         super.onDestroy();
         getActivity().unregisterReceiver(videoStopReceiver);
+        getActivity().unregisterReceiver(videoProcessedReceiver);
     }
 
     void hitApi() {
@@ -141,7 +158,7 @@ public class ReevuuAcceptedFragment extends BaseFragment implements AdapterClick
                     setProgressVisibility();
                 }
             });
-        }else{
+        } else {
             pbReviews.setVisibility(View.GONE);
             setProgressVisibility();
         }
@@ -154,6 +171,7 @@ public class ReevuuAcceptedFragment extends BaseFragment implements AdapterClick
     }
 
     void setProgressVisibility() {
+        swipeRefresh.setRefreshing(false);
         if (mData.size() > 0) {
             txtNoReviews.setVisibility(View.GONE);
         } else {

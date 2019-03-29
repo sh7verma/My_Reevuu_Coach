@@ -4,18 +4,16 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-
 import com.myreevuuCoach.R;
+import com.myreevuuCoach.interfaces.DialogRecordVideoCallBack;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,19 +27,13 @@ public class RecordVideoDialog implements View.OnClickListener {
     static private Dialog mDialog;
 
     @BindView(R.id.layRoot)
-    LinearLayout layRoot;
+    CardView layRoot;
 
-    @BindView(R.id.layPrivate)
-    View layPrivate;
+    @BindView(R.id.llCamera)
+    FrameLayout llCamera;
 
-    @BindView(R.id.layPublic)
-    View layPublic;
-
-    @BindView(R.id.imgSelectedPrivate)
-    ImageView imgSelectedPrivate;
-
-    @BindView(R.id.imgSelectedPublic)
-    ImageView imgSelectedPublic;
+    @BindView(R.id.llBrowse)
+    FrameLayout llBrowse;
 
     private Activity mContext;
     private DialogRecordVideoCallBack dialogRecordVideoCallBack;
@@ -89,18 +81,18 @@ public class RecordVideoDialog implements View.OnClickListener {
 
 
     private void initListeners() {
-        layPrivate.setOnClickListener(this);
-        layPublic.setOnClickListener(this);
+        llBrowse.setOnClickListener(this);
+        llCamera.setOnClickListener(this);
 
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.layPrivate:
+            case R.id.llCamera:
                 dialogRecordVideoCallBack.openCamera();
                 break;
-            case R.id.layPublic:
+            case R.id.llBrowse:
                 dialogRecordVideoCallBack.openGallery();
                 break;
         }
@@ -112,15 +104,6 @@ public class RecordVideoDialog implements View.OnClickListener {
     void dismiss() {
         mDialog.dismiss();
         mDialog = null;
-    }
-
-
-    public interface DialogRecordVideoCallBack {
-
-         void openCamera();
-
-         void openGallery();
-
     }
 }
 

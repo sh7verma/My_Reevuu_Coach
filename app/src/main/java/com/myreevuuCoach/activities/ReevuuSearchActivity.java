@@ -169,7 +169,7 @@ public class ReevuuSearchActivity extends BaseActivity implements AdapterClickIn
             showProgress();
             Call<RequestsModel> call = RetrofitClient.getInstance().response_a_request(
                     mUtils.getString(InterConst.ACCESS_TOKEN, ""),
-                    String.valueOf(mData.get(position).getId()),
+                    String.valueOf(mData.get(position).getId()), "2",
                     type);
 
             call.enqueue(new Callback<RequestsModel>() {
@@ -177,8 +177,9 @@ public class ReevuuSearchActivity extends BaseActivity implements AdapterClickIn
                 public void onResponse(Call<RequestsModel> call, Response<RequestsModel> response) {
                     hideProgress();
                     if (response.body().getResponse() != null) {
-                        if (response.body().getResponse().getReview_status() == Integer.parseInt(InterConst.REEVUU_REQUESTS_ACCEPTED)) {
-                            new RequestAcceptedDialog(mContext, new DialogInterface() {
+                        if (response.body().getResponse().getReview_status() ==
+                                Integer.parseInt(InterConst.REEVUU_REQUESTS_ACCEPTED)) {
+                            new RequestAcceptedDialog(mContext, mContext.getString(R.string.accepted_request), new DialogInterface() {
                                 @Override
                                 public void cancel() {
 

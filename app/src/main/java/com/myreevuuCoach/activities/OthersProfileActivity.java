@@ -58,8 +58,8 @@ public class OthersProfileActivity extends BaseActivity {
     TextView txtSportExperience;
     @BindView(R.id.txtSportsLevel)
     TextView txtSportsLevel;
-    @BindView(R.id.txtParticipate)
-    TextView txtParticipate;
+    @BindView(R.id.txtAreUcompete)
+    TextView txtAreUcompete;
 
     @BindView(R.id.flArea)
     FlowLayout flArea;
@@ -86,23 +86,26 @@ public class OthersProfileActivity extends BaseActivity {
 
     private void setData() {
         txtName.setText(getIntent().getStringExtra(InterConst.NAME));
+        try {
+            if (!TextUtils.isEmpty(getIntent().getStringExtra(InterConst.PROFILE_PIC))) {
+                Picasso.get()
+                        .load(getIntent().getStringExtra(InterConst.PROFILE_PIC))
+                        .transform(new RoundedTransformation((int) (mHeight * 10), 0))
+                        .resize((int) (mHeight * 0.125), (int) (mHeight * 0.125))
+                        .placeholder(R.mipmap.ic_profile)
+                        .centerCrop(Gravity.TOP)
+                        .error(R.mipmap.ic_profile).into(imgUser);
+            } else {
+                Picasso.get()
+                        .load(R.mipmap.ic_profile)
+                        .transform(new RoundedTransformation((int) (mHeight * 10), 0))
+                        .resize((int) (mHeight * 0.125), (int) (mHeight * 0.125))
+                        .placeholder(R.mipmap.ic_profile)
+                        .centerCrop(Gravity.TOP)
+                        .error(R.mipmap.ic_profile).into(imgUser);
+            }
+        } catch (Exception e) {
 
-        if (!TextUtils.isEmpty(getIntent().getStringExtra(InterConst.PROFILE_PIC))) {
-            Picasso.get()
-                    .load(getIntent().getStringExtra(InterConst.PROFILE_PIC))
-                    .transform(new RoundedTransformation((int) (mHeight * 10), 0))
-                    .resize((int) (mHeight * 0.125), (int) (mHeight * 0.125))
-                    .placeholder(R.mipmap.ic_profile)
-                    .centerCrop(Gravity.TOP)
-                    .error(R.mipmap.ic_profile).into(imgUser);
-        } else {
-            Picasso.get()
-                    .load(R.mipmap.ic_profile)
-                    .transform(new RoundedTransformation((int) (mHeight * 10), 0))
-                    .resize((int) (mHeight * 0.125), (int) (mHeight * 0.125))
-                    .placeholder(R.mipmap.ic_profile)
-                    .centerCrop(Gravity.TOP)
-                    .error(R.mipmap.ic_profile).into(imgUser);
         }
     }
 
@@ -218,8 +221,21 @@ public class OthersProfileActivity extends BaseActivity {
         } else {
             txtSportExperience.setText(response.getSport_info().getExperience() + " Years");
         }
+        if (!TextUtils.isEmpty(response.getSport_info().getSport_level_name()))
+            txtSportsLevel.setText(response.getSport_info().getSport_level_name());
+        else {
+            String level = "";
+            for (int i = 0; i < response.getLevels().size(); i++) {
+                if (i == 0) {
+                    level = response.getLevels().get(i).getName();
+                } else {
+                    level = level + "," + "\n" + response.getLevels().get(i).getName();
+                }
+            }
+            txtSportsLevel.setText(level);
+        }
+        txtAreUcompete.setText(response.getSport_info().getCompete_name());
 
-        txtSportsLevel.setText(mSigUpModel.getLevels().get(response.getSport_info().getLevel() - 1).getName());
 
     }
 

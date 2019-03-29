@@ -57,6 +57,7 @@
                     android:layout_height="fill_parent"
                     android:layout_gravity="center"
                     app:uvv_autoRotation="true"
+
                     app:uvv_fitXY="false" />
 
                 <com.universalvideoview.UniversalMediaController
@@ -84,18 +85,30 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/_10ssp" />
 
-                <EditText
+                <!--<EditText-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@android:color/transparent"-->
+                <!--android:editable="false"-->
+                <!--android:focusable="false"-->
+                <!--android:focusableInTouchMode="false"-->
+                <!--android:hint="@string/enter"-->
+                <!--android:inputType="textFilter"-->
+                <!--android:paddingBottom="@dimen/_8sdp"-->
+                <!--android:paddingTop="@dimen/_8sdp"-->
+                <!--android:textColor="@color/colorWhite"-->
+                <!--android:textColorHint="@color/colorGrey"-->
+                <!--android:textSize="@dimen/_12ssp" />-->
+
+                <com.myreevuuCoach.customViews.RegularTextView
                     android:id="@+id/edCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:editable="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="@string/enter"
-                    android:inputType="textFilter"
-                    android:paddingBottom="@dimen/_8sdp"
-                    android:paddingTop="@dimen/_8sdp"
+                    android:drawableEnd="@mipmap/ic_drop_down_arrow"
+                    android:drawableRight="@mipmap/ic_drop_down_arrow"
+                    android:hint="@string/select"
+                    android:paddingBottom="@dimen/_5sdp"
+                    android:paddingTop="@dimen/_5sdp"
                     android:textColor="@color/colorWhite"
                     android:textColorHint="@color/colorGrey"
                     android:textSize="@dimen/_12ssp" />

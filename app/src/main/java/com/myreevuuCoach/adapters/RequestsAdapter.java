@@ -38,7 +38,8 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
     int mHeight;
     ItemClickInterface mItemClick;
 
-    public RequestsAdapter(Context context, ArrayList<RequestsModel.ResponseBean> mData, int mHeight, ItemClickInterface clickInterface) {
+    public RequestsAdapter(Context context, ArrayList<RequestsModel.ResponseBean> mData, int mHeight,
+                           ItemClickInterface clickInterface) {
         mContext = context;
         this.mData = mData;
         this.mHeight = mHeight;

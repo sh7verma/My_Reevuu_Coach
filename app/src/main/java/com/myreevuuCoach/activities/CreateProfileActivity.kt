@@ -10,6 +10,7 @@ import com.myreevuuCoach.adapters.FragmentAdapter
 import com.myreevuuCoach.customViews.RegularTextView
 import com.myreevuuCoach.fragments.AccountInfoFragment
 import com.myreevuuCoach.fragments.PersonalInfoFragment
+import com.myreevuuCoach.interfaces.InterConst
 import com.myreevuuCoach.models.BaseSuccessModel
 import com.myreevuuCoach.models.ProfileModel
 import com.myreevuuCoach.models.SignUpModel
@@ -43,6 +44,7 @@ class CreateProfileActivity : BaseKotlinActivity() {
     var currency: String = "usd"
     var routingNumber: String = Constants.EMPTY
     var accountNumber: String = Constants.EMPTY
+    var referralCode: String = Constants.EMPTY
     var city: String = Constants.EMPTY
     var address: String = Constants.EMPTY
     var postalCode: String = Constants.EMPTY
@@ -114,6 +116,7 @@ class CreateProfileActivity : BaseKotlinActivity() {
                         documentPath.isEmpty() ->
                             showAlert(txtNEXTProfile, getString(R.string.error_contractor_form))
                         else -> {
+                            referralCode = personalInfoFragment.edReferCode.text.toString()
 //                            phoneNumber = personalInfoFragment.edPhoneNumber.text.toString()
                             vpCreateProfile.currentItem = 1
                             selectAccount()
@@ -232,6 +235,7 @@ class CreateProfileActivity : BaseKotlinActivity() {
                 createPartFromString(lastName),
                 createPartFromString(ssn),
                 createPartFromString(countryCode),
+                createPartFromString(referralCode),
                 prepareFilePart(mFileImage),
                 prepareFilePartContractor(mFileContract),
                 prepareFilePartDocumnet(mFileDcoument))
@@ -262,10 +266,48 @@ class CreateProfileActivity : BaseKotlinActivity() {
     }
 
     private fun moveToLanding() {
-        val intent = Intent(mContext, LandingActivity::class.java)
-        startActivity(intent)
-        finish()
-        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+        registerOnInterCom()
+        subscribeOnFirebase()
+        if (mUtils.getInt(InterConst.PROFILE_APPROVED, 0) == 0) {
+            hitCoachProfileApi()
+        } else {
+            val intent = Intent(mContext, LandingActivity::class.java)
+            startActivity(intent)
+            finish()
+            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+        }
+    }
+
+    fun hitCoachProfileApi() {
+        if (connectedToInternet()) {
+            showLoader()
+            val call = RetrofitClient.getInstance().coach_profile(
+                    mUtils.getString(InterConst.ACCESS_TOKEN, ""),
+                    mUtils.getInt(InterConst.ID, -1).toString())
+            call.enqueue(object : Callback<SignUpModel> {
+                override fun onResponse(call: Call<SignUpModel>, response: Response<SignUpModel>) {
+                    dismissLoader()
+                    if (response.body().response != null) {
+                        mUtils.setInt(InterConst.PROFILE_APPROVED, response.body().response.is_approved)
+                        if (mUtils.getInt(InterConst.PROFILE_APPROVED, 0) == 0) {
+                            val intent = Intent(mContext, ProfileNotApprovedActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                    } else {
+                        showAlert(response.body().error.message)
+                        if (response.body().error.code == InterConst.INVALID_ACCESS) {
+                            moveToSplash()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<SignUpModel>, t: Throwable) {
+                    dismissLoader()
+                    showAlert(t.message!!)
+                }
+            })
+        }
     }
 
     private fun createPartFromString(data: String): RequestBody {

@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.firebase.client.Firebase;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,7 +21,6 @@ import com.myreevuuCoach.utils.Utils;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by dev on 17/12/18.
@@ -54,18 +52,15 @@ public class FirebaseListeners implements ConnectivityReceiver.ConnectivityRecei
     Query usersQuery;
 
 
-
     ////////////////////  MessagesModel Listener  //////////////////////
     Context con;
     ChildEventListener mMessageChildListener = new ChildEventListener() {
 
 
-
-
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-            if(!TextUtils.isEmpty(util.getString(InterConst.ACCESS_TOKEN,""))) {
+            if (!TextUtils.isEmpty(util.getString(InterConst.ACCESS_TOKEN, ""))) {
                 Log.e("message added", "is " + dataSnapshot + ", " + s);
                 MessagesModel message = MessagesModel.parseMessage(dataSnapshot);
                 if (message != null) {
@@ -120,7 +115,7 @@ public class FirebaseListeners implements ConnectivityReceiver.ConnectivityRecei
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            if(!TextUtils.isEmpty(util.getString(InterConst.ACCESS_TOKEN,""))) {
+            if (!TextUtils.isEmpty(util.getString(InterConst.ACCESS_TOKEN, ""))) {
                 Log.e("message changed", "is " + dataSnapshot + ", " + s);
                 MessagesModel message = MessagesModel.parseMessage(dataSnapshot);
                 if (message != null) {
@@ -192,7 +187,7 @@ public class FirebaseListeners implements ConnectivityReceiver.ConnectivityRecei
     ChildEventListener mChatChildListener = new ChildEventListener() {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            if(!TextUtils.isEmpty(util.getString(InterConst.ACCESS_TOKEN,""))) {
+            if (!TextUtils.isEmpty(util.getString(InterConst.ACCESS_TOKEN, ""))) {
                 Log.e("chat added", "is " + dataSnapshot + ", " + s);
                 ChatsModel chat = ChatsModel.parseChat(dataSnapshot, String.valueOf(util.getInt(FirebaseChatConstants.user_id, -1)));
                 if (chat != null) {
@@ -228,7 +223,7 @@ public class FirebaseListeners implements ConnectivityReceiver.ConnectivityRecei
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            if(!TextUtils.isEmpty(util.getString(InterConst.ACCESS_TOKEN,""))) {
+            if (!TextUtils.isEmpty(util.getString(InterConst.ACCESS_TOKEN, ""))) {
                 Log.e("chat changed", "is " + dataSnapshot + ", " + s);
                 ChatsModel chat = ChatsModel.parseChat(dataSnapshot, String.valueOf(util.getInt(FirebaseChatConstants.user_id, -1)));
                 if (chat != null) {
@@ -279,7 +274,7 @@ public class FirebaseListeners implements ConnectivityReceiver.ConnectivityRecei
 
         @Override
         public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-            if(!TextUtils.isEmpty(util.getString(InterConst.ACCESS_TOKEN,""))) {
+            if (!TextUtils.isEmpty(util.getString(InterConst.ACCESS_TOKEN, ""))) {
                 mDb.deleteDialogData(dataSnapshot.getKey());
                 removeMessageListener(dataSnapshot.getKey());
                 removeChatsListener(dataSnapshot.getKey());
@@ -312,31 +307,33 @@ public class FirebaseListeners implements ConnectivityReceiver.ConnectivityRecei
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-            if(!TextUtils.isEmpty(util.getString(InterConst.ACCESS_TOKEN,""))) {
+            if (!TextUtils.isEmpty(util.getString(InterConst.ACCESS_TOKEN, ""))) {
                 ProfileModel user = ProfileModel.parseProfile(dataSnapshot);
-                if (user.online_status != FirebaseChatConstants.ONLINE_LONG) {
-                    if (util.getInt(InterConst.BACKGROUND, InterConst.APP_OFFLINE) == InterConst.APP_ONLINE) {
-                        mFirebaseConfigProfile.child("id_" + user.user_id).child("online_status")
-                                .setValue(FirebaseChatConstants.ONLINE_LONG);
+                if (!TextUtils.isEmpty(user.access_token)) {
+                    if (user.online_status != FirebaseChatConstants.ONLINE_LONG) {
+                        if (util.getInt(InterConst.BACKGROUND, InterConst.APP_OFFLINE) == InterConst.APP_ONLINE) {
+                            mFirebaseConfigProfile.child("id_" + user.user_id).child("online_status")
+                                    .setValue(FirebaseChatConstants.ONLINE_LONG);
+                        }
                     }
-                }
 
-                HashMap<String, String> dialogs = user.chat_dialog_ids;
-                if (dialogs != null && dialogs.size() > 0) {
-                    HashMap<String, String> ids = mDb.getDialogs(String.valueOf(util.getInt(FirebaseChatConstants.user_id, -1)));
-                    mDb.addDialogs(dialogs, String.valueOf(util.getInt(FirebaseChatConstants.user_id, -1)));
-                    for (String userUniqueKey : dialogs.keySet()) {
-                        ids.remove(userUniqueKey);
-                        setChatsListener(userUniqueKey);
+                    HashMap<String, String> dialogs = user.chat_dialog_ids;
+                    if (dialogs != null && dialogs.size() > 0) {
+                        HashMap<String, String> ids = mDb.getDialogs(String.valueOf(util.getInt(FirebaseChatConstants.user_id, -1)));
+                        mDb.addDialogs(dialogs, String.valueOf(util.getInt(FirebaseChatConstants.user_id, -1)));
+                        for (String userUniqueKey : dialogs.keySet()) {
+                            ids.remove(userUniqueKey);
+                            setChatsListener(userUniqueKey);
+                        }
+                        for (String userUniqueKey : ids.keySet()) {
+                            removeChatsListener(userUniqueKey);
+                            mDb.deleteDialogData(userUniqueKey);
+                        }
                     }
-                    for (String userUniqueKey : ids.keySet()) {
-                        removeChatsListener(userUniqueKey);
-                        mDb.deleteDialogData(userUniqueKey);
-                    }
-                }
-                if (!user.access_token.equals(util.getString(InterConst.ACCESS_TOKEN, ""))) {
-                    if (mProfileInterface != null) {
-                        mProfileInterface.onProfileChanged("");
+                    if (!user.access_token.equals(util.getString(InterConst.ACCESS_TOKEN, ""))) {
+                        if (mProfileInterface != null) {
+                            mProfileInterface.onProfileChanged("");
+                        }
                     }
                 }
             }
@@ -346,7 +343,7 @@ public class FirebaseListeners implements ConnectivityReceiver.ConnectivityRecei
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            if(!TextUtils.isEmpty(util.getString(InterConst.ACCESS_TOKEN,""))) {
+            if (!TextUtils.isEmpty(util.getString(InterConst.ACCESS_TOKEN, ""))) {
                 ProfileModel user = ProfileModel.parseProfile(dataSnapshot);
                 if (user.online_status != FirebaseChatConstants.ONLINE_LONG) {
                     if (util.getInt(InterConst.BACKGROUND, InterConst.APP_OFFLINE) == InterConst.APP_ONLINE) {

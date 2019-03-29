@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.myreevuuCoach.activities.RegisterCoachActivity;
 import com.myreevuuCoach.adapters.CertificateAdapter;
 import com.myreevuuCoach.customViews.FlowLayout;
 import com.myreevuuCoach.interfaces.InterConst;
+import com.myreevuuCoach.models.DefaultArrayModel;
 import com.myreevuuCoach.models.OptionsModel;
 import com.myreevuuCoach.models.SignUpModel;
 import com.myreevuuCoach.utils.Constants;
@@ -87,52 +89,50 @@ public class ProfileInfoFragment extends BaseFragment implements View.OnClickLis
 
     public void setData() {
         mSigUpModel = mGson.fromJson(utils.getString(InterConst.RESPONSE, ""), SignUpModel.class);
-        txtAbout.setText(mSigUpModel.getResponse().getCoach_info().getAbout());
+        mArrayModel = mGson.fromJson(utils.getString(InterConst.SPORTS_RESPONSE, ""), DefaultArrayModel.class);
+        if (mArrayModel != null) {
+            txtAbout.setText(mSigUpModel.getResponse().getCoach_info().getAbout());
 
-        loadExpertiseData();
+            loadExpertiseData();
 
-        txtSport.setText(mSigUpModel.getResponse().getSport_info().getSport().getName());
+            txtSport.setText(mSigUpModel.getResponse().getSport_info().getSport().getName());
 
-        if (mSigUpModel.getResponse().getSport_info().getExperience() == 0) {
-            txtSportExperience.setText("< 1 Year");
-        } else if (mSigUpModel.getResponse().getSport_info().getExperience() == 1) {
-            txtSportExperience.setText(mSigUpModel.getResponse().getSport_info().getExperience() + " Year");
-        } else {
-            txtSportExperience.setText(mSigUpModel.getResponse().getSport_info().getExperience() + " Years");
-        }
-
-        for (int i = 0; i < mSigUpModel.getLevels().size(); i++) {
-            if (mSigUpModel.getResponse().getSport_info().getLevel() == mSigUpModel.getLevels().get(i).getId()) {
-                txtSportsLevel.setText(String.valueOf(mSigUpModel.getLevels().get(i).getName()));
+            if (mSigUpModel.getResponse().getSport_info().getExperience() == 0) {
+                txtSportExperience.setText("< 1 Year");
+            } else if (mSigUpModel.getResponse().getSport_info().getExperience() == 1) {
+                txtSportExperience.setText(mSigUpModel.getResponse().getSport_info().getExperience() + " Year");
+            } else {
+                txtSportExperience.setText(mSigUpModel.getResponse().getSport_info().getExperience() + " Years");
             }
-        }
 
-        if (mSigUpModel.getResponse().getSport_info().getFrom_college() == 1)
-            txtSportPlayedCollege.setText(R.string.yes);
-        else
-            txtSportPlayedCollege.setText(R.string.no);
+            txtSportsLevel.setText(String.valueOf(mSigUpModel.getResponse().getSport_info().getSport_level_name()));
 
-        if (utils.getInt(InterConst.PROFILE_APPROVED, 0) == 1)
-            txtApproval.setVisibility(View.GONE);
-        else
-            txtApproval.setVisibility(View.VISIBLE);
+            if (mSigUpModel.getResponse().getSport_info().getFrom_college() == 1)
+                txtSportPlayedCollege.setText(R.string.yes);
+            else
+                txtSportPlayedCollege.setText(R.string.no);
 
-        txtCoachSports.setText(mSigUpModel.getResponse().getSport_info().getSport().getName());
+            if (utils.getInt(InterConst.PROFILE_APPROVED, 0) == 1)
+                txtApproval.setVisibility(View.GONE);
+            else
+                txtApproval.setVisibility(View.VISIBLE);
 
-        if (mSigUpModel.getResponse().getCoach_info().getCoach_experience() == 0) {
-            txtCoachExperience.setText("< 1 Year");
-        } else if (mSigUpModel.getResponse().getCoach_info().getCoach_experience() == 1) {
-            txtCoachExperience.setText(mSigUpModel.getResponse().getCoach_info().getCoach_experience() + " Year");
-        } else {
-            txtCoachExperience.setText(mSigUpModel.getResponse().getCoach_info().getCoach_experience() + " Years");
-        }
+            txtCoachSports.setText(mSigUpModel.getResponse().getSport_info().getSport().getName());
 
-        for (int i = 0; i < mSigUpModel.getLevels().size(); i++) {
-            if (mSigUpModel.getResponse().getCoach_info().getCoach_level() == mSigUpModel.getLevels().get(i).getId()) {
-                txtCoachLevel.setText(String.valueOf(mSigUpModel.getLevels().get(i).getName()));
+            if (mSigUpModel.getResponse().getCoach_info().getCoach_experience() == 0) {
+                txtCoachExperience.setText("< 1 Year");
+            } else if (mSigUpModel.getResponse().getCoach_info().getCoach_experience() == 1) {
+                txtCoachExperience.setText(mSigUpModel.getResponse().getCoach_info().getCoach_experience() + " Year");
+            } else {
+                txtCoachExperience.setText(mSigUpModel.getResponse().getCoach_info().getCoach_experience() + " Years");
             }
+            if (TextUtils.isEmpty(mSigUpModel.getResponse().getCoach_info().getCollege_name())) {
+                txtCoachLevel.setText(String.valueOf(mSigUpModel.getResponse().getCoach_info().getCoach_level_name()));
+            } else {
+                txtCoachLevel.setText(String.valueOf(mSigUpModel.getResponse().getCoach_info().getCoach_level_name()) + "-" + mSigUpModel.getResponse().getCoach_info().getCollege_name());
+            }
+            setCertificatesAdapter();
         }
-        setCertificatesAdapter();
 
     }
 
@@ -167,7 +167,7 @@ public class ProfileInfoFragment extends BaseFragment implements View.OnClickLis
 
         txtExpertise.setText(model.getName());
         txtExpertise.setTextColor(ContextCompat.getColor(mContext, R.color.white));
-        txtExpertise.setBackgroundResource(Constants.Companion.getGradient().get(position));
+        txtExpertise.setBackgroundResource(Constants.Companion.getGradient().get(model.getColor()));
 
         return view;
     }

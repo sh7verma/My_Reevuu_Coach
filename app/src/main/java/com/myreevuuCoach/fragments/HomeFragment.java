@@ -1,10 +1,13 @@
 package com.myreevuuCoach.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,16 +17,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.myreevuuCoach.R;
+import com.myreevuuCoach.activities.CommentActivity;
 import com.myreevuuCoach.activities.FeedDetailActivity;
 import com.myreevuuCoach.activities.FeedSearchActivity;
 import com.myreevuuCoach.activities.LandingActivity;
 import com.myreevuuCoach.activities.MyFeedDetailActivity;
 import com.myreevuuCoach.adapters.VideoAdapter;
-import com.myreevuuCoach.interfaces.AdapterClickInterface;
 import com.myreevuuCoach.interfaces.InterConst;
+import com.myreevuuCoach.interfaces.VideoAdapterItemClick;
+import com.myreevuuCoach.models.BaseSuccessModel;
 import com.myreevuuCoach.models.FeedModel;
 import com.myreevuuCoach.network.RetrofitClient;
+import com.myreevuuCoach.services.CommentIntentServiceResult;
 import com.wang.avi.AVLoadingIndicatorView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +48,7 @@ import retrofit2.Response;
  * Created by dev on 19/11/18.
  */
 
-public class HomeFragment extends BaseFragment implements View.OnClickListener, AdapterClickInterface {
+public class HomeFragment extends BaseFragment implements View.OnClickListener, VideoAdapterItemClick {
 
     @SuppressLint("StaticFieldLeak")
     static HomeFragment fragment;
@@ -74,8 +84,21 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     };
     @BindView(R.id.img_unread_dot)
     ImageView img_unread_dot;
+    int mSelectedPosition = -1;
+    Call<BaseSuccessModel> call;
     private boolean loading = true;
     private int offSet = 1;
+    BroadcastReceiver videoAddedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("videoAddedReceiver", "videoAddedReceiver HIT_API");
+            if (intent.hasExtra(InterConst.INTEND_EXTRA)) {
+                onCallResume();
+            } else {
+                setLocalNewRequestCount();
+            }
+        }
+    };
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -108,8 +131,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
     @Override
     protected void onCreateStuff() {
+        EventBus.getDefault().register(this);
         getActivity().registerReceiver(broadcastReceiver, new IntentFilter(InterConst.BROADCAST_MY_FEED_VIDEO_DELETE));
         getActivity().registerReceiver(videoStopReceiver, new IntentFilter(InterConst.BROADCAST_VIDEO_STOP_RECIVER));
+        getActivity().registerReceiver(videoAddedReceiver, new IntentFilter(InterConst.BROADCAST_VIDEO_ADDED_RECIVER));
 
         mLayoutManager = new LinearLayoutManager(mContext);
         rvFeeds.setLayoutManager(mLayoutManager);
@@ -161,6 +186,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         super.onDestroy();
         getActivity().unregisterReceiver(broadcastReceiver);
         getActivity().unregisterReceiver(videoStopReceiver);
+        getActivity().unregisterReceiver(videoAddedReceiver);
+        EventBus.getDefault().unregister(this);
     }
 
     void hitFeedsApi() {
@@ -198,22 +225,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     public void setNewRequestCount(final int count) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                txtNewRequests.setText(count + "");
-                if (count == 0) {
-                    llRequests.setVisibility(View.GONE);
-                } else {
-                    llRequests.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-    }
-
-    public void setLocalNewRequestCount() {
-        if (utils != null) {
-            final int count = utils.getInt(InterConst.NEW_REQUEST_COUNT, 0);
+        try {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -225,7 +237,29 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                     }
                 }
             });
+        } catch (Exception e) {
 
+        }
+    }
+
+    public void setLocalNewRequestCount() {
+        if (utils != null) {
+            final int count = utils.getInt(InterConst.NEW_REQUEST_COUNT, 0);
+            try {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        txtNewRequests.setText(count + "");
+                        if (count == 0) {
+                            llRequests.setVisibility(View.GONE);
+                        } else {
+                            llRequests.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+            } catch (Exception e) {
+
+            }
         }
     }
 
@@ -288,6 +322,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
     @Override
     public void onItemClick(int position) {
+        mSelectedPosition = position;
         if (utils.getInt(InterConst.ID, 0) != mData.get(position).getUser_id()) {
             Intent intent = new Intent(getActivity(), FeedDetailActivity.class);
             intent.putExtra("feedData", mData.get(position));
@@ -303,6 +338,28 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         }
     }
 
+    @Override
+    public void onItemLikeClick(int position) {
+        mSelectedPosition = position;
+
+        setLikedStatus(position);
+    }
+
+    @Override
+    public void onItemCommentClick(int position) {
+        mSelectedPosition = position;
+        Intent intent = new Intent(getActivity(), CommentActivity.class);
+        intent.putExtra("post_id", mData.get(position).getId());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onItemShareClick(int position) {
+        mSelectedPosition = position;
+
+        shareTextUrl(mData.get(position).getUrl());
+    }
+
     void hideUnreadNotificationDot() {
         utils.setInt(InterConst.UNREAD_NOTIFICATION_DOT, 0);
         img_unread_dot.setVisibility(View.GONE);
@@ -310,15 +367,139 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
     void showUnreadNotificationDot() {
         img_unread_dot.setVisibility(View.VISIBLE);
-
     }
 
     public void checkUnreadNotification() {
-        if (utils.getInt(InterConst.UNREAD_NOTIFICATION_DOT, 0) == 0) {
-            hideUnreadNotificationDot();
-        } else {
-            showUnreadNotificationDot();
+        try {
+            if (utils.getInt(InterConst.UNREAD_NOTIFICATION_DOT, 0) == 0) {
+                hideUnreadNotificationDot();
+            } else {
+                showUnreadNotificationDot();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void shareTextUrl(String url) {
+        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        share.setType("text/plain");
+        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        share.putExtra(Intent.EXTRA_TEXT, url);
+        startActivity(Intent.createChooser(share, "Share link!"));
+    }
+
+
+    private void setLikedStatus(final int position) {
+        if (connectedToInternet()) {
+            switch (mData.get(position).getLiked()) {
+                case 0:
+                    mData.get(position).setLiked(1);
+                    mData.get(position).setLikes_count(mData.get(position).getLikes_count() + 1);
+                    break;
+                case 1:
+                    mData.get(position).setLiked(0);
+                    mData.get(position).setLikes_count(mData.get(position).getLikes_count() - 1);
+                    break;
+            }
+            mAdapter.notifyItemChanged(position);
+            call = RetrofitClient.getInstance().setFavArticles(
+                    utils.getString(InterConst.ACCESS_TOKEN, ""),
+                    mData.get(position).getId()
+            );
+            call.enqueue(new retrofit2.Callback<BaseSuccessModel>() {
+                @Override
+                public void onResponse(@NonNull Call<BaseSuccessModel> call, @NonNull Response<BaseSuccessModel> response) {
+                    hideProgress();
+                    if (response.body() != null) {
+                        if (response.body().getResponse().getMessage().toLowerCase().contains("un")) {
+                            // articleFavDialog(response.body().getResponse().getMessage());
+                            //EventBus.getDefault().post(new CommentIntentServiceResult(1, 0));
+                            //removeArticleFav();
+                        } else {
+                            //EventBus.getDefault().post(new CommentIntentServiceResult(1, 1));
+                            // articleFavDialog(response.body().getResponse().getMessage());
+                            //markArticleFav();
+                        }
+                    } else {
+                        if (response.body().getError().getCode() == 506) {
+                            itemDeleted(position);
+                            videoDeleted("This post has been deleted");
+                        } else if (response.body().getError().getCode() == InterConst.INVALID_ACCESS)
+                            moveToSplash();
+                        else
+                            showSnackBar(rvFeeds, response.body().getError().getMessage());
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<BaseSuccessModel> call, @NonNull Throwable t) {
+                    hideProgress();
+                    showSnackBar(rvFeeds, String.valueOf(t));
+                    t.printStackTrace();
+                }
+            });
         }
     }
 
+    private void videoDeleted(String Message) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+        //  alertDialogBuilder.setTitle(getString(R.string.logout));
+        alertDialogBuilder.setMessage(Message);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton("Ok",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        // moveBack();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    void itemDeleted(int position) {
+        mData.remove(position);
+        mAdapter.notifyItemRemoved(position);
+        setProgressVisibility();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void doThis(CommentIntentServiceResult intentServiceResult) {
+        Log.e("FeedDetail", "eventbus");
+        if (mSelectedPosition != -1) {
+            switch (intentServiceResult.getStatus()) {
+                case 1:
+                    mData.get(mSelectedPosition).setLiked(intentServiceResult.getItem().getLiked());
+                    mData.get(mSelectedPosition).setLikes_count(intentServiceResult.getItem().getLikes_count());
+//                    mAdapter.notifyItemChanged(mSelectedPosition);
+
+//                    setData();
+                    mAdapter.notifyItemChanged(mSelectedPosition);
+
+                    break;
+                case 2:
+                    mData.get(mSelectedPosition).setComments_count(intentServiceResult.getItem().getComments_count());
+                    mAdapter.notifyItemChanged(mSelectedPosition);
+                    break;
+                case 3:
+                    mAdapter.notifyItemChanged(mSelectedPosition);
+                    break;
+                case 4:
+                    itemDeleted(mSelectedPosition);
+                    break;
+                case 5:
+                    try {
+                        mData.get(mSelectedPosition).setComments_count(intentServiceResult.getItem().getComments_count());
+                        mData.get(mSelectedPosition).setLiked(intentServiceResult.getItem().getLiked());
+                        mData.get(mSelectedPosition).setLikes_count(intentServiceResult.getItem().getLikes_count());
+                    } catch (Exception e) {
+
+                    }
+                    mAdapter.notifyItemChanged(mSelectedPosition);
+
+            }
+        }
+    }
 }

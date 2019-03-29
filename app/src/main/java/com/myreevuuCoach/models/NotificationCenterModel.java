@@ -28,6 +28,17 @@ public class NotificationCenterModel extends ErrorModelJava {
         public String push_type;
         public String created_at;
         public String updated_at;
+        public String title;
+        public String broadcast_id;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getBroadcast_id() {
+            return broadcast_id;
+        }
+
         public void setRead_status(int read_status) {
             this.read_status = read_status;
         }

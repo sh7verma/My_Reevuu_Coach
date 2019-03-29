@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -18,8 +19,11 @@ import android.view.animation.ScaleAnimation
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import butterknife.ButterKnife
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.myreevuuCoach.R
 import com.myreevuuCoach.firebase.Database
@@ -33,7 +37,12 @@ import com.myreevuuCoach.utils.AlertDialogs
 import com.myreevuuCoach.utils.ConnectionDetector
 import com.myreevuuCoach.utils.CustomLoadingDialog
 import com.myreevuuCoach.utils.Utils
+import io.intercom.android.sdk.Intercom
+import io.intercom.android.sdk.UserAttributes
+import io.intercom.android.sdk.identity.Registration
+import io.intercom.android.sdk.push.IntercomPushClient
 import kotlinx.android.synthetic.main.anim_overlay.*
+import org.apache.commons.lang3.text.WordUtils
 import timber.log.Timber
 import java.util.*
 
@@ -83,6 +92,19 @@ abstract class BaseKotlinActivity : AppCompatActivity(), View.OnClickListener {
         Timber.e(mHeight.toString())
     }
 
+    fun subscribeOnFirebase() {
+        val firebaseTopicList = ArrayList<String>()
+        firebaseTopicList.add(InterConst.FIREBASE_TOPIC_1)
+        firebaseTopicList.add(InterConst.FIREBASE_TOPIC_2)
+        firebaseTopicList.add(InterConst.FIREBASE_TOPIC_3)
+
+        for (i in firebaseTopicList.indices) {
+            FirebaseMessaging.getInstance().subscribeToTopic(firebaseTopicList[i])
+                    .addOnCompleteListener { Log.d("subscribeToTopic", "subscribeToTopic Success") }
+        }
+
+    }
+
     fun connectedToInternet() = (ConnectionDetector(mContext).isConnectingToInternet)
 
     fun showAlert(view: View, message: String) {
@@ -115,7 +137,7 @@ abstract class BaseKotlinActivity : AppCompatActivity(), View.OnClickListener {
         mFirebaseConfig.child("id_" + mUtils!!.getInt(FirebaseChatConstants.user_id, -1))
                 .child("online_status").setValue(ServerValue.TIMESTAMP)
         FirebaseListeners.getListenerClass(this).RemoveAllListeners()
-
+        Intercom.client().displayMessenger();
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             val jobScheduler = mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
             jobScheduler.cancelAll()
@@ -133,7 +155,6 @@ abstract class BaseKotlinActivity : AppCompatActivity(), View.OnClickListener {
         inSplash.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         inSplash.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         mContext.startActivity(inSplash)
-
     }
 
     fun hideKeyboard(mContext: Activity) {
@@ -144,6 +165,8 @@ abstract class BaseKotlinActivity : AppCompatActivity(), View.OnClickListener {
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
+
+    private val intercomPushClient = IntercomPushClient()
 
     fun setUserData(response: SignUpModel) {
 
@@ -167,6 +190,9 @@ abstract class BaseKotlinActivity : AppCompatActivity(), View.OnClickListener {
         mUtils.setString(InterConst.NEW_EMAIL, response.response.new_email)
 
         mUtils.setInt(InterConst.EMAIL_PUSH_STATUS, response.response.email_notification)
+        intercomPushClient.sendTokenToIntercom(application, mUtils.getString("deviceToken", ""))
+
+        mUtils.setString(InterConst.REFERRAL_CODE, response.response.referral_code)
 
 
         if (mUtils.getInt(InterConst.GENDER_STATUS, -1) == 0) {
@@ -227,4 +253,24 @@ abstract class BaseKotlinActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
+    protected fun registerOnInterCom() {
+        //Register a user with Intercom
+        val intercomClient = Intercom.client()
+        intercomClient.registerIdentifiedUser(Registration.create().withUserId(mUtils.getInt(InterConst.ID, -1).toString() + ""))
+//        intercomClient.hideMessenger()
+//        intercomClient.setInAppMessageVisibility(Intercom.GONE)
+        intercomPushClient.sendTokenToIntercom(application, mUtils.getString(InterConst.FCM_TOKEN, ""))
+    }
+
+    protected fun updateOnInterCom() {
+        //Register a user with Intercom
+        //Intercom.client().registerIdentifiedUser(Registration.create().withUserId(utils.getString(Const.EMAIL, "")));
+        val userAttributes = UserAttributes.Builder()
+                .withName(WordUtils.capitalize(mUtils.getString(InterConst.NAME, "")))
+                .withEmail(mUtils.getString(InterConst.EMAIL, ""))
+                .withUserId(mUtils.getInt(InterConst.ID, -1).toString() + "")
+                .build()
+        Intercom.client().updateUser(userAttributes)
+
+    }
 }

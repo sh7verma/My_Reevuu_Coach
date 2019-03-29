@@ -1,10 +1,15 @@
 package com.myreevuuCoach.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -45,9 +50,20 @@ public class ReevuuRequestsFragment extends BaseFragment {
     @BindView(R.id.pbReviews)
     AVLoadingIndicatorView pbReviews;
 
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
+
     RequestsAdapter mAdapter;
 
     ArrayList<RequestsModel.ResponseBean> mData = new ArrayList<>();
+
+    BroadcastReceiver videoAddedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("videoAddedReceiver", "videoAddedReceiver HIT_API");
+            onCallResume();
+        }
+    };
 
     public static ReevuuRequestsFragment newInstance(Context context) {
         fragment = new ReevuuRequestsFragment();
@@ -66,11 +82,22 @@ public class ReevuuRequestsFragment extends BaseFragment {
 
     @Override
     protected void onCreateStuff() {
+        getActivity().registerReceiver(videoAddedReceiver,
+                new IntentFilter(InterConst.BROADCAST_VIDEO_ADDED_RECIVER));
+
         rvRequests.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         mAdapter = new RequestsAdapter(mContext, mData, mHeight, new ItemClickInterface() {
             @Override
             public void onItemClick(int p, String type) {
                 hitRequestApi(p, type);
+            }
+        });
+
+        swipeRefresh.setColorSchemeColors(mContext.getResources().getColor(R.color.colorPrimary));
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                hitApi();
             }
         });
         rvRequests.setAdapter(mAdapter);
@@ -91,13 +118,19 @@ public class ReevuuRequestsFragment extends BaseFragment {
     void hitApi() {
         if (connectedToInternet(txtTotalRequests)) {
             if (mData.size() == 0) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        pbReviews.setVisibility(View.VISIBLE);
-                        txtNoReviews.setVisibility(View.GONE);
-                    }
-                });
+                try {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            pbReviews.setVisibility(View.VISIBLE);
+                            txtNoReviews.setVisibility(View.GONE);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    pbReviews.setVisibility(View.VISIBLE);
+                    txtNoReviews.setVisibility(View.GONE);
+                }
             }
             Call<RequestListModel> call = RetrofitClient.getInstance().coach_requests(utils.getString(InterConst.ACCESS_TOKEN, ""), ""
                     , InterConst.REEVUU_REQUESTS_REQUESTED);
@@ -123,7 +156,7 @@ public class ReevuuRequestsFragment extends BaseFragment {
                     setProgressVisibility();
                 }
             });
-        }else{
+        } else {
             pbReviews.setVisibility(View.GONE);
             setProgressVisibility();
         }
@@ -137,6 +170,7 @@ public class ReevuuRequestsFragment extends BaseFragment {
     }
 
     void setProgressVisibility() {
+        swipeRefresh.setRefreshing(false);
         if (mData.size() > 0) {
             txtNoReviews.setVisibility(View.GONE);
         } else {
@@ -148,14 +182,16 @@ public class ReevuuRequestsFragment extends BaseFragment {
         if (connectedToInternet(txtNoReviews)) {
             showProgress();
             Call<RequestsModel> call = RetrofitClient.getInstance().response_a_request(utils.getString(InterConst.ACCESS_TOKEN, ""),
-                    String.valueOf(mData.get(position).getId()), type);
+                    String.valueOf(mData.get(position).getId()), "2", type);
             call.enqueue(new Callback<RequestsModel>() {
                 @Override
                 public void onResponse(Call<RequestsModel> call, Response<RequestsModel> response) {
                     hideProgress();
                     if (response.body().getResponse() != null) {
                         if (response.body().getResponse().getReview_status() == Integer.parseInt(InterConst.REEVUU_REQUESTS_ACCEPTED)) {
-                            new RequestAcceptedDialog(mContext, new DialogInterface() {
+                            new RequestAcceptedDialog(mContext,
+                                    mContext.getString(R.string.accepted_request),
+                                    new DialogInterface() {
                                 @Override
                                 public void cancel() {
 
@@ -211,4 +247,9 @@ public class ReevuuRequestsFragment extends BaseFragment {
         HomeFragment.getInstance().setNewRequestCount(mData.size());
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(videoAddedReceiver);
+    }
 }

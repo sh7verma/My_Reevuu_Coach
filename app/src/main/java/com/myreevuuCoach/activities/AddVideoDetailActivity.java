@@ -5,8 +5,13 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +21,28 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.myreevuuCoach.R;
+import com.myreevuuCoach.adapters.SelectOptionAdapter;
 import com.myreevuuCoach.customViews.FlowLayout;
 import com.myreevuuCoach.gallery.VideoGalleryModel;
+import com.myreevuuCoach.interfaces.AdapterClickInterface;
+import com.myreevuuCoach.interfaces.InterConst;
+import com.myreevuuCoach.models.DefaultArrayModel;
 import com.myreevuuCoach.models.OptionsModel;
+import com.myreevuuCoach.models.SignUpModel;
+import com.myreevuuCoach.models.SportsArrayModel;
+import com.myreevuuCoach.network.RetrofitClient;
 import com.universalvideoview.UniversalMediaController;
 import com.universalvideoview.UniversalVideoView;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by dev on 21/11/18.
@@ -50,7 +66,7 @@ public class AddVideoDetailActivity extends BaseActivity implements UniversalVid
     @BindView(R.id.imgBack)
     ImageView imgBack;
     @BindView(R.id.edCategory)
-    EditText edCategory;
+    TextView edCategory;
     @BindView(R.id.edTitle)
     TextView edTitle;
     @BindView(R.id.edDescription)
@@ -62,11 +78,13 @@ public class AddVideoDetailActivity extends BaseActivity implements UniversalVid
     @BindView(R.id.llBottom)
     LinearLayout llBottom;
 
+    ArrayList<OptionsModel> mSportsArray = new ArrayList<>();
 
+    BottomSheetDialog optionDialog;
     String SEEK_POSITION_KEY = "SEEK_POSITION_KEY";
     int mSeekPosition = 1;
     int cachedHeight = 0;
-    ArrayList<OptionsModel> mExpertiseArray;
+    ArrayList<DefaultArrayModel.ResponseBean.ExpertiesBean> mExpertiseArray;
     VideoGalleryModel videoGalleryModel;
     private Boolean isFullscreen = false;
 
@@ -81,12 +99,19 @@ public class AddVideoDetailActivity extends BaseActivity implements UniversalVid
     }
 
     void setData() {
-        mExpertiseArray = mSigUpModel.getResponse().getCoach_info().getExperties();
+        mExpertiseArray = (ArrayList<DefaultArrayModel.ResponseBean.ExpertiesBean>)
+                mGson.fromJson(mUtils.getString(InterConst.SPORTS_RESPONSE, ""), DefaultArrayModel.class)
+                        .getResponse().getExperties();
+
         edCategory.setText(String.valueOf(mSigUpModel.getResponse().getSport_info().getSport().getName()));
+        mSportsArray = mSigUpModel.getSports();
 
+        for (int i = 0; i < mSportsArray.size(); i++) {
+            if (mSportsArray.get(i).getName().equals(mSigUpModel.getResponse().getSport_info().getSport().getName())) {
+                mSportsArray.get(i).setSelected(true);
+            }
+        }
         loadExpertiseData();
-
-
         setVideo();
     }
 
@@ -101,6 +126,39 @@ public class AddVideoDetailActivity extends BaseActivity implements UniversalVid
     private void loadExpertiseData() {
         for (int i = 0; i < mExpertiseArray.size(); i++)
             flArea.addView(inflateExpertiseView(mExpertiseArray.get(i), i));
+    }
+
+
+    void hitSportArrayApi() {
+        showProgress();
+        Call<SportsArrayModel> call = RetrofitClient.getInstance().sports_array(mUtils.getString(InterConst.ACCESS_TOKEN, ""));
+        call.enqueue(new Callback<SportsArrayModel>() {
+            @Override
+            public void onResponse(Call<SportsArrayModel> call, Response<SportsArrayModel> response) {
+                hideProgress();
+                if (response.body().getResponse() != null) {
+                    mSigUpModel.getSports().clear();
+                    for (int j = 0; j < response.body().getResponse().size(); j++) {
+                        OptionsModel model = new OptionsModel(response.body().getResponse().get(j).getId(), response.body().getResponse().get(j).getName(), 0, false);
+                        mSigUpModel.getSports().add(model);
+                    }
+
+                    mUtils.setString(InterConst.RESPONSE, mGson.toJson(mSigUpModel));
+                    mSigUpModel = mGson.fromJson(mUtils.getString(InterConst.RESPONSE, ""),
+                            SignUpModel.class);
+                    mSportsArray.clear();
+                    setData();
+                    showOption();
+                } else {
+                    showAlertSnackBar(llBottom, response.body().getError().getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SportsArrayModel> call, Throwable t) {
+
+            }
+        });
     }
 
 
@@ -135,6 +193,7 @@ public class AddVideoDetailActivity extends BaseActivity implements UniversalVid
     protected void initListener() {
         txtUploadVideo.setOnClickListener(this);
         imgBack.setOnClickListener(this);
+        edCategory.setOnClickListener(this);
     }
 
     @Override
@@ -159,7 +218,67 @@ public class AddVideoDetailActivity extends BaseActivity implements UniversalVid
                     super.onBackPressed();
                 }
                 break;
+
+            case R.id.edCategory:
+                hitSportArrayApi();
+                break;
         }
+    }
+
+    void showOption() {
+        optionDialog = new BottomSheetDialog(mContext);
+        optionDialog.setContentView(R.layout.dialog_options);
+        CoordinatorLayout.LayoutParams dialogParms = new CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.MATCH_PARENT,
+                CoordinatorLayout.LayoutParams.WRAP_CONTENT);
+
+        dialogParms.gravity = Gravity.BOTTOM;
+        FrameLayout bottomSheet = optionDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+        bottomSheet.setBackgroundResource(R.drawable.white_default);
+        bottomSheet.setLayoutParams(dialogParms);
+
+        TextView txtOptionTitle = optionDialog.findViewById(R.id.txtOptionTitle);
+        txtOptionTitle.setText(R.string.category);
+
+        RecyclerView rvOption = optionDialog.findViewById(R.id.rvOptions);
+
+        rvOption.setLayoutManager(new LinearLayoutManager(mContext));
+        rvOption.setAdapter(new SelectOptionAdapter(mContext, mSportsArray, new AdapterClickInterface() {
+            @Override
+            public void onItemClick(int position) {
+                hitExpertiesApi(String.valueOf(mSportsArray.get(position).getId()));
+                edCategory.setText(mSportsArray.get(position).getName());
+                optionDialog.dismiss();
+            }
+        }));
+        optionDialog.show();
+    }
+
+    void hitExpertiesApi(String id) {
+        showProgress();
+
+        Call<DefaultArrayModel> call = RetrofitClient.getInstance().profile_data(
+                mUtils.getString(InterConst.ACCESS_TOKEN, ""), id);
+        call.enqueue(new Callback<DefaultArrayModel>() {
+            @Override
+            public void onResponse(Call<DefaultArrayModel> call, Response<DefaultArrayModel> response) {
+                hideProgress();
+                if (response.body().getResponse() != null) {
+                    mExpertiseArray.clear();
+                    flArea.removeAllViews();
+
+                    mExpertiseArray = (ArrayList<DefaultArrayModel.ResponseBean.ExpertiesBean>) response.body().getResponse().getExperties();
+                    loadExpertiseData();
+                } else {
+                    Toast.makeText(mContext, getString(R.string.error), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DefaultArrayModel> call, Throwable t) {
+                hideProgress();
+
+            }
+        });
     }
 
     void moveNext() {
@@ -198,7 +317,7 @@ public class AddVideoDetailActivity extends BaseActivity implements UniversalVid
 
     }
 
-    View inflateExpertiseView(OptionsModel model, final int position) {
+    View inflateExpertiseView(DefaultArrayModel.ResponseBean.ExpertiesBean model, final int position) {
 
         final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_expertise, null, false);
         FlowLayout.LayoutParams params = new FlowLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

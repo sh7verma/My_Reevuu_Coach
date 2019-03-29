@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.TextView;
@@ -44,7 +45,8 @@ public class ReevuuReviewedFragment extends BaseFragment implements AdapterClick
     TextView txtNoReviews;
     @BindView(R.id.pbReviews)
     AVLoadingIndicatorView pbReviews;
-
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefresh;
     AcceptedVideoAdapter mAdapter;
 
     ArrayList<RequestsModel.ResponseBean> mData = new ArrayList<>();
@@ -74,12 +76,19 @@ public class ReevuuReviewedFragment extends BaseFragment implements AdapterClick
     protected void onCreateStuff() {
         getActivity().registerReceiver(videoStopReceiver, new IntentFilter(InterConst.BROADCAST_VIDEO_STOP_RECIVER));
 
-
         rvRequests.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         mAdapter = new AcceptedVideoAdapter(mContext, mData);
         rvRequests.setAdapter(mAdapter);
         hitApi();
         populateData(mData);
+
+        swipeRefresh.setColorSchemeColors(mContext.getResources().getColor(R.color.colorPrimary));
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                hitApi();
+            }
+        });
     }
 
     @Override
@@ -152,6 +161,7 @@ public class ReevuuReviewedFragment extends BaseFragment implements AdapterClick
     }
 
     void setProgressVisibility() {
+        swipeRefresh.setRefreshing(false);
         if (mData.size() > 0) {
             txtNoReviews.setVisibility(View.GONE);
         } else {
@@ -161,10 +171,10 @@ public class ReevuuReviewedFragment extends BaseFragment implements AdapterClick
 
     @Override
     public void onItemClick(int position) {
-//        Intent intent = new Intent(mContext, ReviewedVideoActivity.class);
-//        intent.putExtra(InterConst.REVIEW_REQUEST_ID, String.valueOf(mData.get(position).getId()));
-//        intent.putExtra(InterConst.VIDEO_URL, mData.get(position).getVideo().getUrl());
-//        startActivity(intent);
-        toast(getString(R.string.work_progress));
+        Intent intent = new Intent(mContext, ReviewedVideoActivity.class);
+        intent.putExtra(InterConst.REVIEW_REQUEST_ID, String.valueOf(mData.get(position).getId()));
+        intent.putExtra(InterConst.VIDEO_URL, mData.get(position).getVideo().getUrl());
+        startActivity(intent);
+//        toast(getString(R.string.work_progress));
     }
 }

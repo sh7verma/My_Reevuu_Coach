@@ -29,6 +29,7 @@ import com.myreevuuCoach.firebase.FirebaseChatConstants;
 import com.myreevuuCoach.firebase.FirebaseListeners;
 import com.myreevuuCoach.interfaces.InterConst;
 import com.myreevuuCoach.models.SignUpModel;
+import com.myreevuuCoach.models.DefaultArrayModel;
 import com.myreevuuCoach.services.ListenerService;
 import com.myreevuuCoach.utils.ConnectionDetector;
 import com.myreevuuCoach.utils.CustomLoadingDialog;
@@ -55,6 +56,7 @@ public abstract class BaseFragment extends Fragment {
     Utils utils;
     Gson mGson = new Gson();
     SignUpModel mSigUpModel;
+    DefaultArrayModel mArrayModel;
     Database mDb;
     private Snackbar mSnackbar;
 

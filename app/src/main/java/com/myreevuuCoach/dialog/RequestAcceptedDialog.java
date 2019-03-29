@@ -20,12 +20,16 @@ public class RequestAcceptedDialog implements View.OnClickListener {
 
     @BindView(R.id.txtOk)
     TextView txtOk;
+    @BindView(R.id.txtTitle)
+    TextView txtTitle;
     DialogInterface mDialogInterface;
+    String title;
     private Context mContext;
 
-    public RequestAcceptedDialog(Context context, DialogInterface dialogInterface) {
+    public RequestAcceptedDialog(Context context, String s, DialogInterface dialogInterface) {
         mContext = context;
         mDialogInterface = dialogInterface;
+        title = s;
     }
 
     public void showDialog() {
@@ -54,7 +58,7 @@ public class RequestAcceptedDialog implements View.OnClickListener {
     }
 
     private void initUI() {
-
+        txtTitle.setText(title + "");
     }
 
     private void initListeners() {

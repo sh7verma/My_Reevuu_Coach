@@ -187,8 +187,6 @@ class ChatFragment : BaseFragment(), FirebaseListeners.ChatDialogsListenerInterf
                 object : AlertDialogs.DialogClick {
                     override fun yes(dialog: DialogInterface) {
 
-
-
                         FirebaseDatabase.getInstance().reference
                                 .child(FirebaseChatConstants.CHATS)
                                 .child(chat.participant_ids).child("delete_outer_dialog")

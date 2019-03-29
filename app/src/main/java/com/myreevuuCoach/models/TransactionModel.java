@@ -11,7 +11,7 @@ public class TransactionModel extends ErrorModelJava {
 
 
     /**
-     * response : [{"id":3,"review_request_id":118,"payment":"10.245","created_at":"2018-11-27 07:25"}]
+     * response : [{"id":3,"reviewRequestId":118,"payment":"10.245","created_at":"2018-11-27 07:25"}]
      * code : 111
      */
 
@@ -38,7 +38,7 @@ public class TransactionModel extends ErrorModelJava {
 
         /**
          * id : 3
-         * review_request_id : 118
+         * reviewRequestId : 118
          * payment : 10.245
          * created_at : 2018-11-27 07:25
          */

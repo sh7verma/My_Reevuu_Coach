@@ -71,5 +71,9 @@
         <item name="android:windowEnterAnimation">@anim/enter_from_center</item>
         <item name="android:windowExitAnimation">@anim/exit_from_bottom</item>
     </style>
+ <style name="DialogBottomAnimation" parent="@android:style/Theme.Dialog">
+        <item name="android:windowEnterAnimation">@anim/slide_in_up</item>
+        <item name="android:windowExitAnimation">@anim/slidedown_out</item>
+    </style>
 
 </resources>

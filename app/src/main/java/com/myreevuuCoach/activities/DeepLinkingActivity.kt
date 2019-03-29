@@ -5,7 +5,9 @@ import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.myreevuuCoach.R
+import com.myreevuuCoach.interfaces.InterConst
 
 
 class DeepLinkingActivity : BaseActivity() {
@@ -15,6 +17,9 @@ class DeepLinkingActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
+        handleDeepLinking()
+
+
         val data = intent.dataString
         if (!TextUtils.isEmpty(data)) {
             val uri = Uri.parse(data)
@@ -54,6 +59,33 @@ class DeepLinkingActivity : BaseActivity() {
             }
         }
     }
+
+    fun handleDeepLinking() {
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(intent)
+                .addOnSuccessListener(this) { pendingDynamicLinkData ->
+                    // Get deep link from result (may be null if no link is found)
+                    var deepLink: Uri? = null
+                    if (pendingDynamicLinkData != null) {
+                        deepLink = pendingDynamicLinkData.link
+                    }
+
+                    // Handle the deep link. For example, open the linked
+                    // content, or apply promotional credit to the user's
+                    // account.
+                    // ...
+                    if (deepLink != null
+                            && deepLink.getBooleanQueryParameter("invitedby", false)) {
+                        val referrerUid = deepLink.getQueryParameter("invitedby")
+
+                        if (mUtils.getInt("profileStatus", 0) != 2)
+                            mUtils.setString(InterConst.REFERRED_BY, referrerUid)
+                    }
+                    // ...
+                }
+                .addOnFailureListener(this) { e -> Log.w("SPLASH", "getDynamicLink:onFailure", e) }
+    }
+
 
     override fun initListener() {
     }

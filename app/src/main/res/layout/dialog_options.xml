@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@drawable/white_round_corners"
     android:padding="@dimen/_12sdp">
 
     <com.myreevuuCoach.customViews.BoldTextView

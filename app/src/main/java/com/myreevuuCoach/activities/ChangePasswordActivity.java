@@ -14,6 +14,10 @@ import com.myreevuuCoach.interfaces.InterConst;
 import com.myreevuuCoach.models.BaseSuccessModel;
 import com.myreevuuCoach.network.RetrofitClient;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+
 import butterknife.BindView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,6 +59,7 @@ public class ChangePasswordActivity extends BaseActivity {
     protected void initListener() {
         txtDone.setOnClickListener(this);
         imgBack.setOnClickListener(this);
+
     }
 
     @Override

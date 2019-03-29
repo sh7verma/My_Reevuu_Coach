@@ -1,8 +1,7 @@
 package com.myreevuuCoach.activities
 
 import android.app.Activity
-import android.content.DialogInterface
-import android.content.Intent
+import android.content.*
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -45,13 +44,28 @@ class RequestDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoView
     private var isFullscreen: Boolean = false
     private val RESULT_VIDEO_REVIEWED: Int = 101
     private lateinit var mResponse: RequestsModel.ResponseBean
+    var notificationReadType = "2"//1 outer and 2 notification Read
+    private var reviewRequestId = ""
 
     override fun getContentView() = R.layout.activity_request_detail
+
+
+    var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.hasExtra(InterConst.NotificationID)) {
+                notificationUpdate()
+            }
+
+            if (intent.hasExtra("reviewRequestId")) {
+                reviewRequestId = intent.getStringExtra("reviewRequestId").toString()
+                hitRequestDetailsApi()
+            }
+        }
+    }
 
     override fun initUI() {
         llMediaController.setOnLoadingView(R.layout.activity_video_loading)
         videoView.setMediaController(llMediaController)
-
     }
 
     fun populateData() {
@@ -59,9 +73,16 @@ class RequestDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoView
         videoView.setVideoViewCallback(this)
         if (mResponse.review_status == Integer.parseInt(InterConst.REEVUU_REQUESTS_ACCEPTED)) {
             llAccept.visibility = View.GONE
-            llRemainingTime.visibility = View.VISIBLE
             txtViews.visibility = View.VISIBLE
-            setRemainingTime()
+            llRemainingTime.visibility = View.VISIBLE
+
+            if (mResponse.is_last_request == Integer.parseInt(InterConst.IN_PROCESSING)) {
+                txtStartReviewing.text = getString(R.string.processing)
+                txtRemainingTime.visibility = View.GONE
+                txtTimeLeftTitle.visibility = View.GONE
+            } else {
+                setRemainingTime()
+            }
         } else if (mResponse.review_status == Integer.parseInt(InterConst.REEVUU_REQUESTS_DECLINE)) {
             llAccept.visibility = View.GONE
             llRemainingTime.visibility = View.VISIBLE
@@ -75,26 +96,32 @@ class RequestDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoView
             llAccept.visibility = View.VISIBLE
             llRemainingTime.visibility = View.GONE
             txtViews.visibility = View.GONE
-            setRemainingTime()
         }
 
         videoView.start()
         populateBottomData()
     }
 
-    var review_request_id = ""
     override fun onCreateStuff() {
-        if (getIntent().hasExtra(InterConst.NotificationID)) {
+        registerReceiver(broadcastReceiver, IntentFilter(InterConst.BROADCAST_VIDEO_PROCESSED))
+
+        if (intent.hasExtra(InterConst.NotificationID)) {
             notificationUpdate()
         }
-        if (getIntent().hasExtra("review_request_id")) {
-            review_request_id = getIntent().getStringExtra("review_request_id").toString()
+
+        if (intent.hasExtra("reviewRequestId")) {
+            reviewRequestId = intent.getStringExtra("reviewRequestId").toString()
+            hitRequestDetailsApi()
         } else {
             mResponse = intent.getParcelableExtra(InterConst.INTEND_EXTRA)
-            review_request_id = mResponse.id.toString()
+            reviewRequestId = mResponse.id.toString()
+            populateData()
         }
+    }
 
-        getRequestDetails()
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(broadcastReceiver)
     }
 
     private fun setRemainingTime() {
@@ -164,11 +191,22 @@ class RequestDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoView
                 hitApi(InterConst.REEVUU_REQUESTS_DECLINE)
             }
             txtStartReviewing -> {
-                val intent = Intent(mContext, StartVideoReviewActivity::class.java)
-                intent.putExtra(InterConst.REVIEW_REQUEST_ID, mResponse.id.toString())
-                intent.putExtra(InterConst.VIDEO_URL, mResponse.video.url)
-                startActivityForResult(intent, RESULT_VIDEO_REVIEWED)
-                //  showToast(mContext,getString(R.string.work_progress))
+                if (mResponse.is_last_request == Integer.parseInt(InterConst.IN_PROCESSING)) {
+                    RequestAcceptedDialog(mContext, mContext.getString(R.string.processing_request), object : DialogInterface {
+                        override fun cancel() {
+
+                        }
+
+                        override fun dismiss() {
+
+                        }
+                    }).showDialog()
+                } else {
+                    val intent = Intent(mContext, StartVideoReviewActivity::class.java)
+                    intent.putExtra(InterConst.REVIEW_REQUEST_ID, mResponse.id.toString())
+                    intent.putExtra(InterConst.VIDEO_URL, mResponse.video.url)
+                    startActivityForResult(intent, RESULT_VIDEO_REVIEWED)
+                }
             }
             llProfile -> {
                 val intent = Intent(mContext, OthersProfileActivity::class.java)
@@ -316,14 +354,15 @@ class RequestDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoView
         if (connectedToInternet()) {
             showLoader()
             val call = RetrofitClient.getInstance().response_a_request(mUtils.getString(InterConst.ACCESS_TOKEN, ""),
-                    mResponse.id.toString(),
+                    mResponse.id.toString(), "2",
                     type)
             call.enqueue(object : Callback<RequestsModel> {
                 override fun onResponse(call: Call<RequestsModel>, response: Response<RequestsModel>) {
                     dismissLoader()
                     if (response.body().response != null) {
-                        if (response.body().response.review_status == Integer.parseInt(InterConst.REEVUU_REQUESTS_ACCEPTED)) {
-                            RequestAcceptedDialog(mContext, object : DialogInterface {
+                        if (response.body().response.review_status ==
+                                Integer.parseInt(InterConst.REEVUU_REQUESTS_ACCEPTED)) {
+                            RequestAcceptedDialog(mContext, mContext.getString(R.string.accepted_request), object : DialogInterface {
                                 override fun cancel() {
 
                                 }
@@ -389,13 +428,12 @@ class RequestDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoView
         }
     }
 
-    internal var notificationReadType = "2"//1 outer and 2 notification Read
 
     private fun notificationUpdate() {
         val call = RetrofitClient.getInstance().setNotification(
                 mUtils.getString(InterConst.ACCESS_TOKEN, ""),
                 notificationReadType,
-                getIntent().getStringExtra(InterConst.NotificationID))
+                getIntent().getStringExtra(InterConst.NotificationID),"")
         call.enqueue(object : Callback<SkipModel> {
             override fun onFailure(call: Call<SkipModel>?, t: Throwable?) {
                 showToast(mContext, t!!.localizedMessage)
@@ -416,15 +454,14 @@ class RequestDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoView
         })
     }
 
-    private fun getRequestDetails() {
+    private fun hitRequestDetailsApi() {
         showLoader()
         val call = RetrofitClient.getInstance().getRequestDetailByID(
-                mUtils.getString(InterConst.ACCESS_TOKEN, ""), review_request_id)
+                mUtils.getString(InterConst.ACCESS_TOKEN, ""), reviewRequestId)
         call.enqueue(object : Callback<RequestsModel> {
             override fun onFailure(call: Call<RequestsModel>?, t: Throwable?) {
                 dismissLoader()
                 showAlert(t!!.localizedMessage)
-                // showToast(mContext, t!!.localizedMessage)
             }
 
             override fun onResponse(call: Call<RequestsModel>?, response: Response<RequestsModel>) {
@@ -437,7 +474,6 @@ class RequestDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoView
                         moveToSplash()
                     } else {
                         showAlert(response.body().error.message)
-                        // showAlert(llMediaController, errorModel.error.message)
                     }
                 }
             }

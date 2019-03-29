@@ -4,55 +4,93 @@
     android:id="@+id/llOuterVerifyEmail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/_15sdp">
 
-    <LinearLayout
-        android:id="@+id/llVerifyEmail"
+    <ImageView
+        android:id="@+id/imgBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_15sdp"
+        android:src="@mipmap/ic_back" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_30sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/ic_email_verified" />
+
+
+    <!--<LinearLayout-->
+    <!--android:id="@+id/llVerifyEmail"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@drawable/white_default"-->
+    <!--android:gravity="center_horizontal"-->
+    <!--android:orientation="vertical"-->
+    <!--android:paddingLeft="@dimen/_12sdp"-->
+    <!--android:paddingRight="@dimen/_12sdp"-->
+    <!--android:paddingTop="@dimen/_16sdp">-->
+
+    <com.myreevuuCoach.customViews.BoldTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_30sdp"
+        android:layout_marginTop="@dimen/_25sdp"
+        android:text="@string/verify_email"
+
+        android:textAllCaps="true"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/_20ssp" />
+
+    <com.myreevuuCoach.customViews.RegularTextView
+        android:id="@+id/txtEmailMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_30sdp"
+        android:layout_marginRight="@dimen/_25sdp"
+        android:layout_weight="1"
+        android:paddingTop="@dimen/_12sdp"
+        android:text="@string/a_verification_link_has_been_sent_to_your_registered_email"
+        android:textColor="@color/colorGrey"
+        android:textSize="@dimen/_13ssp" />
+
+
+    <com.myreevuuCoach.customViews.BoldTextView
+        android:id="@+id/txtRESENDEMAIL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/white_default"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/_12sdp"
-        android:paddingRight="@dimen/_12sdp"
-        android:paddingTop="@dimen/_16sdp">
+        android:layout_marginLeft="@dimen/_15sdp"
+        android:layout_marginRight="@dimen/_15sdp"
+        android:background="@drawable/primary_ripple_round_corner"
+        android:gravity="center"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/resend_email"
+        android:textAllCaps="true"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/_14ssp"
+        app:textAllCaps="true" />
 
-        <com.myreevuuCoach.customViews.BoldTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/verify_email"
-            android:textAllCaps="true"
-            android:textColor="@color/colorBlack"
-            android:textSize="@dimen/_14ssp" />
+    <com.myreevuuCoach.customViews.BoldTextView
+        android:id="@+id/txtCheckStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_15sdp"
+        android:layout_marginRight="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/primary_default_stroke"
+        android:gravity="center"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/check_verification_status"
+        android:textAllCaps="true"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/_14ssp"
+        app:textAllCaps="true" />
 
-        <com.myreevuuCoach.customViews.RegularTextView
-            android:id="@+id/txtEmailMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingBottom="@dimen/_16sdp"
-            android:paddingLeft="@dimen/_12sdp"
-            android:paddingRight="@dimen/_12sdp"
-            android:paddingTop="@dimen/_12sdp"
-            android:text="@string/enter_your_registered_email_id_we_will_send_you_a_link_to_reset_your_password"
-            android:textColor="@color/colorGrey" />
-
-        <com.myreevuuCoach.customViews.BoldTextView
-            android:id="@+id/txtRESENDEMAIL"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_42sdp"
-            android:layout_marginTop="@dimen/_16sdp"
-            android:background="@drawable/primary_ripple_round_corner"
-            android:gravity="center"
-            android:text="@string/resend_email"
-            android:textAllCaps="true"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/_14ssp"
-            app:textAllCaps="true" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_12sdp"
-            android:background="@color/colorWhite" />
-    </LinearLayout>
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="@dimen/_12sdp"-->
+    <!--android:background="@color/colorWhite" />-->
+    <!--</LinearLayout>-->
 </LinearLayout>

@@ -6,7 +6,6 @@ import android.app.job.JobScheduler;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -26,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
@@ -34,12 +34,15 @@ import com.myreevuuCoach.R;
 import com.myreevuuCoach.adapters.ChatsAdapter;
 import com.myreevuuCoach.adapters.FragmentPagerAdapter;
 import com.myreevuuCoach.customViews.CustomViewPager;
+import com.myreevuuCoach.customrecorder.views.ActivityCustomRecorder;
+import com.myreevuuCoach.dialog.DialogVideoOption;
 import com.myreevuuCoach.dialog.RecordVideoDialog;
 import com.myreevuuCoach.firebase.FirebaseChatConstants;
 import com.myreevuuCoach.firebase.FirebaseListeners;
 import com.myreevuuCoach.fragments.ChatFragment;
 import com.myreevuuCoach.fragments.HomeFragment;
 import com.myreevuuCoach.fragments.ProfileFragment;
+import com.myreevuuCoach.fragments.ProfileInfoFragment;
 import com.myreevuuCoach.fragments.ProfileVideoFragment;
 import com.myreevuuCoach.fragments.ReevuuAcceptedFragment;
 import com.myreevuuCoach.fragments.ReevuuFragment;
@@ -47,18 +50,23 @@ import com.myreevuuCoach.fragments.ReevuuReviewedFragment;
 import com.myreevuuCoach.gallery.ActivityVideoGallery;
 import com.myreevuuCoach.gallery.VideoGalleryModel;
 import com.myreevuuCoach.gallery.VideoUtils;
+import com.myreevuuCoach.interfaces.DialogRecordVideoCallBack;
 import com.myreevuuCoach.interfaces.InterConst;
 import com.myreevuuCoach.interfaces.UnreadBatchInterface;
+import com.myreevuuCoach.models.DefaultArrayModel;
+import com.myreevuuCoach.models.NotificationCenterModel;
+import com.myreevuuCoach.models.SignUpModel;
 import com.myreevuuCoach.models.SkipModel;
 import com.myreevuuCoach.network.RetrofitClient;
 import com.myreevuuCoach.services.JobSchedulerService;
 import com.myreevuuCoach.services.ListenerService;
-import com.myreevuuCoach.utils.AlertDialogs;
 import com.myreevuuCoach.utils.Constants;
 import com.myreevuuCoach.utils.MarshMallowPermission;
+import com.myreevuuCoach.utils.RealFilePathUtil;
 import com.myreevuuCoach.utils.ScreenOffReceiver;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import me.leolin.shortcutbadger.ShortcutBadger;
@@ -70,10 +78,11 @@ import retrofit2.Response;
  * Created by dev on 12/11/18.
  */
 
-public class LandingActivity extends BaseActivity implements RecordVideoDialog.DialogRecordVideoCallBack, FirebaseListeners.ProfileListenerInterface, UnreadBatchInterface {
+public class LandingActivity extends BaseActivity implements DialogRecordVideoCallBack, FirebaseListeners.ProfileListenerInterface, UnreadBatchInterface {
 
     private static final int UPLOAD_VIDEO = 101;
     private static final int RESULT_CAMERA = 110;
+    private static final int RESULT_GALLERY = 120;
     boolean isAdapterNull = false;
 
     @BindView(R.id.vp_landing)
@@ -136,16 +145,18 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
             //  }
         }
     };
+    private ArrayList<NotificationCenterModel.NotificationResponse> listBroadcastPush = new ArrayList<>();
 
     private void updateNotificationBell() {
         ((HomeFragment) mAdapter.getFragment(InterConst.FRAG_HOME)).checkUnreadNotification();
         ((ChatFragment) mAdapter.getFragment(InterConst.FRAG_CHAT)).checkUnreadNotification();
         ((ReevuuFragment) mAdapter.getFragment(InterConst.FRAG_REEVUU)).checkUnreadNotification();
 
+
     }
 
     @Override
-    public int getContentView() {
+    public int getContentView()/**/ {
         return R.layout.activity_landing;
     }
 
@@ -153,6 +164,15 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
     public void initUI() {
         mUtils.setInt(InterConst.APP_ICON_BADGE_COUNT, 0);
         ShortcutBadger.removeCount(mContext);
+        initIntercom();
+        checkForBroadcastFromNotification();
+        getBroadcastPush();
+
+    }
+
+    private void initIntercom() {
+//      Register a user with Intercom
+        updateOnInterCom();
     }
 
     @Override
@@ -161,7 +181,6 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
         registerReceiver(screenOffBroadcast, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
         FirebaseListeners.setProfileDataListener(this);
-//      FirebaseListeners.getListenerClass(LandingActivity.this).setProfileListener(String.valueOf(mUtils.getInt(FirebaseChatConstants.user_id, -1)));
 
         if (mUtils.getInt(InterConst.DISPLAY_TIP, 0) == 0) {
             if (mSigUpModel.getResponse().getSkip_tip() == 0) {
@@ -171,6 +190,11 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
             }
         } else {
             rlTips.setVisibility(View.GONE);
+        }
+        hitDefaultArrayApi();
+
+        if (mUtils.getInt(InterConst.PROFILE_APPROVED, 0) == 0) {
+            hitCoachProfileApi();
         }
 
         mAdapter = new FragmentPagerAdapter(getSupportFragmentManager());
@@ -220,6 +244,7 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
             }
         });
         loadFragment(InterConst.FRAG_HOME);
+
     }
 
     public void setPagerItem(int position) {
@@ -227,14 +252,12 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
         ReevuuFragment.getInstance().setPagerFirstItem();
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
                 new IntentFilter(Constants.Companion.getNEW_MESSAGE()));
     }
-
 
     @Override
     protected void onDestroy() {
@@ -362,22 +385,12 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
                 break;
 
             case R.id.imgUploadVideo:
-                if (mUtils.getInt(InterConst.PROFILE_APPROVED, 0) == 0) {
-                    AlertDialogs.tryAgainDialog(mContext, getString(R.string.ok), getString(R.string.profile_not_reviewed),
-                            new AlertDialogs.DialogTryAgainClick() {
-                                @Override
-                                public void tryAgain(DialogInterface dialog) {
-                                    dialog.dismiss();
-                                }
-                            });
+                if (!mPermission.checkPermissionForCamera() || !mPermission.checkPermissionForExternalStorage()) {
+                    mPermission.requestPhoneStatePermission(mPermission.permissionList, InterConst.CAMERA_PERMISSION,
+                            MarshMallowPermission.CAMERA_PERMISSION_REQUEST_CODE,
+                            R.string.camera_permission_mess);
                 } else {
-                    if (!mPermission.checkPermissionForCamera() || !mPermission.checkPermissionForExternalStorage()) {
-                        mPermission.requestPhoneStatePermission(mPermission.permissionList, InterConst.CAMERA_PERMISSION,
-                                MarshMallowPermission.CAMERA_PERMISSION_REQUEST_CODE,
-                                R.string.camera_permission_mess);
-                    } else {
-                        cameraOpen();
-                    }
+                    openVideoOptionDialog();
                 }
                 break;
         }
@@ -395,34 +408,40 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
                             && grantResults.length > 0 && grantResults[1] == PackageManager.PERMISSION_GRANTED &&
                             grantResults.length > 0 && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
                         // permissions granted.
-                        cameraOpen();
+                        openVideoOptionDialog();
                     }
                 } else if (grantResults.length == 2) {
                     if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
                             && grantResults.length > 0 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                         // permissions granted.
-                        cameraOpen();
+                        openVideoOptionDialog();
                     }
                 } else if (grantResults.length == 1) {
                     if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         // permissions granted.
-                        cameraOpen();
+                        openVideoOptionDialog();
                     }
                 }
                 break;
         }
     }
 
-    private void cameraOpen() {
-        new RecordVideoDialog(LandingActivity.this, this);
+    private void openVideoOptionDialog() {
+        new DialogVideoOption(LandingActivity.this, this);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
+            File f;
+            String videoPath;
+
 
             switch (requestCode) {
+                case InterConst.REQ_BROADCAST:
+                    listBroadcastPush.remove(0);
+                    checkForBroadCast();
                 case UPLOAD_VIDEO:
                     ((HomeFragment) mAdapter.getFragment(InterConst.FRAG_HOME)).onCallResume();
                     loadFragment(InterConst.FRAG_PROFILE);
@@ -431,9 +450,9 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
                     break;
                 case RESULT_CAMERA:
                     resetAdapters();
-                    File f = new File(Environment.getExternalStorageDirectory() +
+                    f = new File(Environment.getExternalStorageDirectory() +
                             File.separator + InterConst.APP_NAME, recordVideoPath);
-                    String videoPath = f.getAbsolutePath();
+                    videoPath = f.getAbsolutePath();
                     Log.d("SelectedVideoPathCamera", videoPath);
                     try {
                         Bitmap thumb = VideoUtils.getVideoThumb(videoPath);
@@ -460,8 +479,89 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
 
                         e.printStackTrace();
                     }
+//                    try {
+//                        String path = data.getStringExtra("file_path");
+//                        selectedVideoValidation(path, UPLOAD_VIDEO);
+//                    } catch (Exception e) {
+//                        toast("Failed to load");
+//                        e.printStackTrace();
+//                    }
+
+                    break;
+
+                case RESULT_GALLERY:
+                    resetAdapters();
+                    if (data.getData() != null) {
+                        try {
+                            Uri uri = data.getData();
+                            String path = RealFilePathUtil.getPath(this, uri);
+                            selectedVideoValidation(path, UPLOAD_VIDEO);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    //USELESS CODE
+
+                    /*Uri uri = null;
+                    if (data != null) {
+                        uri = data.getData();
+                        Log.i(TAG, "Uri: " + uri.toString());
+                    }
+
+                    f = new File(FileUriUtils.getImageRealPath(getContentResolver(), uri, null));
+                    videoPath = f.getAbsolutePath();
+                    Log.d("SelectedVideoPathCamera", videoPath);
+                    try {
+                        Bitmap thumb = VideoUtils.getVideoThumb(videoPath);
+                        if (thumb == null) {
+                            thumb = VideoUtils.createThumbnailAtTime(videoPath);
+                        }
+                        String realVideoTime = VideoUtils.getVideoTime(mContext, videoPath);
+                        String videoTime = VideoUtils.convertMilliSecToTime(Long.parseLong(realVideoTime));
+                        if (VideoUtils.checkVideoMinTimeValid((Long.parseLong(realVideoTime)))) {
+                            if (VideoUtils.checkVideoMaxTimeValid((Long.parseLong(realVideoTime)))) {
+                                VideoGalleryModel.setSelectedVideoInstance(new VideoGalleryModel(videoPath, thumb, videoTime, false));
+
+                                Intent intent = new Intent(this, AddVideoDetailActivity.class);
+                                startActivityForResult(intent, UPLOAD_VIDEO);
+
+                            } else {
+                                toast(getString(R.string.video_is_greater_than_));
+                            }
+                        } else {
+                            toast(getString(R.string.video_is_less));
+                        }
+                    } catch (Exception e) {
+                        toast(getString(R.string.faled_to_capture_video));
+
+                        e.printStackTrace();
+                    }*/
                     break;
             }
+        }
+    }
+
+    protected void selectedVideoValidation(String path, int UPLOAD_VIDEO) {
+        try {
+            Bitmap thumb = VideoUtils.getVideoThumb(path);
+            String videoTime = VideoUtils.convertMilliSecToTime(Long.parseLong(VideoUtils.getVideoTime(this, path)));
+            VideoGalleryModel galleryVideoList = new VideoGalleryModel(path, thumb, videoTime, false);
+            String realVideoTime = VideoUtils.getVideoTime(this, path);
+            if (VideoUtils.checkVideoMinTimeValid((Long.parseLong(realVideoTime)))) {
+                if (VideoUtils.checkVideoMaxTimeValid((Long.parseLong(realVideoTime)))) {
+                    VideoGalleryModel.setSelectedVideoInstance(galleryVideoList);
+                    Intent intent = new Intent(this, AddVideoDetailActivity.class);
+                    startActivityForResult(intent, UPLOAD_VIDEO);
+                } else {
+                    Toast.makeText(this, "Video is greater than 15 min", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "Video is less than 5 sec", Toast.LENGTH_SHORT).show();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
         }
     }
 
@@ -526,6 +626,11 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
         startActivityForResult(cameraIntent, RESULT_CAMERA);
     }
 
+    void openCameraToRecordVideo() {
+        Intent intent = new Intent(mContext, ActivityCustomRecorder.class);
+        startActivityForResult(intent, RESULT_CAMERA);
+    }
+
     private void nullAdapter() {
         isAdapterNull = true;
         HomeFragment.getInstance().removeAdapter();
@@ -541,6 +646,19 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
     }
 
     @Override
+    public void openBrowse() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("video/*");
+        startActivityForResult(intent, RESULT_GALLERY);
+    }
+
+    @Override
+    public void openVideoOption() {
+        new RecordVideoDialog(LandingActivity.this, this);
+    }
+
+    @Override
     public void onProfileChanged(String value) {
         if (String.valueOf(mUtils.getInt(InterConst.ID, -1)) == value)
             moveToSplash();
@@ -553,7 +671,6 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
             txtUnreadBatchCount.setText(mUnReadBatchCount + "");
         } else {
             txtUnreadBatchCount.setVisibility(View.GONE);
-
         }
 
         if (mUnAppBatchCount == 0) {
@@ -573,5 +690,132 @@ public class LandingActivity extends BaseActivity implements RecordVideoDialog.D
         updateNotificationBell();
         Intent intent = new Intent(this, NotificationCenterActivity.class);
         startActivity(intent);
+    }
+
+    void hitDefaultArrayApi() {
+        if (TextUtils.isEmpty(mUtils.getString(InterConst.SPORTS_RESPONSE, ""))) {
+            if (connectedToInternet(llChat)) {
+                showProgress();
+                Call<DefaultArrayModel> call = RetrofitClient.getInstance().profile_data(
+                        mUtils.getString(InterConst.ACCESS_TOKEN, ""), String.valueOf(
+                                mSigUpModel.getResponse().getSport_info().getSport().getId()));
+                call.enqueue(new Callback<DefaultArrayModel>() {
+                    @Override
+                    public void onResponse(Call<DefaultArrayModel> call, Response<DefaultArrayModel> response) {
+                        hideProgress();
+                        if (response.body().getResponse() != null) {
+                            mUtils.setString(InterConst.SPORTS_RESPONSE, mGson.toJson(response.body()));
+                            ProfileInfoFragment.getInstance().setData();
+                        } else {
+                            toast(response.body().getError().getMessage());
+                            if (response.body().getError().getCode() == InterConst.INVALID_ACCESS) {
+                                moveToSplash();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<DefaultArrayModel> call, Throwable t) {
+                        hideProgress();
+                        toast(t.getMessage());
+                    }
+                });
+            }
+        }
+    }
+
+    void hitCoachProfileApi() {
+        if (connectedToInternet(llChat)) {
+            showProgress();
+            Call<SignUpModel> call = RetrofitClient.getInstance().coach_profile(
+                    mUtils.getString(InterConst.ACCESS_TOKEN, ""),
+                    String.valueOf(mUtils.getInt(InterConst.ID, -1)));
+            call.enqueue(new Callback<SignUpModel>() {
+                @Override
+                public void onResponse(Call<SignUpModel> call, Response<SignUpModel> response) {
+                    hideProgress();
+                    if (response.body().getResponse() != null) {
+                        mUtils.setInt(InterConst.PROFILE_APPROVED, response.body().getResponse().is_approved());
+                        if (mUtils.getInt(InterConst.PROFILE_APPROVED, 0) == 0) {
+                            Intent intent = new Intent(mContext, ProfileNotApprovedActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    } else {
+                        toast(response.body().getError().getMessage());
+                        if (response.body().getError().getCode() == InterConst.INVALID_ACCESS) {
+                            moveToSplash();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<SignUpModel> call, Throwable t) {
+                    hideProgress();
+                    toast(t.getMessage());
+                }
+            });
+        }
+    }
+
+    private void getBroadcastPush() {
+        if (connectedToInternet()) {
+            listBroadcastPush.clear();
+            Call<NotificationCenterModel> call = RetrofitClient.getInstance().getBroadcastPush(
+                    mUtils.getString(InterConst.ACCESS_TOKEN, ""));
+            call.enqueue(new Callback<NotificationCenterModel>() {
+                @Override
+                public void onResponse(@NonNull Call<NotificationCenterModel> call, @NonNull Response<NotificationCenterModel> response) {
+                    if (response.body().getResponse() != null) {
+                        listBroadcastPush.addAll(response.body().getResponse());
+                        if (listBroadcastPush.size() > 0) {
+                            checkForBroadCast();
+                        }
+                    } else {
+                        if (response.body().getError().getCode() == InterConst.INVALID_ACCESS)
+                            moveToSplash();
+                        else {
+                            toast(response.body().getError().getMessage());
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<NotificationCenterModel> call, @NonNull Throwable t) {
+
+                    toast(t.getMessage());
+
+                    t.printStackTrace();
+                }
+            });
+        }
+    }
+
+    void checkForBroadCast() {
+        if (listBroadcastPush.size() > 0) {
+            //notificationUpdate("2", listBroadcastPush.get(0).getBroadcast_id() + "");
+            String title = listBroadcastPush.get(0).getTitle();
+            String message = listBroadcastPush.get(0).getMessage();
+            Intent intent = new Intent(this, BroadcastActivity.class);
+            intent.putExtra("broadcastTitle", title);
+            intent.putExtra("broadcastMessage", message);
+            intent.putExtra(InterConst.NotificationID, listBroadcastPush.get(0).getBroadcast_id());
+            startActivityForResult(intent, InterConst.REQ_BROADCAST);
+        }
+    }
+
+    private void checkForBroadcastFromNotification() {
+        if (getIntent().hasExtra("BROADCAST_DATA_INTENT")) {
+            //   notificationUpdate("1", getIntent().getStringExtra(Const.NotificationID));
+            String title = getIntent().getStringExtra("broadcastTitle");
+            String message = getIntent().getStringExtra("broadcastMessage");
+
+            Intent intent = new Intent(this, BroadcastActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            intent.putExtra("broadcastTitle", title);
+            intent.putExtra("broadcastMessage", message);
+            intent.putExtra(InterConst.NotificationID, getIntent().getStringExtra(InterConst.NotificationID));
+            startActivity(intent);
+        }
     }
 }

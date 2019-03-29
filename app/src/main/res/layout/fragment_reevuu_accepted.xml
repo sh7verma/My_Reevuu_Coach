@@ -6,10 +6,16 @@
     android:background="@color/black"
     android:orientation="vertical">
 
-    <im.ene.toro.widget.Container
-        android:id="@+id/rvRequestsAccepted"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <im.ene.toro.widget.Container
+            android:id="@+id/rvRequestsAccepted"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/pbReviews"

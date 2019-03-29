@@ -26,8 +26,15 @@ data class FeedModel(
             var title: String,
             var views: Int,
             var created_at: String,
-            var description: String
-    ) : Parcelable {
+            var description: String,
+            var post_type: Int, //Video = 2,Image = 1
+            var likes_count: Int,
+            var liked: Int,
+            var comments_count: Int,
+            var video_width: Int,
+            var video_height: Int
+
+            ) :Parcelable {
         constructor(source: Parcel) : this(
                 source.readInt(),
                 source.readInt(),
@@ -43,8 +50,14 @@ data class FeedModel(
                 source.readString(),
                 source.readInt(),
                 source.readString(),
-                source.readString()
-        )
+                source.readString(),
+                source.readInt(),
+                source.readInt(),
+                source.readInt(),
+                source.readInt(),
+                source.readInt(),
+                source.readInt()
+                )
 
         override fun describeContents() = 0
 
@@ -64,6 +77,12 @@ data class FeedModel(
             writeInt(views)
             writeString(created_at)
             writeString(description)
+            writeInt(post_type)
+            writeInt(likes_count)
+            writeInt(liked)
+            writeInt(comments_count)
+            writeInt(video_width)
+            writeInt(video_height)
         }
 
         companion object {

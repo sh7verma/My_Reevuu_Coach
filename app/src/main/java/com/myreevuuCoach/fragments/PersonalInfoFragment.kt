@@ -29,6 +29,7 @@ import com.myreevuuCoach.adapters.OptionsAdapter
 import com.myreevuuCoach.chipsLibs.ChipInterface
 import com.myreevuuCoach.chipsLibs.ChipsInput
 import com.myreevuuCoach.filePicker.FilePickerBuilder
+import com.myreevuuCoach.interfaces.InterConst
 import com.myreevuuCoach.models.OptionsModel
 import com.myreevuuCoach.utils.Constants
 import com.myreevuuCoach.utils.OnViewGlobalLayoutListener
@@ -64,7 +65,9 @@ class PersonalInfoFragment : BaseKotlinFragment() {
 
         ciEmail.setTypeface(typeface)
         ciEmail.setTextSize(resources.getDimension(R.dimen._2sdp))
-
+        if (!TextUtils.isEmpty(utils.getString(InterConst.REFERRED_BY, ""))) {
+            edReferCode.setText(utils.getString(InterConst.REFERRED_BY, ""))
+        }
         ciEmail.addChipsListener(object : ChipsInput.ChipsListener {
             override fun onChipAdded(chip: ChipInterface, newSize: Int) {
                 mCreateProfileActivity.mAthleteArray.add(chip.label)
@@ -95,7 +98,7 @@ class PersonalInfoFragment : BaseKotlinFragment() {
 
         edUserName.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
 
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER ) {
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 if (edUserName.text.toString().trim().isNotEmpty()) {
                     if (mCreateProfileActivity.connectedToInternet()) {
                         mCreateProfileActivity.hitVerifyUsernameAPI(edUserName.text.toString().trim(), txtUsernameStatus)

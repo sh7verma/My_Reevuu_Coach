@@ -6,9 +6,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
-import retrofit2.http.DELETE
-
-
 
 
 interface ApiInterface {
@@ -43,6 +40,7 @@ interface ApiInterface {
                    @Field("coach_experience") coach_experience: Int,
                    @Field("expertises") expertises: String,
                    @Field("about") about: String,
+                   @Field("college_name") collaeeName: String,
                    @Field("certificates") certificates: String): Call<SignUpModel>
 
     @Multipart
@@ -65,6 +63,7 @@ interface ApiInterface {
                       @Part("last_name") last_name: RequestBody,
                       @Part("ssn") ssn: RequestBody,
                       @Part("country_code") country_code: RequestBody,
+                      @Part("referral_code") referral_code: RequestBody,
                       @Part user_image: MultipartBody.Part,
                       @Part contractor_forms: MultipartBody.Part,
                       @Part document: MultipartBody.Part): Call<SignUpModel>
@@ -119,6 +118,10 @@ interface ApiInterface {
                     @Part("name") name: RequestBody,
                     @Part("gender") gender: RequestBody): Call<SignUpModel>
 
+    @GET("/api/v1/profiles")
+    fun getProfile(@Query("access_token") access_token: String,
+                   @Query("id") name: String): Call<SignUpModel>
+
     @GET("/api/v1/payments")
     fun payments(@Query("access_token") access_token: String): Call<PaymentModel>
 
@@ -133,6 +136,7 @@ interface ApiInterface {
     @POST("/api/v1/review_requests/response_a_request")
     fun response_a_request(@Field("access_token") access_token: String,
                            @Field("id") id: String,
+                           @Field("accept_type") accept_type: String,
                            @Field("review_status") review_status: String): Call<RequestsModel>
 
     @FormUrlEncoded
@@ -192,7 +196,8 @@ interface ApiInterface {
     @PATCH("/api/v1/notifications")
     fun setNotification(@Field("access_token") access_token: String,
                         @Field("read_type") read_type: String,
-                        @Field("notification_id") notification_id: String): Call<SkipModel>  //0 = Off //1 == on
+                        @Field("notification_id") notification_id: String,
+                        @Field("broadcast_id") broadcast_id: String): Call<SkipModel>  //0 = Off //1 == on
 
     @GET("/api/v1/video_by_id")
     fun getSingleVideo(@Query("access_token") access_token: String,
@@ -202,5 +207,48 @@ interface ApiInterface {
     fun getRequestDetailByID(@Query("access_token") access_token: String,
                              @Query("id") videoId: String): Call<RequestsModel>
 
+    @GET("/api/v1/profile_data")
+    fun profile_data(@Query("access_token") access_token: String,
+                     @Query("sport_id") sport_id: String): Call<DefaultArrayModel>
 
+    @GET("/api/v1/coach_profile")
+    fun coach_profile(@Query("access_token") access_token: String,
+                      @Query("id") id: String): Call<SignUpModel>
+
+    @GET("/api/v1/broadcasts")
+    fun getBroadcastPush(@Query("access_token") access_token: String): Call<NotificationCenterModel>
+
+
+    @GET("/api/v1/sports")
+    fun sports_array(@Query("access_token") access_token: String): Call<SportsArrayModel>
+
+    @FormUrlEncoded
+    @POST("/api/v1/comments/latest_comments")
+    fun getLatestCommnets(@Field("access_token") access_token: String,
+                          @Field("video_id") post_id: Int): Call<CommentModel>
+
+    @GET("/api/v1/comments")
+    fun getComments(@Query("access_token") access_token: String,
+                    @Query("video_id") post_id: Int,
+                    @Query("page") page: Int): Call<CommentModel>
+
+    @FormUrlEncoded
+    @POST("/api/v1/comments")
+    fun postComments(@Field("access_token") access_token: String,
+                     @Field("video_id") article_id: Int,
+                     @Field("comment") comment: String): Call<CommentModelSingle>
+
+    @FormUrlEncoded
+    @HTTP(method = "DELETE", path = "comments", hasBody = true)
+    fun deleteComment(@Field("access_token") access_token: String,
+                      @Field("id") id: Int): Call<BaseSuccessModel>
+
+    @FormUrlEncoded
+    @POST("/api/v1/likes")
+    fun setFavArticles(@Field("access_token") access_token: String,
+                       @Field("video_id") article_id: Int): Call<BaseSuccessModel>
+
+    @GET("/api/v1/video_by_id")
+    fun getFeedSingleVideo(@Query("access_token") access_token: String,
+                           @Query("id") videoId: String): Call<VideoModel>
 }

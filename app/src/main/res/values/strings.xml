@@ -87,7 +87,7 @@
     <string name="add_more">add more</string>
     <string name="other_certificate">Other Certificate</string>
     <string name="area_of_expertise">Area of Expertise</string>
-    <string name="your_request_for_coach_has_been_submitted_successfully_this_will_take_some_time_to_verification">Your request for coach has been submitted successfully. This will take some time for verification.</string>
+    <string name="your_request_for_coach_has_been_submitted_successfully_this_will_take_some_time_to_verification">We will email you as soon as you have been vetted by the ReeVuu team and verified as a coach. Thanks!</string>
     <string name="ok">OK</string>
     <string name="create_profile">Create Profile</string>
     <string name="personal_info">Personal Info</string>
@@ -139,7 +139,7 @@
     <string name="athletes_will_specifically_request_you_to_review_their_video_based_off_of_what_you_post">Use this button to upload videos of training sessions and other content atheletes may find interesting. Athletes will specifically request you to review their video based off of what you post!</string>
     <string name="about_you_bio">About You / Bio</string>
     <string name="how_big_is_your_team_invite_athletes_and_help_them_reach_their_full_potential_by_the_way_this_is_a_competition_so_the_more_you_invite_the_better_your_chance_to_win_xyz_and_bragging_rights">How big is your team, invite athletes and help them reach their full potential. By the way this is a competition, so the more you invite the better your chance to win XYZ and bragging rights</string>
-    <string name="tell_us_all_about_you_here_don_t_hold_back_this_is_where_you_sell_yourself_to_make_sure_athletes_choose_you_to_reevuu_their_videos_brag_brag_brag_please_give_mention_any_athletic_or_coaching_achievements_certifications_or_awards">Tell us all about you here. Don\'t hold back, this is where you sell yourself to make sure athletes choose you to ReeVuu their videos.Brag, Brag, Brag! Please give mention any athletic or coaching achievements, certifications or awards.</string>
+    <string name="tell_us_all_about_you_here_don_t_hold_back_this_is_where_you_sell_yourself_to_make_sure_athletes_choose_you_to_reevuu_their_videos_brag_brag_brag_please_give_mention_any_athletic_or_coaching_achievements_certifications_or_awards">Tell us about yourself here. What have you accomplished? What areas do you specialize in? Do you have any certifications or awards? This is the place to brag about yourself. Athletes will choose you based on this section so go on and brag a little!</string>
     <string name="CONFIRM">CONFIRM</string>
     <string name="CANCEL">CANCEL</string>
     <string name="payments">PAYMENTS</string>
@@ -259,6 +259,26 @@
     <string name="delete_conversation">Are you sure you want to delete this conversation?</string>
     <string name="declined_message">The request does\'nt exist any longer.</string>
     <string name="profile_not_reviewed">Your profile is not reviewed yet. Please contact admin.</string>
+    <string name="select_level">SELECT OPTION</string>
+    <string name="are_you_compete">Are you compete</string>
+    <string name="please_enter">Please enter</string>
+    <string name="processing">PROCESSING</string>
+    <string name="accepted_request">Congratulations, you have successfully accepted this video for review. You will receive a confirmation from Athlete within 24 hours.</string>
+    <string name="processing_request"> You have already accepted this video and you will receive Athlete\'s confirmation within 24 hours.</string>
+    <string name="invite_friends">Invite Friends</string>
+    <string name="referral_code">Referral Code</string>
+    <string name="coach_video">COACH VIDEO</string>
+    <string name="athlete_video">ATHLETE VIDEO</string>
+    <string name="admin_video">ADMIN VIDEO</string>
+    <string name="comments">comments</string>
+    <string name="write_a_comment">Write a comment</string>
+    <string name="save">SAVE</string>
+    <string name="field_not_empty">This field connot be empty</string>
+    <string name="check_verification_status">Check status</string>
+    <string name="please_click_the_link_to_complete_signup_process">Please click the link to complete signup process.</string>
+    <string name="a_verification_link_has_been_sent_to_your_registered_email">A verification link has been sent to your registered email</string>
+    <string name="email_not_verified">Your email is not verified</string>
+    <string name="we_will_email_you_as_soon_as_you_have_been_vetted_by_the_reevuu_team_and_verified_as_a_coach_thanks">We will email you as soon as you have been vetted by the ReeVuu team and verified as a coach. Thanks!</string>
 
     <string-array name="CountryCodes">
         <item>93,AF</item>

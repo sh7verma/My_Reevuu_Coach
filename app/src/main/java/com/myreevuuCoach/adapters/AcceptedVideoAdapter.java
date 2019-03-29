@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -78,13 +79,13 @@ public class AcceptedVideoAdapter extends RecyclerView.Adapter<AcceptedVideoAdap
             Log.e("Exception", "AcceptedVideoAdapter " + e);
         }
 
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
         mData = list;
         notifyDataSetChanged();
-//            }
-//        }, 100);
+            }
+        }, 100);
     }
 
     @NonNull
@@ -102,15 +103,23 @@ public class AcceptedVideoAdapter extends RecyclerView.Adapter<AcceptedVideoAdap
         holder.txtSportOwner.setText("By " + mData.get(holder.getAdapterPosition()).getVideo().getFullname());
         holder.txtSportName.setText(mData.get(holder.getAdapterPosition()).getVideo().getSport());
 
-        if (mData.get(holder.getAdapterPosition()).getReview_status() == Integer.parseInt(InterConst.REEVUU_REQUESTS_REVIEWED)) {
+        if (mData.get(holder.getAdapterPosition()).getReview_status() ==
+                Integer.parseInt(InterConst.REEVUU_REQUESTS_REVIEWED)) {
             holder.txtRemainingTime.setVisibility(View.GONE);
-        } else if (mData.get(holder.getAdapterPosition()).getReview_status() == Integer.parseInt(InterConst.REEVUU_REQUESTS_ACCEPTED)) {
+        } else if (mData.get(holder.getAdapterPosition()).getReview_status() ==
+                Integer.parseInt(InterConst.REEVUU_REQUESTS_ACCEPTED)) {
             holder.txtRemainingTime.setVisibility(View.VISIBLE);
-            if (counterMap.containsKey(mData.get(holder.getAdapterPosition()).getId())) {
-                counterMap.get(mData.get(holder.getAdapterPosition()).getId()).cancel();
-                counterMap.remove(mData.get(holder.getAdapterPosition()).getId());
+
+            if (mData.get(holder.getAdapterPosition()).getIs_last_request() ==
+                    Integer.parseInt(InterConst.IN_PROCESSING)) {
+                holder.txtRemainingTime.setText(R.string.processing);
+            } else {
+                if (counterMap.containsKey(mData.get(holder.getAdapterPosition()).getId())) {
+                    counterMap.get(mData.get(holder.getAdapterPosition()).getId()).cancel();
+                    counterMap.remove(mData.get(holder.getAdapterPosition()).getId());
+                }
+                setCountDownTimer(holder, holder.getAdapterPosition());
             }
-            setCountDownTimer(holder, holder.getAdapterPosition());
         }
 
         holder.bind(Uri.parse(mData.get(holder.getAdapterPosition()).getVideo().getUrl()));
@@ -167,6 +176,10 @@ public class AcceptedVideoAdapter extends RecyclerView.Adapter<AcceptedVideoAdap
     }
 
     private void setCountDownTimer(@NonNull final ViewHolder holder, final int position) {
+//      it's not copy pasted it is made by shubham verma
+//      for any queries contact shubham.verma740@gmail.com
+
+
 
         String[] s = mData.get(position).getRemaining_time().split(":");
         int hrs = Integer.parseInt(s[0].trim());
@@ -207,12 +220,15 @@ public class AcceptedVideoAdapter extends RecyclerView.Adapter<AcceptedVideoAdap
             }
 
             public void onFinish() {
+                // made by navneet
+                counterMap.remove(mData.get(position).getId());
                 mData.remove(position);
                 notifyAdapter(mData);
             }
 
 
         }.start();
+        if (mData.size()>0)
         counterMap.put(mData.get(position).getId(), timer);
     }
 
@@ -292,7 +308,7 @@ public class AcceptedVideoAdapter extends RecyclerView.Adapter<AcceptedVideoAdap
             if (helper != null) {
                 helper.play();
                 thumb.animate().alpha(0).setDuration(500);
-                
+
                 if (VideoConst.IS_MUSIC_ENABLE) {
                     playerView.getPlayer().setVolume(1);
                     imgSound.setImageResource(R.mipmap.ic_unmute);

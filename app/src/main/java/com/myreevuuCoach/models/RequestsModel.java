@@ -1,12 +1,9 @@
 package com.myreevuuCoach.models;
 
-import android.os.CountDownTimer;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.util.ArrayList;
 
 /**
  * Created by dev on 4/12/18.
@@ -41,7 +38,7 @@ public class RequestsModel extends ErrorModelJava {
     }
 
     public static class ResponseBean implements Parcelable {
-        public static final Parcelable.Creator<ResponseBean> CREATOR = new Parcelable.Creator<ResponseBean>() {
+        public static final Creator<ResponseBean> CREATOR = new Creator<ResponseBean>() {
             @Override
             public ResponseBean createFromParcel(Parcel source) {
                 return new ResponseBean(source);
@@ -75,6 +72,8 @@ public class RequestsModel extends ErrorModelJava {
         private FeedModel.Response video;
         private String remaining_time;
         private String reviewed_at;
+        private int is_accepted;
+        private int is_last_request;
 
         public ResponseBean() {
         }
@@ -90,6 +89,24 @@ public class RequestsModel extends ErrorModelJava {
             this.video = in.readParcelable(FeedModel.Response.class.getClassLoader());
             this.remaining_time = in.readString();
             this.reviewed_at = in.readString();
+            this.is_accepted = in.readInt();
+            this.is_last_request = in.readInt();
+        }
+
+        public int getIs_accepted() {
+            return is_accepted;
+        }
+
+        public void setIs_accepted(int is_accepted) {
+            this.is_accepted = is_accepted;
+        }
+
+        public int getIs_last_request() {
+            return is_last_request;
+        }
+
+        public void setIs_last_request(int is_last_request) {
+            this.is_last_request = is_last_request;
         }
 
         public FeedModel.Response getVideo() {
@@ -190,6 +207,8 @@ public class RequestsModel extends ErrorModelJava {
             dest.writeParcelable(this.video, flags);
             dest.writeString(this.remaining_time);
             dest.writeString(this.reviewed_at);
+            dest.writeInt(this.is_accepted);
+            dest.writeInt(this.is_last_request);
         }
     }
 }

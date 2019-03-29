@@ -24,7 +24,7 @@ public interface InterConst {
     String GENDER_STATUS = "gender_status";
     String NAME = "name";
     String PROFILE_PIC = "profile_pric";
-    String REVIEW_REQUEST_ID = "review_request_id";
+    String REVIEW_REQUEST_ID = "reviewRequestId";
     String VIDEO_URL = "VIDEO_URL";
     String RESPONSE = "response";
     String USER_NAME = "user_name";
@@ -38,6 +38,8 @@ public interface InterConst {
     int PROFILE_VIDEO_FRAG = 1;
     int PROFILE_PAYMENT_FRAG = 2;
     String PROFILE_VIDEO_POSITION = "profile_video_position";
+    String REGEX_CERTIFICATED = "#split#";
+    String DATA_REMOVED = "#split#_removed";
 
     String BROADCAST_VIDEO_FRAG_DELETE = "android.profilevideoFragment.reciver_delete";
     String BROADCAST_HOME_FRAG_DELETE = "android.homevideoFragment.reciver_delete";
@@ -60,6 +62,7 @@ public interface InterConst {
     Object APP_NAME = "MyReevuu";
     String NOTIFICATION_CHANNEL = "1";
     String EMAIL_PUSH_STATUS = "email_push_status";
+    String SPORTS_RESPONSE = "sports_response";
 
     String REEVUU_REQUESTS_REQUESTED = "0";
     String REEVUU_REQUESTS_ACCEPTED = "1";
@@ -91,6 +94,18 @@ public interface InterConst {
     String CLEAR_CHAT = "1";
     String DELETE_DIALOG = "2";
     String NotificationID = "NotificationID";
+    String IN_PROCESSING = "0";
+    String BROADCAST_VIDEO_PROCESSED = "video_processed";
+    String BROADCAST_VIDEO_ADDED_RECIVER = "BROADCAST_VIDEO_ADDED_RECIVER";
+    String FCM_TOKEN = "deviceToken";
+    String REFERRAL_CODE = "referralCode";
+    String REFERRED_BY = "REFERRED_BY";
+    String FIREBASE_TOPIC_1 = "android_coach";
+    String FIREBASE_TOPIC_2 = "android_both";
+    String FIREBASE_TOPIC_3 = "android_admin_articles";
+    int POST_TYPE_IMAGE=1;
+    int POST_TYPE_VIDEO=2;
+    int REQ_BROADCAST = 1009;
 
     /*WebView*/
     enum Webview {
@@ -102,6 +117,8 @@ public interface InterConst {
 
     class PUSH_TYPE_EMAIL_VERIFY {
     }
+
+
     /*WebView*/
 
 }

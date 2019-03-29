@@ -58,9 +58,7 @@ class FeedAdapter(var feedArray: List<FeedModel.Response>, var activity: Fragmen
         }
 
         holder.cvFeed.setOnClickListener {
-
             itemClick!!.onItemClick(position)
-
         }
 
         Glide.with(activity).load(feedArray[position].thumbnail).apply(RequestOptions()
@@ -78,6 +76,7 @@ class FeedAdapter(var feedArray: List<FeedModel.Response>, var activity: Fragmen
         val txtSportName = itemView.txtSportName!!
         val imgSound = itemView.imgSound!!
         val cvFeed = itemView.cvFeed!!
+
 
 
         override fun videoStarted() {

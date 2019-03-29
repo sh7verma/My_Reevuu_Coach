@@ -16,25 +16,26 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.myreevuuCoach.R;
+import com.myreevuuCoach.activities.BroadcastActivity;
 import com.myreevuuCoach.activities.ConversationActivity;
+import com.myreevuuCoach.activities.FeedDetailActivity;
 import com.myreevuuCoach.activities.LandingActivity;
-import com.myreevuuCoach.activities.MyFeedDetailActivity;
 import com.myreevuuCoach.activities.RegisterCoachActivity;
 import com.myreevuuCoach.activities.RequestDetailActivity;
-import com.myreevuuCoach.fragments.HomeFragment;
-import com.myreevuuCoach.fragments.ReevuuRequestsFragment;
 import com.myreevuuCoach.interfaces.InterConst;
 import com.myreevuuCoach.utils.Constants;
 import com.myreevuuCoach.utils.Utils;
 
 import java.util.Map;
 
+import io.intercom.android.sdk.push.IntercomPushClient;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     public static final String NOTIFICATION_CHANNEL_ID = "10001";
     private static final String TAG = "MyFirebaseMsgService";
+    private final IntercomPushClient intercomPushClient = new IntercomPushClient();
     Utils utils;
     private LocalBroadcastManager broadcaster;
 
@@ -49,11 +50,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         utils = new Utils(getApplicationContext());
         broadcaster = LocalBroadcastManager.getInstance(getBaseContext());
         // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
-            Map<String, String> data = remoteMessage.getData();
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-            sendNotification(data);
+
+        if (intercomPushClient.isIntercomPush(remoteMessage.getData())) {
+            intercomPushClient.handlePush(getApplication(), remoteMessage.getData());
+        } else {
+            if (remoteMessage.getData().size() > 0) {
+                Map<String, String> data = remoteMessage.getData();
+                Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+                sendNotification(data);
+            }
         }
+
     }
 
     private void sendNotification(Map<String, String> messageBody) {
@@ -61,7 +68,36 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String message = messageBody.get("message");
         int notificationId;
 
-        if (messageBody.get("push_type").equalsIgnoreCase("1")) {
+        if (messageBody.get("push_type").equalsIgnoreCase("13")) {
+            if (utils.getInt("Background", 0) == 1) {// background
+                intent = new Intent(this, LandingActivity.class);
+                intent.putExtra("BROADCAST_DATA_INTENT", "Yes");
+                intent.putExtra("broadcastTitle", messageBody.get("title"));
+                intent.putExtra("broadcastMessage", message);
+                intent.putExtra(InterConst.NotificationID, messageBody.get("broadcast_id"));
+
+                ringNotification(intent, message, 0, messageBody.get("title"));
+            } else {
+                intent = new Intent(this, BroadcastActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                intent.putExtra("broadcastTitle", messageBody.get("title"));
+                intent.putExtra("broadcastMessage", message);
+                intent.putExtra(InterConst.NotificationID, messageBody.get("broadcast_id"));
+                startActivity(intent);
+            }
+        } else if (messageBody.get("push_type").equals("14")) {
+
+            if (utils.getInt(InterConst.BACKGROUND, InterConst.APP_OFFLINE) == InterConst.APP_ONLINE) {
+                Intent notificationIntent = new Intent(InterConst.BROADCAST_VIDEO_ADDED_RECIVER);
+                notificationIntent.putExtra(InterConst.INTEND_EXTRA,"");
+                sendBroadcast(notificationIntent);
+            }
+
+            intent = new Intent(this, FeedDetailActivity.class);
+            intent.putExtra("id", messageBody.get("video_id") + "");
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            ringNotification(intent, message, 0, messageBody.get("title"));
+        } else if (messageBody.get("push_type").equalsIgnoreCase("1")) {
             if (utils.getInt("inside_verify", 0) == 0) {
                 /// outside verify email activity
                 intent = new Intent(this, RegisterCoachActivity.class);
@@ -86,9 +122,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     sendBroadcast(new Intent(Constants.Companion.getNEW_MESSAGE()));
 
             intent = new Intent(this, RequestDetailActivity.class);
-            intent.putExtra("review_request_id", messageBody.get("review_request_id").toString());
-            intent.putExtra(InterConst.NotificationID, messageBody.get("id")+"");
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("reviewRequestId", messageBody.get("review_request_id").toString());
+            intent.putExtra(InterConst.NotificationID, messageBody.get("id") + "");
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             ringNotification(intent, message, 4, messageBody.get("title"));
 
             int count = utils.getInt(InterConst.NEW_REQUEST_COUNT, 0);
@@ -96,9 +132,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             utils.setInt(InterConst.NEW_REQUEST_COUNT, count);
 
             if (utils.getInt(InterConst.BACKGROUND, InterConst.APP_OFFLINE) == InterConst.APP_ONLINE) {
-                ReevuuRequestsFragment.getInstance().onCallResume();
-                HomeFragment.getInstance().setLocalNewRequestCount();
+                Intent notificationIntent = new Intent(InterConst.BROADCAST_VIDEO_ADDED_RECIVER);
+                sendBroadcast(notificationIntent);
             }
+
         } else if (messageBody.get("push_type").equalsIgnoreCase("8")) {
             if (!utils.getString("chat_dialog_id", "").equals(messageBody.get("chat_dialog_id"))) {
 
@@ -116,19 +153,32 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                 ringNotification(intent, message, 0, messageBody.get("sender_name"));
             }
+        } else if (messageBody.get("push_type").equalsIgnoreCase("12")) {
+
+            Intent notificationIntent = new Intent(InterConst.BROADCAST_VIDEO_PROCESSED);
+            sendBroadcast(notificationIntent);
+
+            intent = new Intent(this, RequestDetailActivity.class);
+            intent.putExtra("reviewRequestId", messageBody.get("review_request_id").toString());
+            intent.putExtra(InterConst.NotificationID, messageBody.get("id") + "");
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            ringNotification(intent, message, 4, messageBody.get("title"));
+
         } else {
             intent = new Intent(this, LandingActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             ringNotification(intent, message, 0, messageBody.get("title"));
         }
+
+
     }
 
     void ringNotification(Intent intent, String mess, int notificationId, String title) {
         int mIcon;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            mIcon = R.mipmap.ic_launcher_round;
+            mIcon = R.mipmap.ic_logo;
         else
-            mIcon = R.mipmap.ic_launcher;
+            mIcon = R.mipmap.ic_logo;
 
         int uniqueInt = (int) (System.currentTimeMillis() & 0xfffffff);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, uniqueInt, intent,

@@ -140,7 +140,7 @@ public class NotificationCenterActivity extends BaseActivity implements AdapterC
             Call<SkipModel> call = RetrofitClient.getInstance().setNotification(
                     mUtils.getString(InterConst.ACCESS_TOKEN, ""),
                     notificationReadType + "",
-                    notificationID + "");
+                    notificationID + "","");
             call.enqueue(new Callback<SkipModel>() {
                 @Override
                 public void onResponse(@NonNull Call<SkipModel> call, @NonNull Response<SkipModel> response) {
@@ -171,11 +171,11 @@ public class NotificationCenterActivity extends BaseActivity implements AdapterC
         String push_type = listNotifications.get(rowPosition).getPush_type();
         listNotifications.get(rowPosition).setRead_status(1);
         Intent intent = null;
-        if (push_type.equals("4")) {
+        if (push_type.equals("4") || push_type.equals("12")) {
             intent = new Intent(this, RequestDetailActivity.class);
-            intent.putExtra("review_request_id", listNotifications.get(rowPosition).getReview_request_id() + "");
+            intent.putExtra("reviewRequestId", listNotifications.get(rowPosition).getReview_request_id() + "");
+            startActivity(intent);
         }
-        startActivity(intent);
         notificationCenterAdapter.notifyItemChanged(rowPosition);
     }
 }

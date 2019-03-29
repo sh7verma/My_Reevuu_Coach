@@ -56,7 +56,7 @@ public class EditProfileActivity extends BaseActivity {
     LinearLayout llGender;
     @BindView(R.id.txtGender)
     TextView txtGender;
-    //    @BindView(R.id.edEmail)
+//    @BindView(R.id.edEmail)
 //    EditText edEmail;
     @BindView(R.id.imgEditPic)
     ImageView imgEditPic;
@@ -270,7 +270,7 @@ public class EditProfileActivity extends BaseActivity {
                     } else if (mUtils.getInt(InterConst.GENDER_STATUS, -1) == 2) {
                         mUtils.setString(InterConst.GENDER, InterConst.OTHER);
                     }
-
+                    updateOnInterCom();
                     ProfileFragment.getInstance().onResetData();
                     ProfileVideoFragment.getInstance().onVideoAdded();
 

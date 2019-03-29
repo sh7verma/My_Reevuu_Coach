@@ -1,5 +1,6 @@
 package com.myreevuuCoach.activities
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -19,18 +20,23 @@ import com.bumptech.glide.request.RequestOptions
 import com.myreevuuCoach.R
 import com.myreevuuCoach.adapters.ReportAdapter
 import com.myreevuuCoach.customViews.FlowLayout
+import com.myreevuuCoach.firebase.FirebaseChatConstants
 import com.myreevuuCoach.interfaces.InterConst
 import com.myreevuuCoach.models.BaseSuccessModel
 import com.myreevuuCoach.models.FeedModel
 import com.myreevuuCoach.models.OptionsModel
+import com.myreevuuCoach.models.VideoModel
 import com.myreevuuCoach.network.RetrofitClient
+import com.myreevuuCoach.services.CommentIntentServiceResult
 import com.myreevuuCoach.utils.Constants
 import com.myreevuuCoach.utils.ErrorUtils
 import com.myreevuuCoach.utils.OnViewGlobalLayoutListener
+import com.squareup.picasso.Picasso
 import com.universalvideoview.UniversalVideoView
 import kotlinx.android.synthetic.main.activity_feed_detail.*
 import kotlinx.android.synthetic.main.dialog_options.*
 import kotlinx.android.synthetic.main.layout_expertise.view.*
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -49,21 +55,87 @@ class FeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewCal
 
     override fun initUI() {
         llMediaController.setOnLoadingView(R.layout.activity_video_loading)
-        videoView.setMediaController(llMediaController)
-        setVideoAreaSize()
-        videoView.setVideoViewCallback(this)
+
     }
 
     override fun onCreateStuff() {
-        mFeedResponse = intent.getParcelableExtra("feedData")
-        videoView.start()
-        populateBottomData()
+        if (intent.hasExtra("feedData")) {
+            mFeedResponse = intent.getParcelableExtra("feedData")
+            populateBottomData()
+            setData()
+        } else {
+            hitVideoById()
+        }
+
+    }
+
+    fun setData() {
+        if (mFeedResponse.post_type == InterConst.POST_TYPE_VIDEO) {
+            flVideo.visibility = View.VISIBLE
+            imgThumbnail.visibility = View.GONE
+
+            videoView.setMediaController(llMediaController)
+            videoView.setVideoViewCallback(this)
+            setVideoAreaSize()
+            videoView.start()
+
+        } else {
+            flVideo.visibility = View.GONE
+            videoView.visibility = View.GONE
+            llMediaController.visibility = View.GONE
+            imgThumbnail.visibility = View.VISIBLE
+
+            if (mFeedResponse.liked == 1) {
+                imgLike.setImageResource(R.mipmap.ic_like_selected)
+            } else {
+                imgLike.setImageResource(R.mipmap.ic_like)
+            }
+            txtComment.text = mFeedResponse.comments_count.toString()
+            txtLikeCount.text = mFeedResponse.likes_count.toString()
+
+
+            if (!mFeedResponse.thumbnail.equals("", ignoreCase = true)) {
+                Picasso.get()
+                        .load(mFeedResponse.thumbnail)
+                        .placeholder(R.mipmap.ic_ph)
+                        .error(R.mipmap.ic_ph).into(imgThumbnail)
+            } else {
+                Picasso.get()
+                        .load(R.mipmap.ic_ph)
+                        .placeholder(R.mipmap.ic_ph)
+                        .error(R.mipmap.ic_ph).into(imgThumbnail)
+            }
+        }
+
+        if (mFeedResponse.user_type == FirebaseChatConstants.TYPE_ADMIN) {
+
+            llDate.visibility = View.GONE
+            llInfo.visibility = View.GONE
+
+            llAdminInfo.visibility = View.VISIBLE
+
+            llAdmin.visibility = View.VISIBLE
+            imgProfilePic.visibility = View.GONE
+            txtViews.visibility = View.GONE
+
+            txtAdminSportName.text = mFeedResponse.sport
+            txtAdminDateTime.text = Constants.displayDateTime(mFeedResponse.created_at)
+
+        } else {
+            llAdmin.visibility = View.GONE
+        }
+
     }
 
     override fun initListener() {
         imgReport.setOnClickListener(this)
         imgClose.setOnClickListener(this)
         llProfile.setOnClickListener(this)
+        imgLike.setOnClickListener(this)
+        txtLikeCount.setOnClickListener(this)
+        imgComment.setOnClickListener(this)
+        txtComment.setOnClickListener(this)
+        imgShare.setOnClickListener(this)
     }
 
     override fun getContext() = this
@@ -85,8 +157,115 @@ class FeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewCal
                     startActivity(intent)
                 }
             }
+
+            imgLike -> {
+                setLikedStatus()
+            }
+            txtLikeCount -> {
+                setLikedStatus()
+            }
+            imgComment -> {
+                openCommentPage()
+            }
+            txtComment -> {
+                openCommentPage()
+            }
+            imgShare -> {
+                shareTextUrl()
+            }
         }
     }
+
+    private fun markArticleFav() {
+        mFeedResponse.likes_count = mFeedResponse.likes_count + 1
+        txtLikeCount.text = mFeedResponse.likes_count.toString()
+        imgLike.setImageResource(R.mipmap.ic_like_selected)
+    }
+
+
+    private fun removeArticleFav() {
+        mFeedResponse.likes_count = mFeedResponse.likes_count - 1
+        txtLikeCount.text = mFeedResponse.likes_count.toString()
+        imgLike.setImageResource(R.mipmap.ic_like)
+    }
+
+    private fun setLikedStatus() {
+        if (connectedToInternet()) {
+
+            var call: Call<BaseSuccessModel> = RetrofitClient.getInstance().setFavArticles(
+                    mUtils.getString(InterConst.ACCESS_TOKEN, ""),
+                    mFeedResponse.id
+            )
+            call.enqueue(object : retrofit2.Callback<BaseSuccessModel> {
+                override fun onResponse(call: Call<BaseSuccessModel>, response: Response<BaseSuccessModel>) {
+                    dismissLoader()
+                    if (response.body() != null) {
+                        var mode: VideoModel.ResponseBean = VideoModel.ResponseBean()
+
+                        if (response.body().response.message.toLowerCase().contains("un")) {
+
+                            mode.liked = 0
+                            mode.likes_count = mFeedResponse.likes_count - 1
+
+                            EventBus.getDefault().post(CommentIntentServiceResult(1, 0, mode))
+                            removeArticleFav()
+                        } else {
+
+                            mode.liked = 1
+                            mode.likes_count = mFeedResponse.likes_count + 1
+
+                            EventBus.getDefault().post(CommentIntentServiceResult(1, 1, mode))
+                            markArticleFav()
+                        }
+                    } else {
+                        if (response.body().error.code == 506) {
+                            EventBus.getDefault().post(CommentIntentServiceResult(4, 0, null))
+                        } else if (response.body().error.code == InterConst.INVALID_ACCESS)
+                            moveToSplash()
+                        else
+                            showAlert(llBottom, response.body().error.message)
+                    }
+                }
+
+                override fun onFailure(call: Call<BaseSuccessModel>, t: Throwable) {
+                    dismissLoader()
+                    showAlert(llBottom, t.toString())
+                    t.printStackTrace()
+                }
+            })
+        }
+    }
+
+    fun shareTextUrl() {
+        val share = Intent(android.content.Intent.ACTION_SEND)
+        share.type = "text/plain"
+        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+
+        // Add data to the intent, the receiving app will decide
+        // what to do with it.
+        //  share.putExtra(Intent.EXTRA_SUBJECT, "Title Of The Post");
+        share.putExtra(Intent.EXTRA_TEXT, mFeedResponse.url)
+        startActivity(Intent.createChooser(share, "Share link!"))
+    }
+
+    private fun articleFavDialog(Message: String) {
+        val alertDialogBuilder = AlertDialog.Builder(mContext)
+        //  alertDialogBuilder.setTitle(getString(R.string.logout));
+        alertDialogBuilder.setMessage(Message)
+        alertDialogBuilder.setPositiveButton("Ok"
+        ) { arg0, arg1 ->
+
+        }
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+    }
+
+    private fun openCommentPage() {
+        val intent = Intent(this, CommentActivity::class.java)
+        intent.putExtra("post_id", mFeedResponse.id)
+        startActivity(intent)
+    }
+
 
     private fun reportDialog(optionsArray: ArrayList<OptionsModel>, title: String) {
         val optionDialog = BottomSheetDialog(this)
@@ -165,8 +344,15 @@ class FeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewCal
         txtSportDesc.text = mFeedResponse.description
         txtViews.text = "${mFeedResponse.views} Views"
         txtDateTime.text = Constants.displayDateTime(mFeedResponse.created_at)
+        flImprovements.removeAllViews()
         for (improvement in mFeedResponse.improvement)
             flImprovements.addView(inflateExpertiseView(improvement))
+
+        if (mFeedResponse.improvement.isEmpty()) {
+            txtAreasOfImprovements.visibility = View.GONE
+        }
+
+
     }
 
     override fun onPause() {
@@ -184,6 +370,10 @@ class FeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewCal
         }
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        hitVideoById()
+    }
 
     private fun hitReportAPI(optionDialog: BottomSheetDialog) {
         showLoader()
@@ -252,10 +442,19 @@ class FeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewCal
         this.isFullscreen = isFullscreen
         if (isFullscreen) {
             val layoutParams = flVideo.layoutParams
-            layoutParams.width = mHeight
-            layoutParams.height = mWidth
+            if (mFeedResponse.video_height > mFeedResponse.video_width) {
+                videoView.setFullscreen(false)
+                layoutParams.width = mWidth
+                layoutParams.height = mHeight - resources.getDimension(R.dimen._20ssp).toInt()
+            } else {
+                layoutParams.width = mHeight
+                layoutParams.height = mWidth
+            }
             flVideo.layoutParams = layoutParams
             llBottom.visibility = View.GONE
+            if (mFeedResponse.user_type == FirebaseChatConstants.TYPE_ADMIN) {
+                llAdmin.visibility = View.GONE
+            }
 
         } else {
             val layoutParams = flVideo.layoutParams
@@ -263,6 +462,9 @@ class FeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewCal
             layoutParams.height = this.cachedHeight
             flVideo.layoutParams = layoutParams
             llBottom.visibility = View.VISIBLE
+            if (mFeedResponse.user_type == FirebaseChatConstants.TYPE_ADMIN) {
+                llAdmin.visibility = View.VISIBLE
+            }
         }
 
         switchTitleBar(!isFullscreen)
@@ -292,7 +494,19 @@ class FeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewCal
 
     override fun onBackPressed() {
         if (this.isFullscreen) {
-            videoView.setFullscreen(false)
+            if (mFeedResponse.video_height > mFeedResponse.video_width) {
+                val layoutParams = flVideo.layoutParams
+                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                layoutParams.height = this.cachedHeight
+                flVideo.layoutParams = layoutParams
+                llBottom.visibility = View.VISIBLE
+                if (mFeedResponse.user_type == FirebaseChatConstants.TYPE_ADMIN) {
+                    llAdmin.visibility = View.VISIBLE
+                }
+            } else {
+                videoView.setFullscreen(false)
+            }
+
         } else {
             super.onBackPressed()
         }
@@ -301,5 +515,82 @@ class FeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewCal
     private fun moveBack() {
         finish()
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+    }
+
+
+    private fun hitVideoById() {
+        if (connectedToInternet()) {
+            var id: String = ""
+            if (intent.hasExtra("id")) {
+                id = intent.getStringExtra("id")
+            } else {
+                id = mFeedResponse.id.toString()
+            }
+            showLoader()
+            val call = RetrofitClient.getInstance().getFeedSingleVideo(
+                    mUtils.getString(InterConst.ACCESS_TOKEN, ""),
+                    id)
+            call.enqueue(object : retrofit2.Callback<VideoModel> {
+                override fun onResponse(call: Call<VideoModel>, response: Response<VideoModel>) {
+                    dismissLoader()
+                    if (response.body().response != null) {
+                        response.body().response
+                        if (!intent.hasExtra("feedData")) {
+                            mFeedResponse = FeedModel.Response(response.body().response.id,
+                                    response.body().response.user_id
+                                    , response.body().response.user_type
+                                    , response.body().response.profile_pic
+                                    , response.body().response.sport_id
+                                    , response.body().response.sport
+                                    , response.body().response.privacy
+                                    , response.body().response.improvement
+                                    , response.body().response.url
+                                    , response.body().response.thumbnail
+                                    , response.body().response.fullname
+                                    , response.body().response.title
+                                    , response.body().response.views
+                                    , response.body().response.created_at
+                                    , response.body().response.description
+                                    , response.body().response.post_type,
+                                    response.body().response.likes_count,
+                                    response.body().response.comments_count,
+                                    response.body().response.liked, 0, 0)
+
+                            populateBottomData()
+                        }
+                        mFeedResponse.likes_count = response.body().response.likes_count
+                        mFeedResponse.comments_count = response.body().response.comments_count
+                        mFeedResponse.liked = response.body().response.liked
+
+                        EventBus.getDefault().post(CommentIntentServiceResult(5, 0, response.body().response))
+                        setData()
+                    } else {
+                        if (response.body().error.code == 506) {
+                            EventBus.getDefault().post(CommentIntentServiceResult(4, 0, null))
+                            videoDeleted("This post has been deleted")
+                        } else if (response.body().error.code == InterConst.INVALID_ACCESS)
+                            moveToSplash()
+                        else
+                            videoDeleted(response.body().error.message)
+                    }
+                }
+
+                override fun onFailure(call: Call<VideoModel>, t: Throwable) {
+                    dismissLoader()
+                    showAlert(llBottom, t.message.toString())
+                }
+            })
+        }
+    }
+
+    private fun videoDeleted(Message: String) {
+        val alertDialogBuilder = AlertDialog.Builder(mContext)
+        //  alertDialogBuilder.setTitle(getString(R.string.logout));
+        alertDialogBuilder.setMessage(Message)
+        alertDialogBuilder.setCancelable(false)
+        alertDialogBuilder.setPositiveButton("Ok"
+        ) { arg0, arg1 -> moveBack() }
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
     }
 }

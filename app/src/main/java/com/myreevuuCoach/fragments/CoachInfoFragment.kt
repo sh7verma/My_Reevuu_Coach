@@ -14,9 +14,15 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.myreevuuCoach.R
 import com.myreevuuCoach.activities.RegisterCoachActivity
+import com.myreevuuCoach.adapters.OptionCoachingLevelAdapter
 import com.myreevuuCoach.adapters.OptionsAdapter
 import com.myreevuuCoach.customViews.FlowLayout
+import com.myreevuuCoach.dialog.EditTextDialog
+import com.myreevuuCoach.dialog.LevelSelectDialog
+import com.myreevuuCoach.dialog.LevelSelectDialog.DialogCallBack
 import com.myreevuuCoach.interfaces.InterConst
+import com.myreevuuCoach.models.DefaultArrayModel
+import com.myreevuuCoach.models.OptionsCertificatesAdapter
 import com.myreevuuCoach.models.OptionsModel
 import com.myreevuuCoach.models.SignUpModel
 import com.myreevuuCoach.utils.Constants
@@ -25,6 +31,7 @@ import kotlinx.android.synthetic.main.dialog_options.*
 import kotlinx.android.synthetic.main.fragment_coach_info.*
 import kotlinx.android.synthetic.main.layout_certificates.view.*
 import kotlinx.android.synthetic.main.layout_expertise.view.*
+import java.util.*
 
 class CoachInfoFragment : BaseKotlinFragment() {
 
@@ -33,13 +40,14 @@ class CoachInfoFragment : BaseKotlinFragment() {
     private var optionSelected = 0
 
     lateinit var mRegisterCoachActivity: RegisterCoachActivity
+    var mSelectedMultipleOptionsId = ArrayList<Int>()
 
     override fun setContentView() = R.layout.fragment_coach_info
 
     var experienceDataArray = ArrayList<OptionsModel>()
-    var levelsArray = ArrayList<OptionsModel>()
-    var expertiesArray = ArrayList<OptionsModel>()
-    var certificatesArray = ArrayList<OptionsModel>()
+    var levelsArray = ArrayList<DefaultArrayModel.ResponseBean.CoachingLevelsBean>()
+    var expertiesArray = ArrayList<DefaultArrayModel.ResponseBean.ExpertiesBean>()
+    var certificatesArray = ArrayList<DefaultArrayModel.ResponseBean.CertificatesBean>()
 
     override fun initUI() {
 
@@ -66,8 +74,14 @@ class CoachInfoFragment : BaseKotlinFragment() {
         when (view) {
             llHighestLevelCoached -> {
                 optionSelected = 1
-                showOptions(levelsArray as ArrayList<OptionsModel>,
-                        txtHightestLevelCoached.text.toString(),
+                var s = txtHightestLevelCoached.text.toString()
+                if (s.contains("-")) {
+                    val split = s.split("-").toTypedArray()
+                    s = split[0]
+                }
+
+                showCoachingLevelOptions(levelsArray as ArrayList<DefaultArrayModel.ResponseBean.CoachingLevelsBean>,
+                        s,
                         getString(R.string.highest_level_you_completed_in), false)
             }
             llCoachExperience -> {
@@ -76,7 +90,8 @@ class CoachInfoFragment : BaseKotlinFragment() {
                         getString(R.string.years_coaching_experience), false)
             }
             llCoachCertificate -> {
-                showOptions(mRegisterCoachActivity.mResponse.certificates as ArrayList<OptionsModel>,
+                optionSelected = 3
+                showCertificatesOptions(mRegisterCoachActivity.mDefaultResponse.response.certificates as ArrayList<DefaultArrayModel.ResponseBean.CertificatesBean>,
                         txtCoachExperience.text.toString(),
                         getString(R.string.select_coaching_certificate), true)
             }
@@ -92,14 +107,15 @@ class CoachInfoFragment : BaseKotlinFragment() {
         mRegisterCoachActivity.mResponse = mGson.fromJson(utils.getString("response", ""), SignUpModel::class.java)
 
         experienceDataArray.addAll(Constants.experienceData())
-        levelsArray.addAll(mRegisterCoachActivity.mResponse.levels)
-        expertiesArray.addAll(mRegisterCoachActivity.mResponse.experties)
-        certificatesArray.addAll(mRegisterCoachActivity.mResponse.certificates)
+        levelsArray.addAll(mRegisterCoachActivity.mDefaultResponse.response.coaching_levels)
+        expertiesArray.addAll(mRegisterCoachActivity.mDefaultResponse.response.experties)
+        certificatesArray.addAll(mRegisterCoachActivity.mDefaultResponse.response.certificates)
 
         flCertificates.removeAllViews()
         flExpertise.removeAllViews()
         mRegisterCoachActivity.mSelectedCertificateArray.clear()
         mRegisterCoachActivity.mSelectedExpertiseArray.clear()
+        mSelectedMultipleOptionsId.clear()
 
         mRegisterCoachActivity.coachLevelId = 0
         mRegisterCoachActivity.coachExperience = 0
@@ -116,11 +132,15 @@ class CoachInfoFragment : BaseKotlinFragment() {
     fun setPrefilledData() {
 
         experienceDataArray.addAll(Constants.experienceData())
-        levelsArray.addAll(mRegisterCoachActivity.mResponse.levels)
-        expertiesArray.addAll(mRegisterCoachActivity.mResponse.experties)
-        certificatesArray.addAll(mRegisterCoachActivity.mResponse.certificates)
+
+        if (mRegisterCoachActivity.sportId != 0) {
+            expertiesArray.addAll(mRegisterCoachActivity.mDefaultResponse.response.experties)
+            certificatesArray.addAll(mRegisterCoachActivity.mDefaultResponse.response.certificates)
+            levelsArray.addAll(mRegisterCoachActivity.mDefaultResponse.response.coaching_levels)
+        }
 
         if (mRegisterCoachActivity.mResponse.response.coach_info.about != null) {
+
             for (j in certificatesArray.indices) {
                 for (i in mRegisterCoachActivity.mResponse.response.coach_info.certificates.indices) {
                     if (certificatesArray[j].name.equals(mRegisterCoachActivity.mResponse.response.coach_info.certificates[i].name)) {
@@ -131,6 +151,15 @@ class CoachInfoFragment : BaseKotlinFragment() {
 
             for (i in mRegisterCoachActivity.mResponse.response.coach_info.certificates.indices) {
                 mRegisterCoachActivity.mSelectedCertificateArray.add(mRegisterCoachActivity.mResponse.response.coach_info.certificates[i].name)
+            }
+
+            for (i in 0 until mRegisterCoachActivity.mSelectedCertificateArray.size) {
+                for (j in 0 until mRegisterCoachActivity.mDefaultResponse.response.certificates.size) {
+                    if (mRegisterCoachActivity.mSelectedCertificateArray[i]
+                                    .contains(mRegisterCoachActivity.mDefaultResponse.response.certificates[j].name)) {
+                        mSelectedMultipleOptionsId.add(mRegisterCoachActivity.mDefaultResponse.response.certificates[j].id)
+                    }
+                }
             }
 
             displaySelectedCertificates()
@@ -146,14 +175,24 @@ class CoachInfoFragment : BaseKotlinFragment() {
             for (j in levelsArray.indices) {
                 if (mRegisterCoachActivity.mResponse.response.coach_info.coach_level == levelsArray[j].id) {
                     levelsArray[j].isSelected = true
-                    txtHightestLevelCoached.text = levelsArray[j].name
+                    if (!TextUtils.isEmpty(mRegisterCoachActivity.mResponse.response.coach_info.college_name)) {
+                        txtHightestLevelCoached.text = levelsArray[j].name + "-" + mRegisterCoachActivity.mResponse.response.coach_info.college_name
+                        mRegisterCoachActivity.collageName = mRegisterCoachActivity.mResponse.response.coach_info.college_name
+                    } else {
+                        txtHightestLevelCoached.text = levelsArray[j].name
+                    }
                 }
             }
 
             for (j in levelsArray.indices) {
                 if (mRegisterCoachActivity.mResponse.response.coach_info.coach_level == levelsArray[j].id) {
                     levelsArray[j].isSelected = true
-                    txtHightestLevelCoached.text = levelsArray[j].name
+                    if (!TextUtils.isEmpty(mRegisterCoachActivity.mResponse.response.coach_info.college_name)) {
+                        txtHightestLevelCoached.text = levelsArray[j].name + "-" + mRegisterCoachActivity.mResponse.response.coach_info.college_name
+                        mRegisterCoachActivity.collageName = mRegisterCoachActivity.mResponse.response.coach_info.college_name
+                    } else {
+                        txtHightestLevelCoached.text = levelsArray[j].name
+                    }
                     mRegisterCoachActivity.coachLevelId = levelsArray[j].id
                 }
             }
@@ -234,6 +273,86 @@ class CoachInfoFragment : BaseKotlinFragment() {
         optionDialog.show()
     }
 
+    private fun showCertificatesOptions(optionsArray: ArrayList<DefaultArrayModel.ResponseBean.CertificatesBean>,
+                                        selectedOption: String, title: String,
+                                        enableMultipleSelection: Boolean) {
+        optionDialog = BottomSheetDialog(activity!!)
+        optionDialog.setContentView(R.layout.dialog_options)
+
+        val dialogParms = CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.MATCH_PARENT,
+                CoordinatorLayout.LayoutParams.WRAP_CONTENT)
+        dialogParms.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+
+        val bottomSheet = optionDialog.window.findViewById(android.support.design.R.id.design_bottom_sheet) as FrameLayout
+        bottomSheet.setBackgroundResource(R.drawable.white_default)
+        bottomSheet.layoutParams = dialogParms
+        bottomSheet.viewTreeObserver
+                .addOnGlobalLayoutListener(OnViewGlobalLayoutListener(bottomSheet, Constants.dpToPx(400)))
+
+        val txtOptionTitle = optionDialog.txtOptionTitle
+        val rvOptions = optionDialog.rvOptions
+        val txtDONE = optionDialog.txtDone
+
+        txtOptionTitle.text = title
+
+        rvOptions.layoutManager = LinearLayoutManager(activity) as RecyclerView.LayoutManager?
+        optionSelected = 3
+
+        if (enableMultipleSelection) {
+            rvOptions.adapter = OptionsCertificatesAdapter(optionsArray, selectedOption, fragment, true,
+                    mRegisterCoachActivity.mSelectedCertificateArray, mSelectedMultipleOptionsId)
+            txtDONE.visibility = View.VISIBLE
+        } else
+            rvOptions.adapter = OptionsCertificatesAdapter(optionsArray, selectedOption, fragment, false)
+
+        txtDONE.setOnClickListener {
+            // form chips here
+            optionDialog.dismiss()
+            displaySelectedCertificates()
+        }
+
+        optionDialog.show()
+    }
+
+    private fun showCoachingLevelOptions(optionsArray: ArrayList<DefaultArrayModel.ResponseBean.CoachingLevelsBean>, selectedOption: String, title: String,
+                                         enableMultipleSelection: Boolean) {
+        optionDialog = BottomSheetDialog(activity!!)
+        optionDialog.setContentView(R.layout.dialog_options)
+
+        val dialogParms = CoordinatorLayout.LayoutParams(CoordinatorLayout.LayoutParams.MATCH_PARENT,
+                CoordinatorLayout.LayoutParams.WRAP_CONTENT)
+        dialogParms.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+
+        val bottomSheet = optionDialog.window.findViewById(android.support.design.R.id.design_bottom_sheet) as FrameLayout
+        bottomSheet.setBackgroundResource(R.drawable.white_default)
+        bottomSheet.layoutParams = dialogParms
+        bottomSheet.viewTreeObserver
+                .addOnGlobalLayoutListener(OnViewGlobalLayoutListener(bottomSheet, Constants.dpToPx(400)))
+
+        val txtOptionTitle = optionDialog.txtOptionTitle
+        val rvOptions = optionDialog.rvOptions
+        val txtDONE = optionDialog.txtDone
+
+        txtOptionTitle.text = title
+
+        rvOptions.layoutManager = LinearLayoutManager(activity) as RecyclerView.LayoutManager?
+
+        if (enableMultipleSelection) {
+            rvOptions.adapter = OptionCoachingLevelAdapter(optionsArray, selectedOption, fragment, true,
+                    mRegisterCoachActivity.mSelectedCertificateArray)
+            txtDONE.visibility = View.VISIBLE
+        } else
+            rvOptions.adapter = OptionCoachingLevelAdapter(optionsArray, selectedOption, fragment, false)
+
+        txtDONE.setOnClickListener {
+            // form chips here
+            optionDialog.dismiss()
+            displaySelectedCertificates()
+        }
+
+        optionDialog.show()
+    }
+
     private fun displaySelectedCertificates() {
         if (mRegisterCoachActivity.mSelectedCertificateArray.isNotEmpty()) {
             flCertificates.removeAllViews()
@@ -245,9 +364,9 @@ class CoachInfoFragment : BaseKotlinFragment() {
 
             for ((index, certificates) in mRegisterCoachActivity.mSelectedCertificateArray.withIndex()) {
                 if (index == mRegisterCoachActivity.mSelectedCertificateArray.size - 1)
-                    flCertificates.addView(inflateCertificateView(certificates, true))
+                    flCertificates.addView(inflateCertificateView(index, certificates, true))
                 else
-                    flCertificates.addView(inflateCertificateView(certificates, false))
+                    flCertificates.addView(inflateCertificateView(index, certificates, false))
             }
         } else {
             txtCoachCertificate.visibility = View.VISIBLE
@@ -259,20 +378,86 @@ class CoachInfoFragment : BaseKotlinFragment() {
         optionDialog.dismiss()
         when (optionSelected) {
             1 -> {
+                mRegisterCoachActivity.collageName = ""
+                mRegisterCoachActivity.mDefaultResponse.response.coaching_levels
                 mRegisterCoachActivity.coachLevelId = id
-                txtHightestLevelCoached.text = selectedOption
+                for (mModel in mRegisterCoachActivity.mDefaultResponse.response.coaching_levels) {
+                    if (mModel.id == id) {
+                        if (mModel.text_field == 1) {
+                            EditTextDialog(activity, object : EditTextDialog.DialogCallBack {
+                                override fun done(s: String) {
+                                    txtHightestLevelCoached.text = "$selectedOption-$s"
+                                    mRegisterCoachActivity.collageName = s
+                                }
+
+                                override fun dismiss() {
+                                }
+                            }).showDialog()
+
+                        } else {
+                            txtHightestLevelCoached.text = selectedOption
+                        }
+                    }
+                }
+
             }
             2 -> {
                 mRegisterCoachActivity.coachExperience = id
                 txtCoachExperience.text = selectedOption
             }
+            3 -> {
+                displaySelectedCertificates()
+                if (selectedOption != InterConst.DATA_REMOVED) {
+                    for (i in 0 until mRegisterCoachActivity.mDefaultResponse.response.certificates.size) {
+                        if (mRegisterCoachActivity.mDefaultResponse.response.certificates[i].id == id) {
+                            if (mRegisterCoachActivity.mDefaultResponse.response.certificates[i].certificate_type
+                                    == 2) {
+                                EditTextDialog(activity, object : EditTextDialog.DialogCallBack {
+                                    override fun done(s: String) {
+
+                                        for (j in 0 until mRegisterCoachActivity.mSelectedCertificateArray.size) {
+                                            if (mRegisterCoachActivity.mSelectedCertificateArray[j].startsWith(selectedOption)) {
+                                                mRegisterCoachActivity.mSelectedCertificateArray[j] = selectedOption + InterConst.REGEX_CERTIFICATED + s
+                                            }
+                                        }
+                                        displaySelectedCertificates()
+                                    }
+
+                                    override fun dismiss() {
+
+                                    }
+                                }).showDialog()
+                            } else if (mRegisterCoachActivity.mDefaultResponse
+                                            .response.certificates[i].certificate_type == 1) {
+
+                                LevelSelectDialog(activity, object : DialogCallBack {
+                                    override fun done(s: String?) {
+                                        for (j in 0 until mRegisterCoachActivity.mSelectedCertificateArray.size) {
+                                            if (mRegisterCoachActivity.mSelectedCertificateArray[j].startsWith(selectedOption)) {
+                                                mRegisterCoachActivity.mSelectedCertificateArray[j] = selectedOption + InterConst.REGEX_CERTIFICATED + s
+                                            }
+                                        }
+                                        displaySelectedCertificates()
+                                    }
+
+                                    override fun dismiss() {
+                                    }
+                                }, mRegisterCoachActivity.mDefaultResponse.response.certificates[i].options)
+
+
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
-    private fun inflateCertificateView(certificate: String, visibleLastElement: Boolean): View {
+
+    private fun inflateCertificateView(position: Int, certificate: String, visibleLastElement: Boolean): View {
         val certificateChip = LayoutInflater.from(activity).inflate(R.layout.layout_certificates, null, false)
 
-        val innerParms = FlowLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        val innerParms = FlowLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         certificateChip.llMainCertificates.layoutParams = innerParms
 
         if (visibleLastElement) {
@@ -282,24 +467,28 @@ class CoachInfoFragment : BaseKotlinFragment() {
             certificateChip.llCertificate.visibility = View.VISIBLE
             certificateChip.txtAddmore.visibility = View.GONE
         }
-
-        certificateChip.txtCertificateName.text = certificate
-
+        if (certificate.contains(InterConst.REGEX_CERTIFICATED)) {
+            var s = certificate
+            certificateChip.txtCertificateName.text = s.replace(InterConst.REGEX_CERTIFICATED, "-")
+        } else {
+            certificateChip.txtCertificateName.text = certificate
+        }
         certificateChip.txtAddmore.setOnClickListener {
-            showOptions(mRegisterCoachActivity.mResponse.certificates as ArrayList<OptionsModel>,
+            showCertificatesOptions(mRegisterCoachActivity.mDefaultResponse.response.certificates as ArrayList<DefaultArrayModel.ResponseBean.CertificatesBean>,
                     txtCoachExperience.text.toString(),
                     getString(R.string.choose_certificate), true)
         }
 
         certificateChip.imgRemoveCertificate.setOnClickListener {
             mRegisterCoachActivity.mSelectedCertificateArray.remove(certificate)
+            mSelectedMultipleOptionsId.removeAt(position)
             mRegisterCoachActivity.mSelectedCertificateArray.remove("add more")
             displaySelectedCertificates()
         }
         return certificateChip
     }
 
-    private fun inflateExpertiseView(optionsModel: OptionsModel): View {
+    private fun inflateExpertiseView(optionsModel: DefaultArrayModel.ResponseBean.ExpertiesBean): View {
         val interestChip = LayoutInflater.from(activity).inflate(R.layout.layout_expertise, null, false)
 
         val innerParms = FlowLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -311,12 +500,13 @@ class CoachInfoFragment : BaseKotlinFragment() {
             mRegisterCoachActivity.mSelectedExpertiseArray.add(optionsModel.id)
             interestChip.txtExpertise.setTextColor(ContextCompat.getColor(activity!!, R.color.colorWhite))
             when (optionsModel.color) {
-                1 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_first)
-                2 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_second)
-                3 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_third)
-                4 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_fourth)
-                5 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_fifth)
-                6 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_sixth)
+                0 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_first)
+                1 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_second)
+                2 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_third)
+                3 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_fourth)
+                4 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_fifth)
+                5 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_sixth)
+                6 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_fourth)
             }
         }
 
@@ -329,12 +519,13 @@ class CoachInfoFragment : BaseKotlinFragment() {
                 interestChip.txtExpertise.setTextColor(ContextCompat.getColor(activity!!, R.color.colorWhite))
                 mRegisterCoachActivity.mSelectedExpertiseArray.add(optionsModel.id)
                 when (optionsModel.color) {
-                    1 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_first)
-                    2 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_second)
-                    3 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_third)
-                    4 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_fourth)
-                    5 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_fifth)
-                    6 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_sixth)
+                    0 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_first)
+                    1 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_second)
+                    2 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_third)
+                    3 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_fourth)
+                    4 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_fifth)
+                    5 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_sixth)
+                    6 -> interestChip.txtExpertise.setBackgroundResource(R.drawable.gradient_fourth)
                 }
             }
         }

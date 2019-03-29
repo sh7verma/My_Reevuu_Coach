@@ -109,7 +109,11 @@ public class StartVideoReviewActivity extends BaseActivity {
             Log.e("webview", "URL = " + url);
             progressBar.setVisibility(View.VISIBLE);
             if (url.contains("type=1")) {
-                ReevuuFragment.getInstance().onCallResume();
+                try {
+                    ReevuuFragment.getInstance().onCallResume();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 Intent intent = new Intent();
                 setResult(RESULT_OK, intent);
                 finish();

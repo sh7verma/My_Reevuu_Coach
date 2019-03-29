@@ -23,7 +23,7 @@
     <color name="progressGrey">#333333</color>
     <color name="transparent">#00000000</color>
 
-
+    <color name="light_white_transparent">#a1020202</color>
     <color name="colorGradient1A">#d79cf8</color>
     <color name="colorGradient1B">#ac52d6</color>
     <color name="colorGradient2A">#feb374</color>

@@ -92,13 +92,17 @@ class Constants {
         fun dpToPx(dp: Int): Int {
             return (dp * Resources.getSystem().displayMetrics.density).toInt()
         }
-
+        fun pxToDp(px: Int): Int {
+            return (px / Resources.getSystem().displayMetrics.density).toInt()
+        }
         fun sportsData(): ArrayList<String> {
             val sportsData = ArrayList<String>()
             sportsData.add("Tennis")
             sportsData.add("Wrestling")
             return sportsData
         }
+
+
 
         fun experienceData(): ArrayList<OptionsModel> {
             val experienceData = ArrayList<OptionsModel>()
@@ -152,6 +156,7 @@ class Constants {
             arrayList.add(R.drawable.gradient_fourth)
             arrayList.add(R.drawable.gradient_fifth)
             arrayList.add(R.drawable.gradient_sixth)
+            arrayList.add(R.drawable.gradient_fourth)
 
             return arrayList
         }

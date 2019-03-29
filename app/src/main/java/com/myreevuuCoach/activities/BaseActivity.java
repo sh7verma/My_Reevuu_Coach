@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,31 +20,43 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.myreevuuCoach.R;
+import com.myreevuuCoach.customrecorder.views.ActivityCustomRecorder;
 import com.myreevuuCoach.firebase.Database;
 import com.myreevuuCoach.firebase.FirebaseChatConstants;
 import com.myreevuuCoach.firebase.FirebaseListeners;
 import com.myreevuuCoach.interfaces.InterConst;
 import com.myreevuuCoach.models.SignUpModel;
+import com.myreevuuCoach.services.ListenerService;
 import com.myreevuuCoach.utils.ConnectionDetector;
 import com.myreevuuCoach.utils.CustomLoadingDialog;
-import com.myreevuuCoach.services.ListenerService;
 import com.myreevuuCoach.utils.MarshMallowPermission;
 import com.myreevuuCoach.utils.Utils;
+
+import org.apache.commons.lang3.text.WordUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.ButterKnife;
+import io.intercom.android.sdk.Intercom;
+import io.intercom.android.sdk.UserAttributes;
+import io.intercom.android.sdk.identity.Registration;
+import io.intercom.android.sdk.push.IntercomPushClient;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -54,6 +67,7 @@ import okhttp3.RequestBody;
 
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private final IntercomPushClient intercomPushClient = new IntercomPushClient();
     public MarshMallowPermission mPermission;
     protected int mWidth, mHeight;
     protected Context mContext;
@@ -68,8 +82,8 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     Typeface typefaceLight, typefaceRegular, typefaceBold;
     String TAG;
     SignUpModel mSigUpModel;
-    private Snackbar mSnackbar;
     Database db;
+    private Snackbar mSnackbar;
 
     public static void hideKeyboard(Activity mContext) {
         // Check if no views has focus:
@@ -285,6 +299,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
         mUtils.setInt(InterConst.EMAIL_PUSH_STATUS, response.getResponse().getEmail_notification());
 
+        mUtils.setString(InterConst.REFERRAL_CODE, response.getResponse().getReferral_code());
 
         if (mUtils.getInt(InterConst.GENDER_STATUS, -1) == 0) {
             mUtils.setString(InterConst.GENDER, InterConst.FEMALE);
@@ -294,6 +309,8 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             mUtils.setString(InterConst.GENDER, InterConst.OTHER);
         }
     }
+
+
 
     private String getAge(String dobString) {
         Date date = null;
@@ -340,4 +357,26 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         }
         return imageFile;
     }
+
+    protected void registerOnInterCom() {
+        //Register a user with Intercom
+        Intercom intercom = Intercom.client();
+        intercom.registerIdentifiedUser(Registration.create().withUserId(mUtils.getInt(InterConst.ID, -1) + ""));
+//        intercom.hideMessenger();
+//        intercom.setInAppMessageVisibility(Intercom.GONE);
+        intercomPushClient.sendTokenToIntercom(getApplication(), mUtils.getString(InterConst.FCM_TOKEN, ""));
+    }
+
+    protected void updateOnInterCom() {
+    //Register a user with Intercom
+    //Intercom.client().registerIdentifiedUser(Registration.create().withUserId(utils.getString(Const.EMAIL, "")));
+        UserAttributes userAttributes = new UserAttributes.Builder()
+                .withName(WordUtils.capitalize(mUtils.getString(InterConst.NAME, "")))
+                .withEmail(mUtils.getString(InterConst.EMAIL, ""))
+                .withUserId(mUtils.getInt(InterConst.ID, -1) + "")
+                .build();
+        Intercom.client().updateUser(userAttributes);
+
+    }
+
 }

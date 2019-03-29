@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/llMainCertificates"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/_5sdp"
     android:paddingEnd="@dimen/_3sdp"
     android:paddingRight="@dimen/_3sdp">
 
     <LinearLayout
         android:id="@+id/llCertificate"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/_28sdp"
-        android:background="@drawable/primary_ripple_extreme_round"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/certifaces_background"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/_8sdp"
@@ -23,11 +23,13 @@
         <com.myreevuuCoach.customViews.LightTextView
             android:id="@+id/txtCertificateName"
             android:layout_width="wrap_content"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:padding="@dimen/_10sdp"
             android:paddingLeft="@dimen/_8sdp"
             android:paddingRight="@dimen/_8sdp"
             android:text="Lorem ipsum"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/grey_transparency"
             android:textSize="@dimen/_12ssp" />
 
         <ImageView
@@ -45,12 +47,13 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/_28sdp"
         android:layout_marginLeft="@dimen/_3sdp"
-        android:background="@drawable/default_certificate"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:background="@drawable/default_background"
         android:gravity="center"
         android:paddingLeft="@dimen/_16sdp"
         android:paddingRight="@dimen/_16sdp"
         android:text="@string/add_more"
         android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/_12ssp" />
+        android:textSize="@dimen/_14ssp" />
 
 </LinearLayout>
