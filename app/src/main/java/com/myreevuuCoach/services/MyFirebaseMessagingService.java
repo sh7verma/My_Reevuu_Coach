@@ -90,7 +90,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             if (utils.getInt(InterConst.BACKGROUND, InterConst.APP_OFFLINE) == InterConst.APP_ONLINE) {
                 Intent notificationIntent = new Intent(InterConst.BROADCAST_VIDEO_ADDED_RECIVER);
                 notificationIntent.putExtra(InterConst.INTEND_EXTRA,"");
-                sendBroadcast(notificationIntent);
+                LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(notificationIntent);
             }
 
             intent = new Intent(this, FeedDetailActivity.class);
@@ -133,7 +133,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             if (utils.getInt(InterConst.BACKGROUND, InterConst.APP_OFFLINE) == InterConst.APP_ONLINE) {
                 Intent notificationIntent = new Intent(InterConst.BROADCAST_VIDEO_ADDED_RECIVER);
-                sendBroadcast(notificationIntent);
+                LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(notificationIntent);
             }
 
         } else if (messageBody.get("push_type").equalsIgnoreCase("8")) {
@@ -156,7 +156,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         } else if (messageBody.get("push_type").equalsIgnoreCase("12")) {
             if (utils.getInt(InterConst.BACKGROUND, InterConst.APP_OFFLINE) == InterConst.APP_ONLINE) {
                 Intent notificationIntent = new Intent(InterConst.BROADCAST_VIDEO_PROCESSED);
-                sendBroadcast(notificationIntent);
+                LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(notificationIntent);
             }
             intent = new Intent(this, RequestDetailActivity.class);
             intent.putExtra("reviewRequestId", messageBody.get("review_request_id").toString());
@@ -166,8 +166,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         } else if (messageBody.get("push_type").equalsIgnoreCase("15")) {
             if (utils.getInt(InterConst.BACKGROUND, InterConst.APP_OFFLINE) == InterConst.APP_ONLINE) {
-                Intent notificationIntent = new Intent(InterConst.BROADCAST_PROFILE_APPROVED);
-                sendBroadcast(notificationIntent);
+                LocalBroadcastManager.getInstance(getBaseContext()).
+                        sendBroadcast(new Intent(InterConst.BROADCAST_PROFILE_APPROVED));
             }
             intent = new Intent(this, LandingActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

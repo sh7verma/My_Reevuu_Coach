@@ -85,7 +85,6 @@ class ProfileNotApprovedActivity : BaseActivity() {
     }
 
     override fun onStop() {
-        mUtils.setInt("inside_verify", 0)
         super.onStop()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
     }

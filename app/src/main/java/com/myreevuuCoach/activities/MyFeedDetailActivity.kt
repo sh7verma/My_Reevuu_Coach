@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.LocalBroadcastManager
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -214,7 +215,7 @@ class MyFeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewC
 //                        HomeFragment.getInstance().onCallResume()
 //                        ProfileVideoFragment.getInstance().setData()
                     }
-                    sendBroadcast(intent)
+                    LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent)
 
                     optionDialog.dismiss()
                     showToast(mContext, response.body().response.message)

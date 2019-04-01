@@ -59,6 +59,17 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
     Utils utils;
     int mWidth, mHeight;
 
+
+    String TAG = "VIDEO_HEIGHT";
+    int SCREEN_HEIGHT = 0;
+    int SCREEN_WIDTH = 0;
+    int DEC_HEIGHT = 0;
+    int CONTAINER_HEIGHT = 0;
+    int MAX_HEIGHT = 0; //CONTAINER + DEC+HEIGHT
+    int MIN_HEIGHT = 0;
+    int LANDSPACE_MIN_HEIGHT = 0;
+
+
     public VideoAdapter(Context context, ArrayList<FeedModel.Response> arrayList) {
         mContext = context;
         mData = arrayList;
@@ -66,6 +77,18 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
 
         mWidth = utils.getInt("width", 0);
         mHeight = utils.getInt("height", 0);
+
+
+        SCREEN_HEIGHT = mHeight;
+        SCREEN_WIDTH = mWidth;
+
+        DEC_HEIGHT = utils.dpToPx(mContext, 100);
+        CONTAINER_HEIGHT = utils.getInt(InterConst.VIDEO_CONTAINER_HEIGHT, 0);
+        MAX_HEIGHT = CONTAINER_HEIGHT - DEC_HEIGHT;
+        MIN_HEIGHT = utils.dpToPx(mContext, 200);
+        LANDSPACE_MIN_HEIGHT = 200;//utils.dpToPx(mContext, 250);
+
+
     }
 
     public void onAdapterItemClick(VideoAdapterItemClick click) {
@@ -86,7 +109,139 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int pos) {
+
+
+        final int position = pos;
+        int heightinPixel = 0;
+        int videoOrientation = InterConst.VIDEO_ORIENTATION_VERTICLE;
+        if (MIN_HEIGHT > 300) {
+            MIN_HEIGHT = 300;
+        }
+
+        switch (mData.get(position).getPost_type()) {
+            case 1:
+                holder.imgSound.setVisibility(View.GONE);
+
+                RelativeLayout.LayoutParams paramsImg = new
+                        RelativeLayout.LayoutParams(SCREEN_WIDTH,
+                        MIN_HEIGHT);
+                paramsImg.height = utils.dpToPx(mContext, MIN_HEIGHT);
+                holder.ll_view.setLayoutParams(paramsImg);
+
+
+                Picasso.get()
+                        .load(mData.get(position).getThumbnail())
+                        .placeholder(R.mipmap.ic_ph)
+                        .error(R.mipmap.ic_ph).into(holder.thumb);
+                holder.imgSound.setVisibility(View.INVISIBLE);
+                holder.thumb.setVisibility(View.VISIBLE);
+                holder.playerView.setVisibility(View.GONE);
+                holder.pgLoading.setVisibility(View.GONE);
+                //holder.txtSportName.setVisibility(View.VISIBLE);
+                break;
+            case 2:
+                holder.thumb.setVisibility(View.GONE);
+                holder.playerView.setVisibility(View.VISIBLE);
+                holder.pgLoading.setVisibility(View.VISIBLE);
+                if (mData.get(position).getVideo_height() > mData.get(position).getVideo_width()) {
+                    videoOrientation = InterConst.VIDEO_ORIENTATION_VERTICLE;
+                } else {
+                    videoOrientation = InterConst.VIDEO_ORIENTATION_LANDSCAPE;
+                }
+                switch (videoOrientation) {
+                    case InterConst.VIDEO_ORIENTATION_VERTICLE:
+                        heightinPixel = utils.dpToPx(mContext, mData.get(position).getVideo_height());
+                        break;
+                    case InterConst.VIDEO_ORIENTATION_LANDSCAPE:
+                        heightinPixel = mData.get(position).getVideo_height();
+                        break;
+                }
+
+                int weightinPixel = utils.dpToPx(mContext, mData.get(position).getVideo_width());
+                if (mData.get(position).getUser_type() != FirebaseChatConstants.TYPE_ADMIN) {
+                    int videoHeight = 0;
+                    if (heightinPixel >= CONTAINER_HEIGHT) {
+                        videoHeight = MAX_HEIGHT;
+                    } else if (heightinPixel >= MAX_HEIGHT) {
+                        videoHeight = MAX_HEIGHT;
+                    } else {
+                        videoHeight = heightinPixel;// - DEC_HEIGHT;
+                    }
+
+                    RelativeLayout.LayoutParams params;
+                    if (videoHeight >= MIN_HEIGHT) {
+                        params = new
+                                RelativeLayout.LayoutParams(SCREEN_WIDTH,
+                                videoHeight);
+                        params.height = videoHeight;
+                    } else {
+                        if (videoOrientation == InterConst.VIDEO_ORIENTATION_VERTICLE) {
+                            params = new
+                                    RelativeLayout.LayoutParams(SCREEN_WIDTH,
+                                    MIN_HEIGHT);
+                            params.height = utils.dpToPx(mContext, MIN_HEIGHT);
+                        } else {
+                            params = new
+                                    RelativeLayout.LayoutParams(SCREEN_WIDTH,
+                                    LANDSPACE_MIN_HEIGHT);
+                            params.height = LANDSPACE_MIN_HEIGHT;
+                        }
+
+                    }
+
+                    holder.ll_view.setLayoutParams(params);
+                } else {
+                    switch (videoOrientation) {
+                        case InterConst.VIDEO_ORIENTATION_VERTICLE:
+                            heightinPixel = utils.dpToPx(mContext, mData.get(position).getVideo_height());
+                            break;
+                        case InterConst.VIDEO_ORIENTATION_LANDSCAPE:
+                            heightinPixel = mData.get(position).getVideo_height();
+                            break;
+                    }
+                    int videoHeight = 0;
+                    if (heightinPixel == 0) {
+                        videoHeight = LANDSPACE_MIN_HEIGHT;
+                    } else if (heightinPixel >= CONTAINER_HEIGHT) {
+                        videoHeight = MAX_HEIGHT;
+                    } else if (heightinPixel >= MAX_HEIGHT) {
+                        videoHeight = MAX_HEIGHT;
+                    } else {
+                        videoHeight = heightinPixel;// - DEC_HEIGHT;
+                    }
+                    RelativeLayout.LayoutParams params = new
+                            RelativeLayout.LayoutParams(SCREEN_WIDTH,
+                            videoHeight);
+                    params.height = utils.dpToPx(mContext, videoHeight);
+                    holder.ll_view.setLayoutParams(params);
+                }
+
+                break;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         holder.txtSportTitle.setText(mData.get(position).getTitle());
         holder.txtSportOwner.setText("By " + mData.get(position).getFullname());
@@ -263,6 +418,9 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
         TextView txtSportOwner;
         @BindView(R.id.txtSportName)
         TextView txtSportName;
+
+        @BindView(R.id.ll_view)
+        RelativeLayout ll_view;
 
 
         //Image

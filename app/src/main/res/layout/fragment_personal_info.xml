@@ -282,7 +282,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_marginTop="@dimen/_12sdp"
-            android:text="@string/upload_1099_independent_contractor_form"
+            android:text="@string/document"
             android:textAllCaps="true"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/_10ssp" />
@@ -320,7 +320,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:text="@string/tap_to_add"
+            android:text="@string/upload_1099_independent_contractor_form"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/_10ssp" />
 

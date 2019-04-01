@@ -12,8 +12,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.myreevuuCoach.R;
@@ -71,6 +73,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     @BindView(R.id.pbFeed)
     AVLoadingIndicatorView pbFeed;
 
+
+    @BindView(R.id.llVideoContainer)
+    RelativeLayout llVideoContainer;
     ArrayList<FeedModel.Response> mData = new ArrayList<>();
 
     VideoAdapter mAdapter;
@@ -131,6 +136,21 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
     @Override
     protected void onCreateStuff() {
+
+        final ViewTreeObserver observer = llVideoContainer.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        int height = llVideoContainer.getHeight();
+                        Log.e("DIVIDE", height+"");
+                        utils.setInt(InterConst.VIDEO_CONTAINER_HEIGHT, height);// (int) utils.pxToDp(getActivity(), height));
+                    }
+                });
+
+
+
+
         EventBus.getDefault().register(this);
         getActivity().registerReceiver(broadcastReceiver, new IntentFilter(InterConst.BROADCAST_MY_FEED_VIDEO_DELETE));
         getActivity().registerReceiver(videoStopReceiver, new IntentFilter(InterConst.BROADCAST_VIDEO_STOP_RECIVER));

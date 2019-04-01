@@ -23,31 +23,41 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-                android:id="@+id/player"
+            <RelativeLayout
+                android:id="@+id/ll_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/_260sdp"
-                app:resize_mode="fill"
-                app:surface_type="surface_view"
-                app:use_controller="false" />
+                android:layout_height="@dimen/_250sdp"
+                android:layout_alignParentTop="true">
 
-            <ProgressBar
-                android:id="@+id/pgLoading"
-                android:layout_width="@dimen/_55sdp"
-                android:layout_height="@dimen/_55sdp"
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="@dimen/_56sdp"
-                android:padding="@dimen/_8sdp"
-                android:src="@mipmap/ic_mute"
-                android:visibility="visible" />
+                <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+                    android:id="@+id/player"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/_260sdp"
+                    app:resize_mode="fill"
+                    app:surface_type="surface_view"
+                    app:use_controller="false" />
 
-            <ImageView
-                android:id="@+id/img_thumb"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_260sdp"
-                android:scaleType="centerCrop" />
+                <ProgressBar
+                    android:id="@+id/pgLoading"
+                    android:layout_width="@dimen/_55sdp"
+                    android:layout_height="@dimen/_55sdp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="@dimen/_56sdp"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@mipmap/ic_mute"
+                    android:visibility="visible" />
 
+                <ImageView
+                    android:id="@+id/img_thumb"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_260sdp"
+                    android:scaleType="centerCrop" />
+
+
+
+
+            </RelativeLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

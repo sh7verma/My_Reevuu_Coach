@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -123,7 +124,7 @@ public class ActivityImagesViewpager extends AppCompatActivity {
             });
         } else {
             Log.e("-->", " < 14");
-            sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
+            LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
                     Uri.parse("file://" + "/data/user/0/com.sandrios.sandriosCamera.sample/files/")));
         }
     }

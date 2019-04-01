@@ -189,7 +189,7 @@ class SettingsActivity : BaseActivity() {
 
     fun share(link: Uri) {
         val referrerName = mUtils.getString(InterConst.USER_NAME, "")
-        val subject = String.format("%s Download MyReevuu and start earning by reviewing videos,", referrerName)
+        val subject = "Download MyReevuu and start earning by reviewing videos"
 
         val invitationLink = link
         val msg = "Download MyReevuu and start earning by reviewing videos, click on the link to register : $invitationLink or you can directly enter my referral code : ${mUtils.getString(InterConst.REFERRAL_CODE, "")}"
@@ -207,6 +207,7 @@ class SettingsActivity : BaseActivity() {
         share.type = "text/plain"
         share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
         share.putExtra(Intent.EXTRA_TEXT, msg)
+        share.putExtra(Intent.EXTRA_SUBJECT, subject)
         startActivity(Intent.createChooser(share, "Share link!"))
 
     }
