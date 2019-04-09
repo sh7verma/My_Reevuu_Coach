@@ -51,6 +51,16 @@ class FeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewCal
     lateinit var mFeedResponse: FeedModel.Response
     var reportReason: String = Constants.EMPTY
 
+
+    var CONTAINER_HEIGHT = 0
+    var DEC_HEIGHT = 0
+    var MAX_HEIGHT = 0 //CONTAINER + DEC+HEIGHT
+    var MIN_HEIGHT = 0
+    var LANDSPACE_MIN_HEIGHT = 0
+    var videoHeight = 0
+    var videoOrientation = InterConst.VIDEO_ORIENTATION_VERTICLE
+
+
     override fun getContentView() = R.layout.activity_feed_detail
 
     override fun initUI() {
@@ -59,6 +69,16 @@ class FeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewCal
     }
 
     override fun onCreateStuff() {
+
+
+        DEC_HEIGHT = Constants.dpToPx(100)
+        CONTAINER_HEIGHT = mHeight
+        MAX_HEIGHT = CONTAINER_HEIGHT - DEC_HEIGHT
+        MIN_HEIGHT = Constants.dpToPx(200)
+//      LANDSPACE_MIN_HEIGHT = utils.dpToPx(mContext, 230);
+        val SCREEN_HEIGHT = mUtils.getInt("height", 0)
+        LANDSPACE_MIN_HEIGHT = (SCREEN_HEIGHT / 3.5).toInt()
+
         if (intent.hasExtra("feedData")) {
             mFeedResponse = intent.getParcelableExtra("feedData")
             populateBottomData()
@@ -308,18 +328,64 @@ class FeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewCal
 
     private fun setVideoAreaSize() {
         flVideo.post(Runnable {
-            val width = flVideo.width
+
+            //            val width = flVideo.width
             cachedHeight = resources.getDimension(R.dimen._220sdp).toInt()
             //                cachedHeight = (int) (width * 3f / 4f);
             //                cachedHeight = (int) (width * 9f / 16f);
+
+
+            if (mFeedResponse.video_height > mFeedResponse.video_width) {
+                videoOrientation = InterConst.VIDEO_ORIENTATION_VERTICLE
+                videoView.isCanItRotate = false
+            } else {
+                videoOrientation = InterConst.VIDEO_ORIENTATION_LANDSCAPE
+                videoView.isCanItRotate = true
+            }
+            var heightinPixel = 0
+            when (videoOrientation) {
+                InterConst.VIDEO_ORIENTATION_VERTICLE -> {
+                    heightinPixel = Constants.dpToPx(mFeedResponse.video_height)
+                }
+
+                InterConst.VIDEO_ORIENTATION_LANDSCAPE -> {
+                    heightinPixel = mFeedResponse.video_height
+                }
+            }
+
             val videoLayoutParams = flVideo.layoutParams
-            videoLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-            videoLayoutParams.height = cachedHeight
+
+            if (heightinPixel >= CONTAINER_HEIGHT) {
+                videoHeight = MAX_HEIGHT
+            } else if (heightinPixel >= MAX_HEIGHT) {
+                videoHeight = MAX_HEIGHT
+            } else {
+                videoHeight = heightinPixel// - DEC_HEIGHT;
+            }
+
+            if (videoHeight >= MIN_HEIGHT) {
+                videoLayoutParams.width = mWidth
+                videoLayoutParams.height = videoHeight
+            } else {
+                if (videoOrientation == InterConst.VIDEO_ORIENTATION_VERTICLE) {
+                    videoLayoutParams.width = mWidth
+                    videoLayoutParams.height = Constants.dpToPx(MIN_HEIGHT)
+                } else {
+                    videoLayoutParams.width = mWidth
+                    videoHeight = LANDSPACE_MIN_HEIGHT
+                    videoLayoutParams.height = videoHeight
+                }
+            }
+
+            videoLayoutParams.width = mWidth
+//            videoLayoutParams.height = cachedHeight
             flVideo.layoutParams = videoLayoutParams
             videoView.setVideoPath(mFeedResponse.url)
             videoView.requestFocus()
             videoView.seekTo(1)
             videoView.pause()
+
+
         })
     }
 
@@ -438,17 +504,35 @@ class FeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewCal
 
     }
 
+    internal fun enableContainerGravity() {
+          val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+        params.gravity = Gravity.CENTER
+    llInScroll.setLayoutParams(params);
+//        llInScroll.gravity = Gravity.CENTER
+    }
+
+    internal fun disableContainerGravity() {
+        val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+        params.gravity = Gravity.TOP
+        llInScroll.layoutParams = params
+//        llInScroll.gravity = Gravity.TOP
+
+    }
+
     override fun onScaleChange(isFullscreen: Boolean) {
         this.isFullscreen = isFullscreen
         if (isFullscreen) {
             val layoutParams = flVideo.layoutParams
             if (mFeedResponse.video_height > mFeedResponse.video_width) {
-                videoView.setFullscreen(false)
+                //videoView.setFullscreen(false)
                 layoutParams.width = mWidth
-                layoutParams.height = mHeight - resources.getDimension(R.dimen._20ssp).toInt()
+                layoutParams.height = videoHeight
+                enableContainerGravity()
+
             } else {
                 layoutParams.width = mHeight
                 layoutParams.height = mWidth
+                disableContainerGravity()
             }
             flVideo.layoutParams = layoutParams
             llBottom.visibility = View.GONE
@@ -457,17 +541,25 @@ class FeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewCal
             }
 
         } else {
-            val layoutParams = flVideo.layoutParams
-            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-            layoutParams.height = this.cachedHeight
-            flVideo.layoutParams = layoutParams
-            llBottom.visibility = View.VISIBLE
-            if (mFeedResponse.user_type == FirebaseChatConstants.TYPE_ADMIN) {
-                llAdmin.visibility = View.VISIBLE
-            }
+            resetvideoView()
         }
 
         switchTitleBar(!isFullscreen)
+    }
+
+    fun resetvideoView() {
+        val layoutParams = flVideo.layoutParams
+        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        layoutParams.height = videoHeight
+        flVideo.layoutParams = layoutParams
+        llBottom.visibility = View.VISIBLE
+        if (mFeedResponse.user_type == FirebaseChatConstants.TYPE_ADMIN) {
+            llAdmin.visibility = View.VISIBLE
+        }
+//        llToolbar.visibility = View.VISIBLE
+        switchTitleBar(this.isFullscreen)
+
+        disableContainerGravity()
     }
 
     private fun inflateExpertiseView(optionsModel: OptionsModel): View {
@@ -495,18 +587,21 @@ class FeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewCal
     override fun onBackPressed() {
         if (this.isFullscreen) {
             if (mFeedResponse.video_height > mFeedResponse.video_width) {
-                val layoutParams = flVideo.layoutParams
-                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                layoutParams.height = this.cachedHeight
-                flVideo.layoutParams = layoutParams
-                llBottom.visibility = View.VISIBLE
-                if (mFeedResponse.user_type == FirebaseChatConstants.TYPE_ADMIN) {
-                    llAdmin.visibility = View.VISIBLE
-                }
+//                val layoutParams = flVideo.layoutParams
+//                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+//                layoutParams.height = videoHeight
+//                flVideo.layoutParams = layoutParams
+//                llBottom.visibility = View.VISIBLE
+//                if (mFeedResponse.user_type == FirebaseChatConstants.TYPE_ADMIN) {
+//                    llAdmin.visibility = View.VISIBLE
+//                }
+                resetvideoView()
+                videoView.setFullscreen(false)
+
             } else {
                 videoView.setFullscreen(false)
-            }
 
+            }
         } else {
             super.onBackPressed()
         }
@@ -536,26 +631,26 @@ class FeedDetailActivity : BaseKotlinActivity(), UniversalVideoView.VideoViewCal
                     if (response.body().response != null) {
                         response.body().response
                         if (!intent.hasExtra("feedData")) {
-                            mFeedResponse = FeedModel.Response(response.body().response.id,
-                                    response.body().response.user_id
-                                    , response.body().response.user_type
-                                    , response.body().response.profile_pic
-                                    , response.body().response.sport_id
-                                    , response.body().response.sport
-                                    , response.body().response.privacy
-                                    , response.body().response.improvement
-                                    , response.body().response.url
-                                    , response.body().response.thumbnail
-                                    , response.body().response.fullname
-                                    , response.body().response.title
-                                    , response.body().response.views
-                                    , response.body().response.created_at
-                                    , response.body().response.description
-                                    , response.body().response.post_type,
-                                    response.body().response.likes_count,
-                                    response.body().response.comments_count,
-                                    response.body().response.liked, 0, 0)
-
+                            mFeedResponse =
+                                    FeedModel.Response(response.body().response.id
+                                            , response.body().response.user_id
+                                            , response.body().response.user_type
+                                            , response.body().response.profile_pic
+                                            , response.body().response.sport_id
+                                            , response.body().response.sport
+                                            , response.body().response.privacy
+                                            , response.body().response.improvement
+                                            , response.body().response.url
+                                            , response.body().response.thumbnail
+                                            , response.body().response.fullname
+                                            , response.body().response.title
+                                            , response.body().response.views
+                                            , response.body().response.created_at
+                                            , response.body().response.description
+                                            , response.body().response.post_type
+                                            , response.body().response.likes_count
+                                            , response.body().response.comments_count
+                                            , response.body().response.liked, 0, 0)
                             populateBottomData()
                         }
                         mFeedResponse.likes_count = response.body().response.likes_count

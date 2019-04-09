@@ -35,7 +35,7 @@ public class ListenerService extends Service {
 //            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
 //            Notification notification =
 //                    new Notification.Builder(this)
-//                            .setSmallIcon(R.mipmap.ic_launcher_round)
+//                            .setSmallIcon(R.mipmap.ic_launcher_round_hybrid)
 //                            .setContentIntent(pendingIntent)
 //                            .setColor(ContextCompat.getColor(getApplicationContext(), R.color.black))
 //                            .build();
@@ -63,7 +63,7 @@ public class ListenerService extends Service {
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         Notification notification = notificationBuilder.setOngoing(true)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setSmallIcon(R.mipmap.ic_launcher_round_hybrid)
                 .setContentTitle("App is running in background")
                 .setPriority(NotificationManager.IMPORTANCE_MIN)
                 .setCategory(Notification.CATEGORY_SERVICE)

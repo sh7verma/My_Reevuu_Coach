@@ -33,9 +33,8 @@
                     android:id="@+id/player"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="@dimen/_260sdp"
-                    app:resize_mode="fill"
-                    app:surface_type="surface_view"
+                    app:resize_mode="fixed_width"
+                    app:surface_type="texture_view"
                     app:use_controller="false" />
 
                 <ProgressBar
@@ -53,9 +52,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_260sdp"
                     android:scaleType="centerCrop" />
-
-
-
 
             </RelativeLayout>
             <LinearLayout

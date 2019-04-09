@@ -87,11 +87,17 @@ class SignupActivity : BaseKotlinActivity() {
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
             }
             tv_privacy -> {
-                showAlert(txtSIGNUP, getString(R.string.work_progress))
+                openWebview(InterConst.Webview.PRIVACY, RetrofitClient.URL_PRIVACY_POLICY)
+//                showAlert(txtSIGNUP, getString(R.string.work_progress))
             }
         }
     }
-
+    fun openWebview(type: InterConst.Webview, urlToOpen: String) {
+        val intent = Intent(this, WebViewActivity::class.java)
+        intent.putExtra(InterConst.WEBVIEW_TYPE, type)
+        intent.putExtra(InterConst.WEBVIEW_URL, urlToOpen)
+        startActivity(intent)
+    }
     private fun verifyDetails() {
         if (edName.text.trim().toString().length < 2)
             showAlert(txtSIGNUP, getString(R.string.error_name))
@@ -129,6 +135,7 @@ class SignupActivity : BaseKotlinActivity() {
 
 
     private fun hitAPI() {
+        getFirebaseToken()
         showLoader()
         val call = RetrofitClient.getInstance().userSignup(edName.text.toString().trim(),
                 edEmail.text.toString().trim(),

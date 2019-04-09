@@ -43,23 +43,23 @@
         android:layout_weight="1">
 
         <LinearLayout
+            android:id="@+id/llInScroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/imgThumbnail"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_220sdp"
-                android:scaleType="centerCrop"
-                android:visibility="gone" />
-
-
             <FrameLayout
                 android:id="@+id/flVideo"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/_220sdp"
                 android:background="@android:color/black">
+
+                <ImageView
+                    android:id="@+id/imgThumbnail"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_220sdp"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
 
                 <com.universalvideoview.UniversalVideoView
                     android:id="@+id/videoView"
@@ -67,7 +67,7 @@
                     android:layout_height="fill_parent"
                     android:layout_gravity="center"
                     app:uvv_autoRotation="true"
-                    app:uvv_fitXY="false" />
+                    app:uvv_fitXY="true" />
 
 
                 <com.universalvideoview.UniversalMediaController

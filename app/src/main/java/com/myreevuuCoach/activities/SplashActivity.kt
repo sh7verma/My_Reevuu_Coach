@@ -75,7 +75,7 @@ class SplashActivity : BaseKotlinActivity() {
         }
     }
 
-    fun hitCoachProfileApi() {
+    private fun hitCoachProfileApi() {
         if (connectedToInternet()) {
             showLoader()
             val call = RetrofitClient.getInstance().coach_profile(

@@ -9,7 +9,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static final String BASE_URL = "http://52.52.111.12:3000";/// Applify Development
+    //    private static final String BASE_URL = "http://52.52.111.12:3000";/// Applify Development
+    private static final String BASE_URL = "https://www.myreevuu.com";/// Applify LIVE
 //    private static final String BASE_URL = "http://192.168.1.111:3000";/// Applify Development
 
     public static final String URL_TERMS_CONDITIONS = BASE_URL + "/terms-and-conditions";
@@ -45,4 +46,5 @@ public class RetrofitClient {
                 .connectTimeout(100000, TimeUnit.SECONDS)
                 .build();
     }
+
 }
